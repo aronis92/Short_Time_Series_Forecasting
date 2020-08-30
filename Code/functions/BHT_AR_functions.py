@@ -1,5 +1,11 @@
+####################################################
+##                                                ##
+##  This file contains various utility functions  ##
+##                                                ##
+####################################################
+
 from functions.utils import compute_rmse, compute_nrmse, get_ranks
-from functions.MAR_functions import fit_mar
+#from functions.MAR_functions import fit_mar
 from functions.AR_functions import fit_ar
 from functions.MDT_functions import MDT
 from statsmodels.tsa.api import VAR

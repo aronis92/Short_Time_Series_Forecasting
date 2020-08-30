@@ -1,7 +1,7 @@
 from functions.utils import create_synthetic_data
 from functions.BHT_AR_functions import train
 from functions.AR_functions import fit_ar
-from functions.MAR_functions import fit_mar
+#from functions.MAR_functions import fit_mar
 from functions.MDT_functions import MDT
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,8 +15,8 @@ def plot_results(data, title):
 
 # Create/Load Dataset
 np.random.seed(0)
-X = np.load('data/traffic_40.npy').T
-# X = create_synthetic_data(p = 2, dim = 5, n_samples=100)
+# X = np.load('data/traffic_40.npy').T
+X = create_synthetic_data(p = 2, dim = 5, n_samples=100)
 
 # plt.figure(figsize=(13,5))
 # plt.plot(X.T)

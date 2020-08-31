@@ -5,9 +5,22 @@
 ####################################################
 
 from statsmodels.tsa.arima_process import arma_generate_sample
+import matplotlib.pyplot as plt
 import tensorly as tl
 import numpy as np
 
+
+# The function that plots the results
+# Input:
+#   data: The data to plot
+#   title: The title of the graph
+def plot_results(data, title):
+    epoch = [i + 1 for i in range(len(data))]
+    plt.figure(figsize = (12,5))
+    plt.title(title)
+    #plt.plot(epoch[1:], data[1:])
+    plt.plot(epoch, data)
+    
 
 # The function that creates and returns the simulation data
 # Input:

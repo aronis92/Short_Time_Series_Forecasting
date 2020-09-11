@@ -33,10 +33,12 @@ Us, convergences, changes, A, prediction = train(data = X,
                                                  model = "VAR")
 
 
-plot_results(convergences, 'Conv')
-# changes[:, 0] = changes[:, 0] * 100 - 20
-# changes[:, 1] = changes[:, 1] * 10**4 - 34
-plot_results(changes, 'RMSE/NRMSE')
+# plot_results(convergences, 'Conv')
+# # changes[:, 0] = changes[:, 0] * 100 - 20
+# # changes[:, 1] = changes[:, 1] * 10**4 - 34
+# plot_results(changes, 'RMSE/NRMSE')
 
-
-
+rmse_VAR = changes[:,0]
+nrmse_VAR = changes[:,1]
+# rmse_AR = changes[:,0]
+# nrmse_AR = changes[:,1] 

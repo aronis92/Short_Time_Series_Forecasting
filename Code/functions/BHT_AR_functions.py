@@ -153,8 +153,8 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
         A = fit_ar(G, par['p'])
     elif mod == "VAR":
         # A = model(G, par['p'])
-        Gd2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
-        model = VAR(Gd2.T)
+        G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
+        model = VAR(G2.T)
         results = model.fit(par['p'])
         A2 = results.coefs
         A = []
@@ -213,15 +213,15 @@ def train(data, par, model):
     while epoch < par['max_epoch'] and conv > par['threshold']:
         old_Us = copy.deepcopy(Us)
         # Step 9 - Calculate the Core Tensors
-        Gd = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
+        G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
         # Calculate par of AR model
         if model == "AR":
-            A = fit_ar(Gd, par['p'])
+            A = fit_ar(G, par['p'])
         elif model == "VAR":
             # A = fit_mar(Gd, par['p'])
             
-            Gd2 = Gd.reshape((Gd.shape[0]*Gd.shape[1], Gd.shape[2]))
-            model = VAR(Gd2.T)
+            G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
+            model = VAR(G2.T)
             results = model.fit(par['p'])
             A2 = results.coefs
             A = []
@@ -230,9 +230,9 @@ def train(data, par, model):
         
         for m in range(len(Us)):
             # Step 12 - Update cores over m-unfolding
-            Gd = update_cores(m, par['p'], A, Us, X_hat, Gd, par['lam'], "VAR")
+            G = update_cores(m, par['p'], A, Us, X_hat, G, par['lam'], "VAR")
             # Step 13 - Update U[m]
-            Us[m] = update_Um(m, par['p'], X_hat, Gd, Us)
+            Us[m] = update_Um(m, par['p'], X_hat, G, Us)
         
         conv = compute_convergence(Us, old_Us)
         convergences.append(conv)

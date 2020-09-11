@@ -1,2 +1,6 @@
 Code/data/zip_nasdaq100.zip
-Code/data/nasdaq100/*
+Code/data/nasdaq100/extended
+Code/data/nasdaq100/full
+Code/data/nasdaq100/small/.DS_Store
+Code/data/nasdaq100/small/small_stock_name.txt
+Code/data/nasdaq100/.DS_Store

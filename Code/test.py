@@ -8,6 +8,8 @@ i = 1
 #n_dim = data.shape[1]
 
 data = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = n_data)
+# data = data.to_numpy()
+
 ds = pd.date_range('2015-02-24', periods = n_data, freq='D')
 ds = pd.DataFrame(ds.date)
 ds = ds.rename(columns={0:'ds'})

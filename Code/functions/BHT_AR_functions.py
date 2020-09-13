@@ -233,12 +233,14 @@ def train(data, par, model):
             G = update_cores(m, par['p'], A, Us, X_hat, G, par['lam'], "VAR")
             # Step 13 - Update U[m]
             Us[m] = update_Um(m, par['p'], X_hat, G, Us)
-        
+        # print(Us[1])
         conv = compute_convergence(Us, old_Us)
+        # print(conv)
         convergences.append(conv)
         epoch += 1
         
         prediction, A = train_predict(X_hat, Us, S_pinv, par, "VAR")
+        # print(prediction[:5])
 
         rmse = compute_rmse(prediction, X_test)
         nrmse = compute_nrmse(prediction, X_test)

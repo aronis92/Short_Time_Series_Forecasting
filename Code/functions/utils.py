@@ -42,6 +42,22 @@ def create_synthetic_data(p, dim, n_samples):
     return data
 
 
+# The function that creates and returns the simulation data
+# Input:
+#   p: AR model order
+#   dim: dimensionality of data
+#   n_samples: number of samples to create
+# Returns:
+#   data: A numpy matrix
+def create_synthetic_data2(p, dim, n_samples):
+    X = np.random.random_sample((dim, p))
+    A = np.array([0.6, 0.3]).reshape((p, 1))
+    for t in range(n_samples):
+        x_t = A[0]*X[..., -1] + A[1]*X[..., -2] + np.random.random_sample((dim,))/2
+        X = np.hstack((X, x_t.reshape(dim,1)))
+    return X[:, -n_samples:]
+
+
 # The function that computes and returns the rmse
 # Input:
 #   y_pred: predicted values
@@ -79,6 +95,17 @@ def get_ranks(tensor):
         ranks.append( np.linalg.matrix_rank(temp) )
     return np.array(ranks)
 
+
+def create_synthetic_data2(p, dim, n_samples):
+    X = np.random.random_sample((dim, p))
+    A = np.array([0.6, 0.25]).reshape((p, 1))
+    for t in range(n_samples):
+        x_t = A[0]*X[..., -1] + A[1]*X[..., -2] + np.random.random_sample((dim,))/2
+        X = np.hstack((X, x_t.reshape(dim,1)))
+    return X
+
+# plt.figure(figsize=(12,5))
+# plt.plot(X.T)
 
 
 # import matplotlib.pyplot as plt

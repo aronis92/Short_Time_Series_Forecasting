@@ -207,6 +207,9 @@ def train(data, par, model):
     X_test = data[..., -1]
     X_hat, S_pinv = MDT(X_train, par['r'])
     Rs = get_ranks(X_hat)
+    #print(X_hat.shape)
+    #Rs = np.array([10,2])
+    #print(Rs)
     # Us Initialization
     Us = initialize_Us(X_hat, Rs)
     # Train the AR model

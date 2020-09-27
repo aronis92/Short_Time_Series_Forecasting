@@ -15,9 +15,9 @@ import pandas as pd
 
 # Create/Load Dataset
 np.random.seed(0)
-# X = create_synthetic_data2(p = 2, dim = 5, n_samples=100)
-# X = create_synthetic_data(p = 2, dim = 5, n_samples=100)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 100)
+# X = create_synthetic_data2(p = 2, dim = 10, n_samples=100)
+# X = create_synthetic_data(p = 2, dim = 40, n_samples=100)
+X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 40)
 X = X.to_numpy()
 X = X.T
 
@@ -26,10 +26,10 @@ X = X.T
 # plt.plot(X.T)
 
 # Set some parameters
-parameters = {'r': 3,
-              'p': 4,
+parameters = {'r': 2,
+              'p': 3,
               # 'ranks': [0, 0],
-              'lam': 2,
+              'lam': 5,
               'max_epoch': 10,
               'threshold': 0.000001}
 
@@ -51,3 +51,8 @@ Us, convergences, changes, A, prediction = train(data = X,
                                                  model = "AR")
 rmse_AR = changes[:,0]
 nrmse_AR = changes[:,1] 
+
+print("RMSE_AR: ", rmse_AR[-1])
+print("RMSE_VAR: ", rmse_VAR[-1])
+
+# del A, Us, changes, convergences, parameters, X, prediction

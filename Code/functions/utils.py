@@ -96,13 +96,13 @@ def get_ranks(tensor):
     return np.array(ranks)
 
 
-def create_synthetic_data2(p, dim, n_samples):
-    X = np.random.random_sample((dim, p))
-    A = np.array([0.6, 0.25]).reshape((p, 1))
-    for t in range(n_samples):
-        x_t = A[0]*X[..., -1] + A[1]*X[..., -2] + np.random.random_sample((dim,))/2
-        X = np.hstack((X, x_t.reshape(dim,1)))
-    return X
+# def create_synthetic_data2(p, dim, n_samples):
+#     X = np.random.random_sample((dim, p))
+#     A = np.array([0.6, 0.25]).reshape((p, 1))
+#     for t in range(n_samples):
+#         x_t = A[0]*X[..., -1] + A[1]*X[..., -2] + np.random.random_sample((dim,))/2
+#         X = np.hstack((X, x_t.reshape(dim,1)))
+#     return X
 
 # plt.figure(figsize=(12,5))
 # plt.plot(X.T)

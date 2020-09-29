@@ -15,11 +15,18 @@ import numpy as np
 #   data: The data to plot
 #   title: The title of the graph
 def plot_results(data, title):
-    epoch = [i + 1 for i in range(len(data))]
+    # plt.plot(epoch[1:], data[1:])
+    epoch = [int(i + 1) for i in range(len(data))]
     plt.figure(figsize = (12,5))
     plt.title(title)
-    #plt.plot(epoch[1:], data[1:])
+    plt.xlabel('Iteration')
+    plt.ylabel('RMSE Value')
+    # plt.ylim(0.001924, 0.00193) # AR NRMSE
+    # plt.ylim(0.2691, 0.2702) # AR RMSE
+    # plt.ylim(0.001924, 0.00193) # VAR NRMSE
+    plt.ylim(0.2690, 0.2702) # VAR RMSE
     plt.plot(epoch, data)
+
     
 
 # The function that creates and returns the simulation data

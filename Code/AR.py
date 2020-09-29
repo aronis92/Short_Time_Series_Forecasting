@@ -15,44 +15,51 @@ import pandas as pd
 
 # Create/Load Dataset
 np.random.seed(0)
-# X = create_synthetic_data2(p = 2, dim = 10, n_samples=100)
-# X = create_synthetic_data(p = 2, dim = 40, n_samples=100)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 40)
-X = X.to_numpy()
-X = X.T
+X = create_synthetic_data2(p = 2, dim = 100, n_samples=40)
+# X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
+# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 40)
+# X = X.to_numpy()
+# X = X.T
 
 # X = np.load('data/traffic_40.npy').T
 # plt.figure(figsize=(13,5))
 # plt.plot(X.T)
 
 # Set some parameters
-parameters = {'r': 2,
-              'p': 3,
+parameters = {'r': 6,
+              'p': 2,
               # 'ranks': [0, 0],
-              'lam': 5,
-              'max_epoch': 10,
+              'lam': 1,
+              'max_epoch': 15,
               'threshold': 0.000001}
 
-Us, convergences, changes, A, prediction = train(data = X,
-                                                 par = parameters,
-                                                 model = "VAR")
-
-
-# plot_results(convergences, 'Conv')
-# # changes[:, 0] = changes[:, 0] * 100 - 20
-# # changes[:, 1] = changes[:, 1] * 10**4 - 34
-# plot_results(changes, 'RMSE/NRMSE')
-
-rmse_VAR = changes[:,0]
-nrmse_VAR = changes[:,1]
 
 Us, convergences, changes, A, prediction = train(data = X,
                                                  par = parameters,
                                                  model = "AR")
-rmse_AR = changes[:,0]
-nrmse_AR = changes[:,1] 
+# plot_results(convergences, 'BHT_AR Convergence')
+# plot_results(changes[:,1], 'BHT_AR ΝRMSE')
+# plot_results(changes[:,0], 'BHT_AR RMSE')
 
-print("RMSE_AR: ", rmse_AR[-1])
-print("RMSE_VAR: ", rmse_VAR[-1])
+rmse_AR = changes[:,0]
+nrmse_AR = changes[:,1]
+
+
+Us, convergences, changes, A, prediction = train(data = X,
+                                                 par = parameters,
+                                                 model = "VAR")
+# plot_results(convergences, 'BHT_VAR Convergence')
+# plot_results(changes[:,1], 'BHT_VAR ΝRMSE')
+# plot_results(changes[:,0], 'BHT_VAR RMSE')
+
+rmse_VAR = changes[:,0]
+nrmse_VAR = changes[:,1]
+
+
+
+print("RMSE_AR: ", min(rmse_AR))
+print("RMSE_VAR: ", min(rmse_VAR))
+print("NRMSE_AR: ", min(nrmse_AR))
+print("NRMSE_VAR: ", min(nrmse_VAR))
 
 # del A, Us, changes, convergences, parameters, X, prediction

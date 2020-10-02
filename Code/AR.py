@@ -15,25 +15,25 @@ import pandas as pd
 
 # Create/Load Dataset
 np.random.seed(0)
-X = create_synthetic_data2(p = 2, dim = 100, n_samples=40)
+# X = create_synthetic_data2(p = 2, dim = 100, n_samples=40)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
-# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 40)
-# X = X.to_numpy()
-# X = X.T
+X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 41)
+X = X.to_numpy()
+X = X.T
 
 # X = np.load('data/traffic_40.npy').T
 # plt.figure(figsize=(13,5))
 # plt.plot(X.T)
 
 # Set some parameters
-parameters = {'r': 6,
+parameters = {'r': 5,
               'p': 2,
               # 'ranks': [0, 0],
-              'lam': 1,
+              'lam': 2, #2.1 for VAR
               'max_epoch': 15,
               'threshold': 0.000001}
 
-
+print("p:", parameters['p'], " r:", parameters['r'])
 Us, convergences, changes, A, prediction = train(data = X,
                                                  par = parameters,
                                                  model = "AR")

@@ -6,10 +6,11 @@
 #################################################
 
 from functions.utils import compute_rmse, compute_nrmse
-from functions.utils import create_synthetic_data
+from functions.utils import create_synthetic_data, create_synthetic_data2
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import time
 
@@ -24,7 +25,7 @@ import time
 def VAR_results(data, p):
     start = time.clock()
     model = VAR(data[..., :-1].T)
-    results = model.fit(2)
+    results = model.fit()
 
     A = results.coefs
     end = time.clock()
@@ -60,9 +61,13 @@ def ARIMA_results(data, p, d, q):
     return prediction.T, duration, rmse, nrmse, -alpha[1:]/data.shape[0] #res.polynomial_ar
 
 
-X = create_synthetic_data(p=2, dim=5, n_samples=100)
-# plt.figure(figsize=(13,5))
-# plt.plot(X.T)
+# Create/Load Dataset
+np.random.seed(0)
+# X = create_synthetic_data2(p = 2, dim = 100, n_samples=40)
+# X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
+X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 100)
+X = X.to_numpy()
+X = X.T
 
 var_A, var_duration, var_rmse, var_nrmse = VAR_results(data=X, p=2)
 pred, arima_duration, arima_rmse, arima_nrmse, arima_A = ARIMA_results(data=X, p=2, d=0, q=0)

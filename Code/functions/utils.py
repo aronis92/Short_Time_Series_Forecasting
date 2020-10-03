@@ -14,17 +14,17 @@ import numpy as np
 # Input:
 #   data: The data to plot
 #   title: The title of the graph
-def plot_results(data, title):
+def plot_results(data, title, ytitle):
     # plt.plot(epoch[1:], data[1:])
     epoch = [int(i + 1) for i in range(len(data))]
     plt.figure(figsize = (12,5))
     plt.title(title)
     plt.xlabel('Iteration')
-    plt.ylabel('RMSE Value')
+    plt.ylabel(ytitle)
     # plt.ylim(0.001924, 0.00193) # AR NRMSE
     # plt.ylim(0.2691, 0.2702) # AR RMSE
     # plt.ylim(0.001924, 0.00193) # VAR NRMSE
-    plt.ylim(0.2690, 0.2702) # VAR RMSE
+    # plt.ylim(0.089, 0.09) # VAR RMSE
     plt.plot(epoch, data)
 
     

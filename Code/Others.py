@@ -5,7 +5,7 @@
 ##                                             ##
 #################################################
 
-from functions.utils import compute_rmse, compute_nrmse
+from functions.utils import compute_nrmse#, compute_rmse
 from functions.utils import create_synthetic_data, create_synthetic_data2
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
@@ -14,6 +14,10 @@ import pandas as pd
 import numpy as np
 import time
 
+
+def compute_rmse(y_pred, y_true):
+    rmse = np.sqrt( np.linalg.norm(y_pred - y_true)**2 / np.size(y_true) )
+    return rmse
 
 # The function that creates and returns the simulation data
 # Input:
@@ -32,8 +36,8 @@ def VAR_results(data, p):
     prediction = results.forecast(data[..., -p:].T, 1)
 
     duration = end - start
-    rmse = compute_rmse(prediction.T, data[..., -1])
-    nrmse = compute_nrmse(prediction.T, data[..., -1])
+    rmse = compute_rmse(prediction, data[..., -1])
+    nrmse = compute_nrmse(prediction, data[..., -1])
     return A, duration, rmse, nrmse
 
 
@@ -56,18 +60,18 @@ def ARIMA_results(data, p, d, q):
     end = time.clock()
 
     duration = end - start
-    rmse = compute_rmse(prediction.T, data[..., -1])
-    nrmse = compute_nrmse(prediction.T, data[..., -1])
+    rmse = compute_rmse(prediction, data[..., -1])
+    nrmse = compute_nrmse(prediction, data[..., -1])
     return prediction.T, duration, rmse, nrmse, -alpha[1:]/data.shape[0] #res.polynomial_ar
 
 
 # Create/Load Dataset
 np.random.seed(0)
-# X = create_synthetic_data2(p = 2, dim = 100, n_samples=40)
+X = create_synthetic_data2(p = 2, dim = 10, n_samples=41)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 100)
-X = X.to_numpy()
-X = X.T
+# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 21)
+# X = X.to_numpy()
+# X = X.T
 
 var_A, var_duration, var_rmse, var_nrmse = VAR_results(data=X, p=2)
 pred, arima_duration, arima_rmse, arima_nrmse, arima_A = ARIMA_results(data=X, p=2, d=0, q=0)

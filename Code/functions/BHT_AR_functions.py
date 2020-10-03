@@ -209,7 +209,8 @@ def train(data, par, model):
     # Rs = get_ranks(X_hat)
     #print(X_hat.shape)
     Rs = np.array([40, 2])
-    #print(Rs)
+    # Rs = np.array([40, 5])
+    # print(Rs)
     # Us Initialization
     Us = initialize_Us(X_hat, Rs)
     # Train the AR model

@@ -208,8 +208,8 @@ def train(data, par, model):
     X_hat, S_pinv = MDT(X_train, par['r'])
     # Rs = get_ranks(X_hat)
     #print(X_hat.shape)
-    Rs = np.array([40, 2])
-    # Rs = np.array([40, 5])
+    # Rs = np.array([40, 2])
+    Rs = np.array([40, 5])
     # print(Rs)
     # Us Initialization
     Us = initialize_Us(X_hat, Rs)

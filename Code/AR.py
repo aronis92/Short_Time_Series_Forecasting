@@ -16,11 +16,11 @@ import time
 
 '''Create/Load Dataset'''
 np.random.seed(0)
-# X = create_synthetic_data2(p = 2, dim = 10, n_samples=41)
+X = create_synthetic_data2(p = 2, dim = 10, n_samples=11)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 41)
-X = X.to_numpy()
-X = X.T
+# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 11)
+# X = X.to_numpy()
+# X = X.T
 
 # X = np.load('data/traffic_40.npy').T
 # import matplotlib.pyplot as plt
@@ -34,8 +34,8 @@ X = X.T
 
 # Set the parameters for BHT_AR
 parameters = {'p': 2,
-              'r': 5,#8,
-              'lam': 0.1,#5,
+              'r': 3, #8,
+              'lam': 1, #5,
               'max_epoch': 15,
               'threshold': 0.000001}
 
@@ -62,11 +62,11 @@ print("NRMSE_AR: ", min(nrmse_AR))
 '''~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_VAR
-parameters = {'p': 3,
-              'r': 3,
-              'lam': 2.1, #2.1 for VAR
-              'max_epoch': 15,
-              'threshold': 0.000001}
+# parameters = {'p': 3,
+#               'r': 4,
+#               'lam': 1, #2.1 for VAR
+#               'max_epoch': 15,
+#               'threshold': 0.000001}
 
 print("\nBHT_VAR\np:", parameters['p'], " r:", parameters['r'])
 

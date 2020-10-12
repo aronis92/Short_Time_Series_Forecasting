@@ -151,6 +151,7 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
     if mod == "AR":
         #A = model(G, par['p'])
         A = fit_ar(G, par['p'])
+        print(A)
     elif mod == "VAR":
         # A = model(G, par['p'])
         G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
@@ -197,7 +198,7 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
 #   metric: A numpy matrix containing the rmse and nrmse values of each iteration
 #   A: The coefficient matrix
 #   prediction: The predicted values of the next step
-def train(data, par, model):
+def train(data, par, mod):
     # Rs = np.array(par['ranks'])
     conv = 10
     epoch = 0
@@ -208,8 +209,8 @@ def train(data, par, model):
     X_hat, S_pinv = MDT(X_train, par['r'])
     # Rs = get_ranks(X_hat)
     #print(X_hat.shape)
-    # Rs = np.array([40, 2])
-    Rs = np.array([40, 5])
+    Rs = np.array([40, 2])
+    # Rs = np.array([40, 5])
     # print(Rs)
     # Us Initialization
     Us = initialize_Us(X_hat, Rs)
@@ -219,9 +220,10 @@ def train(data, par, model):
         # Step 9 - Calculate the Core Tensors
         G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
         # Calculate par of AR model
-        if model == "AR":
+        if mod == "AR":
             A = fit_ar(G, par['p'])
-        elif model == "VAR":
+            
+        elif mod == "VAR":
             # A = fit_mar(Gd, par['p'])
             
             G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
@@ -234,7 +236,7 @@ def train(data, par, model):
         
         for m in range(len(Us)):
             # Step 12 - Update cores over m-unfolding
-            G = update_cores(m, par['p'], A, Us, X_hat, G, par['lam'], "VAR")
+            G = update_cores(m, par['p'], A, Us, X_hat, G, par['lam'], mod)
             # Step 13 - Update U[m]
             Us[m] = update_Um(m, par['p'], X_hat, G, Us)
         # print(Us[1])
@@ -243,7 +245,9 @@ def train(data, par, model):
         convergences.append(conv)
         epoch += 1
         
-        prediction, A = train_predict(X_hat, Us, S_pinv, par, "VAR")
+        # print(A)
+        
+        prediction, A = train_predict(X_hat, Us, S_pinv, par, mod)
         # print(prediction[:5])
 
         rmse = compute_rmse(prediction, X_test)
@@ -256,8 +260,36 @@ def train(data, par, model):
 
 
 
-
-
+def predict(mod, Us, A, par, X, X_test):
+    p = par['p']
+    X_hat, S_pinv = MDT(X, par['r'])
+    # Estimate the core tensor with the given Us.
+    G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
+    # Predict the core
+    G_pred = 0
+    if mod == "AR":
+        for i in range(p):
+            G_pred += A[i] * G[..., -(i + 1)]
+    elif mod == "VAR":
+        for i in range(p):
+            tmp1 = G[..., -(i + 1)].flatten()
+            tmp1 = tmp1.reshape(tmp1.shape[0], 1)
+            tmp2 = np.dot(A[i], tmp1)
+            tmp3 = tmp2.reshape(G.shape[0], G.shape[1])
+            G_pred += tmp3
+    
+    X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
+            
+    dim_list = list(X_pred.shape)
+    dim_list.append(1)
+    X_hat = np.append(X_hat, X_pred.reshape( tuple(dim_list) ), axis = -1)
+    # Reverse differencing should happen here
+    pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat[..., 1:], 0), S_pinv, -1)
+    pred_value = pred_mat[:, -1]
+    
+    rmse = compute_rmse(pred_value, X_test)
+    nrmse = compute_nrmse(pred_value, X_test)
+    return rmse, nrmse
 
 
 

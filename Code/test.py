@@ -16,3 +16,12 @@ def plot_results(data, title, ytitle):
     plt.plot(epoch, data)
     
 plot_results(X, "Synthetic NRMSE over volume", "NRMSE")
+
+
+
+
+import tensorly as tl
+from tensorly.decomposition import tucker
+
+
+X = np.array([])

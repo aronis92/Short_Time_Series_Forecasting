@@ -31,26 +31,41 @@ X2 = X2[:, :-1]
 '''~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_VAR
-parameters = {'p': 3,
+parameters = {'R1':40,
+              'R2':2,
+              'p': 3,
               'r': 3,
               'lam': 2.1, #2.1 for VAR
               'max_epoch': 15,
               'threshold': 0.000001}
 
-print("\nBHT_VAR\np:", parameters['p'], " r:", parameters['r'])
 
 start = time.clock()
 Us, convergences, changes, A, prediction = train(data = X,
                                                  par = parameters,
-                                                 model = "VAR")
+                                                 mod = "VAR")
 end = time.clock()
 duration_VAR = end - start
 
+print("\nBHT_VAR\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
+
+# Validation
 rmse_VAR = changes[:,0]
 nrmse_VAR = changes[:,1]
 print("RMSE_VAR: ", min(rmse_VAR))
 print("NRMSE_VAR: ", min(nrmse_VAR))
+print("Validation duration_AR: ", duration_VAR)
 
 # plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")
 # plot_results(changes[:,0], 'BHT_VAR RMSE', "RMSE Value")
 # plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")
+
+#Test
+rmse_VAR, nrmse_VAR = predict("VAR", Us, A, parameters, X, X_test)
+
+print("Test RMSE_AR: ", rmse_VAR)
+print("Test NRMSE_AR: ", nrmse_VAR)
+
+
+
+

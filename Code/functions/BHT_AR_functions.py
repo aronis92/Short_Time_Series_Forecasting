@@ -151,7 +151,6 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
     if mod == "AR":
         #A = model(G, par['p'])
         A = fit_ar(G, par['p'])
-        print(A)
     elif mod == "VAR":
         # A = model(G, par['p'])
         G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
@@ -191,7 +190,7 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
 # Input:
 #   data: The loaded dataset
 #   par: A dictionary that contains the hyperparameters of the model
-#   model: A string "AR" or "VAR" that selects the model to be used
+#   mod: A string "AR" or "VAR" that selects the model to be used
 # Returns:
 #   Us: The list containing the U matrices
 #   convergences: A numpy matrix containing the convergence value of each iteration
@@ -209,7 +208,8 @@ def train(data, par, mod):
     X_hat, S_pinv = MDT(X_train, par['r'])
     # Rs = get_ranks(X_hat)
     #print(X_hat.shape)
-    Rs = np.array([40, 2])
+    # Rs = np.array([40, 2])
+    Rs = np.array([par['R1'], par['R2']])
     # Rs = np.array([40, 5])
     # print(Rs)
     # Us Initialization
@@ -286,6 +286,7 @@ def predict(mod, Us, A, par, X, X_test):
     # Reverse differencing should happen here
     pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat[..., 1:], 0), S_pinv, -1)
     pred_value = pred_mat[:, -1]
+    pred_value = pred_value.reshape(pred_value.shape[0], 1)
     
     rmse = compute_rmse(pred_value, X_test)
     nrmse = compute_nrmse(pred_value, X_test)

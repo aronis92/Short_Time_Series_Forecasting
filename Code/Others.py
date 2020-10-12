@@ -67,19 +67,21 @@ def ARIMA_results(data, p, d, q):
 
 # Create/Load Dataset
 np.random.seed(0)
-X = create_synthetic_data2(p = 2, dim = 10, n_samples=101)
+# X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
-# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 101)
-# X = X.to_numpy()
-# X = X.T
+X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 101)
+X = X.to_numpy()
+X = X.T
 
 var_A, var_duration, var_rmse, var_nrmse = VAR_results(data=X, p=2)
 pred, arima_duration, arima_rmse, arima_nrmse, arima_A = ARIMA_results(data=X, p=2, d=0, q=0)
 
 print("RMSE AR: ", arima_rmse)
 print("NRMSE AR: ", arima_nrmse)
+print("Duration AR: ", arima_duration)
 print("RMSE VAR: ", var_rmse)
 print("NRMSE VAR: ", var_nrmse)
+print("Duration VAR: ", var_duration)
 
 
 

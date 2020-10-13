@@ -16,11 +16,11 @@ import time
 
 '''Create/Load Dataset'''
 np.random.seed(0)
-X = create_synthetic_data2(p = 2, dim = 10, n_samples=101)
+# X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 101)
-# X = X.to_numpy()
-# X = X.T
+X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
+X = X.to_numpy()
+X = X.T
 # X2 = X[:, -41:]
 # X_test = X2[:, -1:]
 # X2 = X2[:, :-1]
@@ -31,11 +31,11 @@ X = create_synthetic_data2(p = 2, dim = 10, n_samples=101)
 '''~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_VAR
-parameters = {'R1':3,
+parameters = {'R1':5,
               'R2':2,
               'p': 2,
-              'r': 5,
-              'lam': 1, #2.1 for VAR
+              'r': 2,
+              'lam': 0.01, #2.1 for VAR
               'max_epoch': 15,
               'threshold': 0.000001}
 

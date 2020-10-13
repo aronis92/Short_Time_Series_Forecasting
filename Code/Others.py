@@ -69,7 +69,7 @@ def ARIMA_results(data, p, d, q):
 np.random.seed(0)
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 101)
+X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 X = X.to_numpy()
 X = X.T
 

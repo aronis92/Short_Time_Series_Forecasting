@@ -16,32 +16,26 @@ import time
 
 '''Create/Load Dataset'''
 np.random.seed(0)
-X = create_synthetic_data2(p = 2, dim = 10, n_samples=101)
+# X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 101)
-# X = X.to_numpy()
-# X = X.T
+X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
+X = X.to_numpy()
+X = X.T
 # X2 = X[:, -41:]
 # X_test = X2[:, -1:]
 # X2 = X2[:, :-1]
 # X = X[:, :41]
-
-# X = np.load('data/traffic_40.npy').T
-# import matplotlib.pyplot as plt
-# plt.figure(figsize=(13,5))
-# plt.plot(X.T)
-
 
 '''~~~~~~~~~~~~~~~~~~~~'''
 '''       BHT_AR       '''
 '''~~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_AR
-parameters = {'R1':8,
-              'R2':3,
-              'p': 3,
-              'r': 5, #8,
-              'lam': 1, #5,
+parameters = {'R1':3,
+              'R2':2,
+              'p': 2,
+              'r': 2, #8,
+              'lam': 2, #5,
               'max_epoch': 15,
               'threshold': 0.000001}
 

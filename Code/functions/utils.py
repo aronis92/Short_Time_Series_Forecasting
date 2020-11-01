@@ -30,6 +30,31 @@ def plot_results(data, title, ytitle):
     # plt.ylim(0.089, 0.09) # VAR RMSE
     plt.plot(epoch, data)
 
+
+
+def book_data(sample_size):
+    np.random.seed(69)
+    A1 = np.array([[.3, -.2, .04],
+                    [-.11, .26, -.05],
+                    [.08, -.39, .39]])
+    #print(la.norm(A_1, 'fro'))
+    A2 = np.array([[.28, -.08, .07],
+                    [-.04, .36, -.1],
+                    [-.33, .05, .38]])
+    #print(la.norm(A_2, 'fro'))
+    total = 2000
+    
+    X_total = np.zeros((3, total))
+    X_total[..., 0:2] = np.random.rand(3,2)
+    for i in range(2, total):
+        X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(3,)
+        
+    return X_total[..., (total-sample_size):], A1, A2
+
+# X = book_data(100)
+# plt.figure(figsize = (16,5))
+# #X_vectorized = X_vectorized[5, :]
+# plt.plot(X.T)
     
 def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     np.random.seed(42)
@@ -38,20 +63,19 @@ def get_matrix_coeff_data(sample_size, n_rows, n_columns):
 
     X_total = np.zeros((n_rows*n_columns, total))
     X_total[..., 0:2] = log(np.random.rand(n_rows*n_columns, 2))
-    max_v = 3
-    min_v = 2
+    max_v = 2.5
+    min_v = 1.5
     A1 = np.random.rand(n_rows*n_columns, n_rows*n_columns)
     A1 = A1/((min_v + random()*(max_v - min_v))*la.norm(A1, 'fro'))
     A2 = np.random.rand(n_rows*n_columns, n_rows*n_columns)
     A2 = A2/((min_v + random()*(max_v - min_v))*la.norm(A2, 'fro'))
-    
 
     for i in range(2, total):
         X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(n_rows*n_columns)
     
     
     X = X_total[..., (total-sample_size):]
-    return log(X)
+    return X, A1, A2
 
 
 # The function that creates and returns the simulation data

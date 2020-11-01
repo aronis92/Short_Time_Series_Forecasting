@@ -6,7 +6,7 @@
 #################################################
 
 from functions.utils import compute_nrmse#, compute_rmse
-from functions.utils import create_synthetic_data, create_synthetic_data2
+from functions.utils import get_matrix_coeff_data, create_synthetic_data2, book_data
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
 import matplotlib.pyplot as plt
@@ -29,7 +29,7 @@ def compute_rmse(y_pred, y_true):
 def VAR_results(data, p):
     start = time.clock()
     model = VAR(data[..., :-1].T)
-    results = model.fit()
+    results = model.fit(p)
 
     A = results.coefs
     end = time.clock()
@@ -69,16 +69,18 @@ def ARIMA_results(data, p, d, q):
 np.random.seed(0)
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
-X = X.to_numpy()
-X = X.T
+X, A1, A2 = get_matrix_coeff_data(sample_size=500, n_rows=3, n_columns=3)
+# X, A1, A2 = book_data(sample_size=200)
+# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
+# X = X.to_numpy()
+# X = X.T
 
 var_A, var_duration, var_rmse, var_nrmse = VAR_results(data=X, p=2)
-pred, arima_duration, arima_rmse, arima_nrmse, arima_A = ARIMA_results(data=X, p=2, d=0, q=0)
+# pred, arima_duration, arima_rmse, arima_nrmse, arima_A = ARIMA_results(data=X, p=2, d=0, q=0)
 
-print("RMSE AR: ", arima_rmse)
-print("NRMSE AR: ", arima_nrmse)
-print("Duration AR: ", arima_duration)
+# print("RMSE AR: ", arima_rmse)
+# print("NRMSE AR: ", arima_nrmse)
+# print("Duration AR: ", arima_duration)
 print("RMSE VAR: ", var_rmse)
 print("NRMSE VAR: ", var_nrmse)
 print("Duration VAR: ", var_duration)

@@ -4,7 +4,7 @@
 ##                                                   ##
 #######################################################
 
-from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results
+from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results, book_data
 from functions.BHT_AR_functions import train, predict
 import numpy as np
 import pandas as pd
@@ -18,7 +18,8 @@ import time
 np.random.seed(0)
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-X = get_matrix_coeff_data(sample_size=41, n_rows=5, n_columns=5)
+X, _, _ = get_matrix_coeff_data(sample_size=41, n_rows=5, n_columns=5)
+# X, _, _ = book_data(sample_size=501)
 # X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 # X = X.to_numpy()
 # X = X.T
@@ -32,20 +33,20 @@ X = get_matrix_coeff_data(sample_size=41, n_rows=5, n_columns=5)
 '''~~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_AR
-parameters = {'R1':25,
-              'R2':3,
+parameters = {'R1':15,
+              'R2':4,
               'p': 2,
               'r': 5, #8,
               'lam': 1, #5,
-              'max_epoch': 10,
+              'max_epoch': 15,
               'threshold': 0.000001}
 
-start = time.clock()
+#start = time.clock()
 Us, convergences, changes, A, prediction = train(data = X,
                                                   par = parameters,
                                                   mod = "AR")
-end = time.clock()
-duration_AR = end - start
+#end = time.clock()
+#duration_AR = end - start
 
 print("BHT_AR\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
 
@@ -53,8 +54,8 @@ print("BHT_AR\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", paramete
 rmse_AR = changes[:,0]
 nrmse_AR = changes[:,1]
 print("Validation RMSE_AR: ", min(rmse_AR))
-print("Validation NRMSE_AR: ", min(nrmse_AR))
-print("Validation duration_AR: ", duration_AR)
+print("Validation NRMSE_AR: ", nrmse_AR[-1])#min(nrmse_AR))
+#print("Validation duration_AR: ", duration_AR)
 
 # plot_results(convergences, 'BHT_AR Convergence', "Convergence Value")
 # plot_results(changes[:,0], 'BHT_AR RMSE', "RMSE Value")

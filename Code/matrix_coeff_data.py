@@ -51,9 +51,9 @@ def matrix_coeff_data(order, sample_size, n_rows, n_columns):
     X = X_total[..., (total-sample_size):]
     X_vectorized = np.reshape(X, (n_rows*n_columns, X.shape[-1]))
     
-    plt.figure(figsize = (12,5))
+    #plt.figure(figsize = (12,5))
     X_vectorized = X_vectorized[:5, :]
-    plt.plot(X_vectorized.T)
+    #plt.plot(X_vectorized.T)
     return X
 
 

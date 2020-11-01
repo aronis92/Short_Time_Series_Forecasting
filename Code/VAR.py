@@ -4,7 +4,7 @@
 ##                                                    ##
 ########################################################
 
-from functions.utils import create_synthetic_data, create_synthetic_data2, plot_results
+from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results
 from functions.BHT_AR_functions import train, predict
 import numpy as np
 import pandas as pd
@@ -18,9 +18,10 @@ import time
 np.random.seed(0)
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
-X = X.to_numpy()
-X = X.T
+X = get_matrix_coeff_data(sample_size=41, n_rows=5, n_columns=5)
+# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
+# X = X.to_numpy()
+# X = X.T
 # X2 = X[:, -41:]
 # X_test = X2[:, -1:]
 # X2 = X2[:, :-1]
@@ -31,11 +32,11 @@ X = X.T
 '''~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_VAR
-parameters = {'R1':5,
-              'R2':2,
+parameters = {'R1':10,
+              'R2':5,
               'p': 2,
-              'r': 2,
-              'lam': 0.01, #2.1 for VAR
+              'r': 5,
+              'lam': 1, #2.1 for VAR
               'max_epoch': 15,
               'threshold': 0.000001}
 
@@ -56,9 +57,9 @@ print("RMSE_VAR: ", min(rmse_VAR))
 print("NRMSE_VAR: ", min(nrmse_VAR))
 print("Validation duration_VAR: ", duration_VAR)
 
-# plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")
-# plot_results(changes[:,0], 'BHT_VAR RMSE', "RMSE Value")
-# plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")
+plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")
+#plot_results(changes[:,0], 'BHT_VAR RMSE', "RMSE Value")
+plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")
 
 # Test
 # rmse_VAR, nrmse_VAR = predict("VAR", Us, A, parameters, X, X_test)

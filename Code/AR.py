@@ -4,7 +4,7 @@
 ##                                                   ##
 #######################################################
 
-from functions.utils import create_synthetic_data, create_synthetic_data2, plot_results
+from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results
 from functions.BHT_AR_functions import train, predict
 import numpy as np
 import pandas as pd
@@ -18,9 +18,10 @@ import time
 np.random.seed(0)
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
-X = X.to_numpy()
-X = X.T
+X = get_matrix_coeff_data(sample_size=41, n_rows=5, n_columns=5)
+# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
+# X = X.to_numpy()
+# X = X.T
 # X2 = X[:, -41:]
 # X_test = X2[:, -1:]
 # X2 = X2[:, :-1]
@@ -31,12 +32,12 @@ X = X.T
 '''~~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_AR
-parameters = {'R1':3,
-              'R2':2,
+parameters = {'R1':25,
+              'R2':3,
               'p': 2,
-              'r': 2, #8,
-              'lam': 2, #5,
-              'max_epoch': 15,
+              'r': 5, #8,
+              'lam': 1, #5,
+              'max_epoch': 10,
               'threshold': 0.000001}
 
 start = time.clock()
@@ -52,12 +53,12 @@ print("BHT_AR\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", paramete
 rmse_AR = changes[:,0]
 nrmse_AR = changes[:,1]
 print("Validation RMSE_AR: ", min(rmse_AR))
-print("Validation  RMSE_AR: ", min(nrmse_AR))
+print("Validation NRMSE_AR: ", min(nrmse_AR))
 print("Validation duration_AR: ", duration_AR)
 
 # plot_results(convergences, 'BHT_AR Convergence', "Convergence Value")
 # plot_results(changes[:,0], 'BHT_AR RMSE', "RMSE Value")
-# plot_results(changes[:,1], 'BHT_AR ΝRMSE', "NRMSE Value")
+plot_results(changes[:,1], 'BHT_AR ΝRMSE', "NRMSE Value")
 
 # Test
 # rmse_AR, nrmse_AR = predict("AR", Us, A, parameters, X, X_test)

@@ -13,7 +13,7 @@ import scipy as sp
 #   data: the data to calculate the autocorrelation from
 #   p: lag value
 # Returns:
-#   autocorrelations in the form of a list r
+#   r: autocorrelations as a list
 def autocorrelation(data, p):
     T = data.shape[-1]
     r = []
@@ -26,12 +26,12 @@ def autocorrelation(data, p):
     return r
 
 
-# The function that calculates and returns the AR coefficients
+# The function that calculates and returns the AR scalar coefficients
 # Input:
 #   data: the data to calculate the autocorrelation from
 #   p: lag value
 # Returns:
-#   AR coefficients as a list
+#   A: autoregression scalar coefficients as a list
 def fit_ar(data, p):
     r = autocorrelation(data, p)
     R = sp.linalg.toeplitz(r[:p])
@@ -40,7 +40,12 @@ def fit_ar(data, p):
     return A
 
 
-
+# The function that calculates and returns the AR matrix coefficients
+# Input:
+#   data: the data to calculate the autocorrelation from
+#   p: lag value
+# Returns:
+#   A: autoregression matrix coefficients as a list
 def estimate_matrix_coefficients(data, p):
     k = data.shape[0]
     T = data.shape[1]
@@ -59,6 +64,7 @@ def estimate_matrix_coefficients(data, p):
         A.append(B[:, (k*i+1):(k*i+1+k)])
     
     return A
+
 
 # def fit_ar_ma(data, p, q):
 #     N = data.shape[-1]

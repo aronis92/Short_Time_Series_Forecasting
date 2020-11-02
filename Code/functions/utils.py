@@ -34,6 +34,9 @@ def plot_results(data, title, ytitle):
 # Creates a sample based on the coefficients of the book tsa4
 # Input:
 #   sample_size: The number of observations to generate
+# Return:
+#   X: The data as a numpy array
+#   A1, A2: The matrix coefficients as numpy arrays
 def book_data(sample_size):
     np.random.seed(69)
     A1 = np.array([[.3, -.2, .04],
@@ -57,8 +60,11 @@ def book_data(sample_size):
 # Creates a sample based on the coefficients of the book tsa4
 # Input:
 #   sample_size: The number of observations to generate   
-#   n_rows:
-#   n_columns:
+#   n_rows: number of rows of the data matrix
+#   n_columns: number of columns of the data matrix
+# Return:
+#   X: The data as a numpy array
+#   A1, A2: The matrix coefficients as numpy arrays
 def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     np.random.seed(42)
     seed(42)
@@ -154,66 +160,6 @@ def get_ranks(tensor):
         ranks.append( np.linalg.matrix_rank(temp) )
     return np.array(ranks)
 
-
-# def create_synthetic_data2(p, dim, n_samples):
-#     X = np.random.random_sample((dim, p))
-#     A = np.array([0.6, 0.25]).reshape((p, 1))
-#     for t in range(n_samples):
-#         x_t = A[0]*X[..., -1] + A[1]*X[..., -2] + np.random.random_sample((dim,))/2
-#         X = np.hstack((X, x_t.reshape(dim,1)))
-#     return X
-
-# plt.figure(figsize=(12,5))
-# plt.plot(X.T)
-
-
-# import matplotlib.pyplot as plt
-# import random
-
-# X = create_synthetic_data(p=2, dim=5, n_samples=30)
-# plt.figure(figsize=(12,5))
-# plt.plot(X.T)
-
-# def create_synthetic_data_old(p, dim, n_samples, mu, sigma):
-#     X = np.random.random_sample((dim, p))
-#     A = np.array([-0.3563476, 0.6591154]).reshape((p, 1))
-#     for t in range(n_samples):
-#         x_t = A[0]*X[..., -1] + A[1]*X[..., -2] + np.random.random_sample((dim,))*3 #np.dot(X[:, t:(t + p)], A) 
-#         X = np.hstack((X, x_t.reshape(dim,1)))
-#     return X, A
-
-# X, A = create_synthetic_data_old(p=2, dim=5, n_samples=30, mu=0, sigma=1)
-# plt.figure(figsize=(12,5))
-# plt.plot(X.T)
-
-# def my_data(p, dim, n_samples):
-#     A = np.array([0.1, 0.9]).reshape((p, 1))
-#     X = np.random.random_sample((dim, p))
-#     noise = np.random.random_sample((dim, n_samples))
-#     for t in range(n_samples):
-#         x_t = np.dot(X[:, t:(t + p)], A) + noise[:, t] # A[0]*X[..., -1] + A[1]*X[..., -2] 
-#         X = np.hstack((X, x_t))
-#     return X[..., -n_samples:]
-
-# X = my_data(p=2, dim=5, n_samples=30)
-# plt.figure(figsize=(12,5))
-# plt.plot(X.T)
-
-# def my_data2(p, dim, n_samples):
-#     X_final = np.zeros((dim, n_samples))
-#     A = np.array([-0.2, 0.8]).reshape((p, 1))
-#     for d in range(dim):
-#         X = np.random.random_sample((1, p)) + np.random.randint(5, size=(1, p)) + 2
-#         noise = np.random.random_sample((1, n_samples))
-#         for t in range(n_samples):
-#             x_t = np.dot(X[:, t:(t + p)], A) + noise[:, t]
-#             X = np.hstack((X, x_t))
-#         X_final[d, ...] = X[..., -n_samples:]
-#     return X_final
-
-# X = my_data2(p=2, dim=5, n_samples=30)
-# plt.figure(figsize=(12,5))
-# plt.plot(X.T)
 
 
 

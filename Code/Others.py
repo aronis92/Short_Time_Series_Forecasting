@@ -5,7 +5,7 @@
 ##                                             ##
 #################################################
 
-from functions.utils import compute_nrmse#, compute_rmse
+from functions.utils import compute_nrmse, compute_rmse
 from functions.utils import get_matrix_coeff_data, create_synthetic_data2, book_data
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
@@ -15,17 +15,16 @@ import numpy as np
 import time
 
 
-def compute_rmse(y_pred, y_true):
-    rmse = np.sqrt( np.linalg.norm(y_pred - y_true)**2 / np.size(y_true) )
-    return rmse
-
-# The function that creates and returns the simulation data
+# The function that calculates and returns the 
+# results of vector AR with matrix coefficients
 # Input:
+#   data: The data matrix
 #   p: AR model order
-#   dim: dimensionality of data
-#   n_samples: number of samples to create
 # Returns:
-#   data: A numpy matrix
+#   A: The coefficient matrices as a list
+#   duration: The total time of training
+#   rmse: The RMSE for the predicted value
+#   nrmse: The NRMSE for the predicted value
 def VAR_results(data, p):
     start = time.clock()
     model = VAR(data[..., :-1].T)
@@ -41,28 +40,34 @@ def VAR_results(data, p):
     return A, duration, rmse, nrmse
 
 
-# The function that creates and returns the simulation data
+# The function that calculates and returns the 
+# results of vector AR with scalar coefficients
 # Input:
+#   data: The data matrix
 #   p: AR model order
-#   dim: dimensionality of data
-#   n_samples: number of samples to create
 # Returns:
-#   data: A numpy matrix
+#   A: The coefficients as a list
+#   duration: The total time of training
+#   rmse: The RMSE for the predicted value
+#   nrmse: The NRMSE for the predicted value
 def ARIMA_results(data, p, d, q):
     prediction = np.zeros([1, data.shape[0]])
     start = time.clock()
     alpha = 0
     for i in range(data.shape[0]):
         model = ARIMA(data[i, :-1].T, order=(p, d, q))
-        res = model.fit()
-        prediction[0, i] = res.forecast()
-        alpha += res.polynomial_ar
+        results = model.fit()
+        prediction[0, i] = results.forecast()
+        alpha += results.polynomial_ar
     end = time.clock()
 
     duration = end - start
     rmse = compute_rmse(prediction, data[..., -1])
     nrmse = compute_nrmse(prediction, data[..., -1])
-    return prediction.T, duration, rmse, nrmse, -alpha[1:]/data.shape[0] #res.polynomial_ar
+    print(data.shape[0])
+    print(-alpha[1:])
+    A = -alpha[1:]/data.shape[0]
+    return A, duration, rmse, nrmse
 
 
 # Create/Load Dataset
@@ -75,15 +80,18 @@ X, A1, A2 = book_data(sample_size=1001)
 # X = X.to_numpy()
 # X = X.T
 
-var_A, var_duration, var_rmse, var_nrmse = VAR_results(data=X, p=2)
-pred, arima_duration, arima_rmse, arima_nrmse, arima_A = ARIMA_results(data=X, p=2, d=0, q=0)
+#var_A, var_duration, var_rmse, var_nrmse = VAR_results(data=X, p=2)
+arima_A, arima_duration, arima_rmse, arima_nrmse,  = ARIMA_results(data=X, p=2, d=0, q=0)
 
 # print("RMSE AR: ", arima_rmse)
 print("NRMSE AR: ", arima_nrmse)
 # print("Duration AR: ", arima_duration)
 # print("RMSE VAR: ", var_rmse)
-print("NRMSE VAR: ", var_nrmse)
+#print("NRMSE VAR: ", var_nrmse)
 # print("Duration VAR: ", var_duration)
+
+
+
 
 
 # from test2 import estimate_matrix_coefficients
@@ -95,10 +103,6 @@ print("NRMSE VAR: ", var_nrmse)
 
 # import scipy as sp
 # import copy
-
-# X = np.load('input/traffic_40.npy').T
-# X = my_data2(p = 2, dim = 5, n_samples = 100)
-# alpha_AR = fit_ar(X, p=2)
 
 # del arima_duration, arima_rmse, arima_nrmse
 # model = VARMAX(X[..., :-1], order = (2, 0), enforce_stationarity=False) # 

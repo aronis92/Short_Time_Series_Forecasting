@@ -13,7 +13,7 @@ import tensorly as tl
 import numpy as np
 
 
-# The function that plots the results
+# Plots the results
 # Input:
 #   data: The data to plot
 #   title: The title of the graph
@@ -31,7 +31,9 @@ def plot_results(data, title, ytitle):
     plt.plot(epoch, data)
 
 
-
+# Creates a sample based on the coefficients of the book tsa4
+# Input:
+#   sample_size: The number of observations to generate
 def book_data(sample_size):
     np.random.seed(69)
     A1 = np.array([[.3, -.2, .04],
@@ -42,7 +44,7 @@ def book_data(sample_size):
                     [-.04, .36, -.1],
                     [-.33, .05, .38]])
     #print(la.norm(A_2, 'fro'))
-    total = 2000
+    total = sample_size + 2000
     
     X_total = np.zeros((3, total))
     X_total[..., 0:2] = np.random.rand(3,2)
@@ -51,11 +53,12 @@ def book_data(sample_size):
         
     return X_total[..., (total-sample_size):], A1, A2
 
-# X = book_data(100)
-# plt.figure(figsize = (16,5))
-# #X_vectorized = X_vectorized[5, :]
-# plt.plot(X.T)
-    
+
+# Creates a sample based on the coefficients of the book tsa4
+# Input:
+#   sample_size: The number of observations to generate   
+#   n_rows:
+#   n_columns:
 def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     np.random.seed(42)
     seed(42)

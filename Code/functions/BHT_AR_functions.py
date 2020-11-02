@@ -5,7 +5,7 @@
 ####################################################
 
 from functions.utils import compute_rmse, compute_nrmse, get_ranks
-from functions.AR_functions import fit_ar
+from functions.AR_functions import fit_ar, estimate_matrix_coefficients
 from functions.MDT_functions import MDT
 from statsmodels.tsa.api import VAR
 #import statsmodels
@@ -148,11 +148,11 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
     p = par['p']
     # Estimate the core tensor with the given Us.
     G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
+    
     if mod == "AR":
-        #A = model(G, par['p'])
         A = fit_ar(G, par['p'])
+        
     elif mod == "VAR":
-        # A = model(G, par['p'])
         G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
         model = VAR(G2.T)
         results = model.fit(par['p'])
@@ -160,12 +160,25 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
         A = []
         for i in range(A2.shape[0]):
             A.append(A2[i, ...])
+    
+    elif mod == "myVAR":
+        G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
+        A = estimate_matrix_coefficients(G2, par['p'])
          
     # Predict the core
     G_pred = 0
     if mod == "AR":
         for i in range(p):
             G_pred += A[i] * G[..., -(i + 1)]
+        X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
+    
+    elif mod == "myVAR":
+        G_pred = A[0]
+        for i in range(p):
+            tmp1 = G[..., -(i + 1)].flatten()
+            G_pred += np.dot(A[i + 1], tmp1)
+        G_pred = G_pred.reshape(G.shape[0], G.shape[1])
+        
     elif mod == "VAR":
         for i in range(p):
             tmp1 = G[..., -(i + 1)].flatten()
@@ -174,13 +187,12 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
             tmp3 = tmp2.reshape(G.shape[0], G.shape[1])
             G_pred += tmp3
     
-    
     X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
 
     dim_list = list(X_pred.shape)
     dim_list.append(1)
     X_hat = np.append(X_hat, X_pred.reshape( tuple(dim_list) ), axis = -1)
-    # Reverse differencing should happen here
+
     pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat[..., 1:], 0), S_pinv, -1)
     pred_value = pred_mat[:, -1]
     return pred_value, A
@@ -206,8 +218,9 @@ def train(data, par, mod):
     X_train = data[..., :-1]
     X_test = data[..., -1]
     X_hat, S_pinv = MDT(X_train, par['r'])
+    #print("X_hat shape: ", X_hat.shape)
     Rs = get_ranks(X_hat)
-    print(Rs)
+    print("Tucker Ranks: ", Rs)
     # print(X_hat.shape)
     # Rs = np.array([40, 2])
     Rs = np.array([par['R1'], par['R2']])
@@ -224,9 +237,12 @@ def train(data, par, mod):
         if mod == "AR":
             A = fit_ar(G, par['p'])
             
-        elif mod == "VAR":
-            # A = fit_mar(Gd, par['p'])
+        elif mod == "myVAR":
+            G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
+            A = estimate_matrix_coefficients(G2, par['p'])
+            A = A[1:]
             
+        elif mod == "VAR":           
             G2 = G.reshape((G.shape[0]*G.shape[1], G.shape[2]))
             model = VAR(G2.T)
             results = model.fit(par['p'])
@@ -240,6 +256,7 @@ def train(data, par, mod):
             G = update_cores(m, par['p'], A, Us, X_hat, G, par['lam'], mod)
             # Step 13 - Update U[m]
             Us[m] = update_Um(m, par['p'], X_hat, G, Us)
+        
         # print(Us[1])
         conv = compute_convergence(Us, old_Us)
         # print(conv)
@@ -271,6 +288,7 @@ def predict(mod, Us, A, par, X, X_test):
     if mod == "AR":
         for i in range(p):
             G_pred += A[i] * G[..., -(i + 1)]
+            
     elif mod == "VAR":
         for i in range(p):
             tmp1 = G[..., -(i + 1)].flatten()
@@ -278,6 +296,17 @@ def predict(mod, Us, A, par, X, X_test):
             tmp2 = np.dot(A[i], tmp1)
             tmp3 = tmp2.reshape(G.shape[0], G.shape[1])
             G_pred += tmp3
+            
+    elif mod == "myVAR":
+        G_pred = A[0]
+        print("G_pred shape 1: ", G_pred.shape)
+        for i in range(p):
+            tmp1 = G[..., -(i + 1)].flatten()
+            #tmp1 = tmp1.reshape(tmp1.shape[0], 1)
+            print("tmp 1 shape: ", tmp1.shape)
+            G_pred += np.dot(A[i + 1], tmp1)
+            #print("tmp 2 shape: ", tmp2.shape)
+            G_pred = G_pred.reshape(G.shape[0], G.shape[1])
     
     X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
             

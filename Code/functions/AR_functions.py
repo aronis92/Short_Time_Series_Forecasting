@@ -41,6 +41,25 @@ def fit_ar(data, p):
 
 
 
+def estimate_matrix_coefficients(data, p):
+    k = data.shape[0]
+    T = data.shape[1]
+    Y = data[:, p:]
+    Z = np.zeros((k*p+1, T-p))
+    Z[0,:] = 1
+    
+    for i in range(1, p+1):
+        Z[(k*(i-1)+1):(k*i+1), :] = data[:, (p-i):(-i)]
+        
+    B = np.linalg.multi_dot([Y, Z.T, np.linalg.inv(np.dot(Z, Z.T))])
+
+    c = B[:, 0]
+    A = [c]
+    for i in range(p):
+        A.append(B[:, (k*i+1):(k*i+1+k)])
+    
+    return A
+
 # def fit_ar_ma(data, p, q):
 #     N = data.shape[-1]
 #     A = fit_ar(data, p)

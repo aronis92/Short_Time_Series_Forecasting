@@ -5,7 +5,7 @@
 ########################################################
 
 from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results, book_data
-from functions.BHT_AR_functions import train, predict
+from functions.BHT_AR_functions_test import BHTAR, predict
 import numpy as np
 import pandas as pd
 import time
@@ -39,11 +39,13 @@ parameters = {'R1':5,
               'r': 5,
               'lam': 1, #2.1 for VAR
               'max_epoch': 15,
-              'threshold': 0.000001}
+              'threshold': 0.000001,
+              'n_val': 1,
+              'n_test': 1}
 
 
 #start = time.clock()
-Us, convergences, changes, A, prediction = train(data = X,
+Us, convergences, changes, A, prediction = BHTAR(data = X,
                                                  par = parameters,
                                                  mod = "VAR")
 #end = time.clock()

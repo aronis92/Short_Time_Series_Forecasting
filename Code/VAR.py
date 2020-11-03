@@ -5,7 +5,7 @@
 ########################################################
 
 from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results, book_data
-from functions.BHT_AR_functions_test import BHTAR, predict
+from functions.BHT_AR_functions_test import BHTAR
 import numpy as np
 import pandas as pd
 import time
@@ -18,7 +18,7 @@ import time
 np.random.seed(0)
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-X, _, _ = get_matrix_coeff_data(sample_size=201, n_rows=3, n_columns=3)
+X, _, _ = get_matrix_coeff_data(sample_size=201, n_rows=6, n_columns=5)
 # X, _, _ = book_data(sample_size=1001)
 # X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 # X = X.to_numpy()
@@ -28,9 +28,9 @@ X, _, _ = get_matrix_coeff_data(sample_size=201, n_rows=3, n_columns=3)
 # X2 = X2[:, :-1]
 
 
-'''~~~~~~~~~~~~~~~~~~~'''
-'''      BHT_VAR      '''
-'''~~~~~~~~~~~~~~~~~~~'''
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+'''      BHT_AR_Matrix_Coefficients      '''
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_VAR
 parameters = {'R1':5,
@@ -40,12 +40,12 @@ parameters = {'R1':5,
               'lam': 1, #2.1 for VAR
               'max_epoch': 15,
               'threshold': 0.000001,
-              'n_val': 1,
-              'n_test': 1}
+              'n_val': 2,
+              'n_test': 3}
 
 
 #start = time.clock()
-Us, convergences, changes, A, prediction = BHTAR(data = X,
+convergences, changes, A, prediction, Us = BHTAR(data = X,
                                                  par = parameters,
                                                  mod = "VAR")
 #end = time.clock()
@@ -56,8 +56,8 @@ print("\nBHT_VAR\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", param
 # Validation
 rmse_VAR = changes[:,0]
 nrmse_VAR = changes[:,1]
-#print("RMSE_VAR: ", min(rmse_VAR))
-print("NRMSE_VAR: ", nrmse_VAR[-1])#min(nrmse_VAR))
+#print("Validation RMSE_VAR: ", min(rmse_VAR))
+print("Validation NRMSE_VAR: ", nrmse_VAR[-1])#min(nrmse_VAR))
 #print("Validation duration_VAR: ", duration_VAR)
 
 #plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")

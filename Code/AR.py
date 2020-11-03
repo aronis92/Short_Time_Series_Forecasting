@@ -18,7 +18,7 @@ import time
 np.random.seed(0)
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-X, _, _ = get_matrix_coeff_data(sample_size=201, n_rows=3, n_columns=3)
+X, _, _ = get_matrix_coeff_data(sample_size=201, n_rows=6, n_columns=5)
 # X, _, _ = book_data(sample_size=1001)
 # X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 # X = X.to_numpy()
@@ -28,9 +28,9 @@ X, _, _ = get_matrix_coeff_data(sample_size=201, n_rows=3, n_columns=3)
 # X2 = X2[:, :-1]
 # X = X[:, :41]
 
-'''~~~~~~~~~~~~~~~~~~~~'''
-'''       BHT_AR       '''
-'''~~~~~~~~~~~~~~~~~~~~'''
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+'''       BHT_AR_Scalar_Coefficients       '''
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 # Set the parameters for BHT_AR
 parameters = {'R1':5,
@@ -40,13 +40,13 @@ parameters = {'R1':5,
               'lam': 1, #5,
               'max_epoch': 15,
               'threshold': 0.000001,
-              'n_val': 1,
-              'n_test': 1}
+              'n_val': 2,
+              'n_test': 3}
 
 #start = time.clock()
-Us, convergences, changes, A, prediction = BHTAR(data = X,
-                                                  par = parameters,
-                                                  mod = "AR")
+convergences, changes, A, prediction, Us = BHTAR(data = X,
+                                                 par = parameters,
+                                                 mod = "AR")
 #end = time.clock()
 #duration_AR = end - start
 

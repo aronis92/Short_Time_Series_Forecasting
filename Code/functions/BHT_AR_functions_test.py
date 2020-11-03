@@ -21,8 +21,8 @@ import copy
 # Returns:
 #   Us: List containing each U matrix
 def initialize_Us(tensor, ranks):
-    Us = [] # Empty list that will contain the Us Matrices.
-    # Exclude the Time dimension since it is the only dimension not decomposed.
+    Us = []
+    # Exclude the Time dimension (-1) since it is the only dimension not decomposed.
     for i in range(len(tensor.shape) - 1):
         # Generate a random array with shape (tensor_size_on_dim_i, rank_on_dim_i)
         Us.append( np.random.rand(tensor.shape[i], ranks[i]) ) 
@@ -69,6 +69,7 @@ def update_cores(m, p, A, Us, X, G, lam, mod):
             v3 = outer.T
             summary = lam * np.linalg.multi_dot( [v1, v2, v3] )
             
+            # Diorthwsh auto me to fold gia na pianei kai to case n_col = n_row
             if summary.shape != G[..., 0].shape:
                 summary = summary.T
             
@@ -229,8 +230,11 @@ def BHTAR(data, par, mod):
     convergences = list([])
     metrics = list([])
     
-    X_train = data[..., :-par['n_val']]
-    X_test = data[..., -par['n_val']]
+    n_train = data.shape[-1] - par['n_val'] - par['n_test']
+    
+    X_train = data[..., :n_train]
+    X_val = data[..., n_train:(n_train + par['n_val'])]
+    #X_test = data[..., (n_train + par['n_val']):]
     
     # Apply Hankelization
     X_hat, S_pinv = MDT(X_train, par['r']) 
@@ -257,9 +261,7 @@ def BHTAR(data, par, mod):
             # Step 13 - Update U[m]
             Us[m] = update_Um(m, par['p'], X_hat, G, Us)
         
-        # print(Us[1])
         conv = compute_convergence(Us, old_Us)
-        # print(conv)
         convergences.append(conv)
         epoch += 1
         
@@ -270,32 +272,54 @@ def BHTAR(data, par, mod):
         A = fit_model(G, par['p'], mod)
         
         # Forecast the next cores
-        G_pred = forecast(G, par['p'], A, mod, 2)
+        G_pred = forecast(G, par['p'], A, mod, par['n_val'])
         
         
-        X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
+        dim_list = [u.shape[0] for u in Us]
+        dim_list.append(len(G_pred))
+        X_pred = np.zeros(tuple(dim_list))
+        for i in range(len(G_pred)):
+            X_pred[..., i] = tl.tenalg.multi_mode_dot(G_pred[i], Us)
 
-        dim_list = list(X_pred.shape)
-        dim_list.append(1)
-        X_hat_temp = np.append(X_hat, X_pred.reshape( tuple(dim_list) ), axis = -1)
-    
-        pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat_temp[..., 1:], 0), S_pinv, -1)
-        prediction = pred_mat[:, -1]
-
-        rmse = compute_rmse(prediction, X_test)
-        nrmse = compute_nrmse(prediction, X_test)
+        X_hat_temp = np.append(X_hat, X_pred, axis = -1)
+        # allagh to X_pred.shape[-1] me par['val']
+        pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat_temp[..., X_pred.shape[-1]:], 0), S_pinv, -1)
+        prediction = pred_mat[..., -X_pred.shape[-1]:]
+        
+        
+        
+        rmse = compute_rmse(prediction, X_val)
+        nrmse = compute_nrmse(prediction, X_val)
         metrics.append([rmse, nrmse])
         
-    return Us, np.array(convergences), np.array(metrics), A, prediction
+    return np.array(convergences), np.array(metrics), A, prediction, Us
 
 
+def BHTAR_test(data, A, Us, par, mod):
+    X_test = data[..., -par['n_test']:]
+    metrics = list([])
+    X_hat, S_pinv = MDT(data[..., :par['p']], par['r'])
+    
+    G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
 
+    G_pred = forecast(G, par['p'], A, mod, par['n_test'])
 
+    dim_list = [u.shape[0] for u in Us]
+    dim_list.append(len(G_pred))
+    X_pred = np.zeros(tuple(dim_list))
+    for i in range(len(G_pred)):
+        X_pred[..., i] = tl.tenalg.multi_mode_dot(G_pred[i], Us)
 
-
-
-
-
+    X_hat_temp = np.append(X_hat, X_pred, axis = -1)
+    # allagh to X_pred.shape[-1] me par['val']
+    pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat_temp[..., X_pred.shape[-1]:], 0), S_pinv, -1)
+    prediction = pred_mat[..., -X_pred.shape[-1]:]
+      
+    rmse = compute_rmse(prediction, X_test)
+    nrmse = compute_nrmse(prediction, X_test)
+    metrics.append([rmse, nrmse])
+    
+    return np.array(metrics)
 
 # The function that trains the AR model and returns the next step prediction and the coefficients of the model.
 # Input:
@@ -344,8 +368,7 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
 
     pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat[..., 1:], 0), S_pinv, -1)
     pred_value = pred_mat[:, -1]
-    return G_pred, A
-    #return pred_value, A
+    return pred_value, A
 
 
 

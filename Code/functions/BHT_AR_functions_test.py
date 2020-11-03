@@ -163,6 +163,38 @@ def fit_model(data, p, mod):
 
 
 
+# The function that implements and trains the whole algorithm.
+# Input:
+#   data: The loaded dataset
+#   p: the order of the AR model
+#   A: The coefficients of the AR model
+#   mod: A string "AR" or "VAR" that selects the model to be used
+# Returns:
+#   prediction: The predicted values of the next step
+def forecast(data, p, A, mod):
+    
+    prediction = 0
+    
+    if mod == "AR":
+        for i in range(p):
+            prediction += A[i] * data[..., -(i + 1)]
+    
+    elif mod == "myVAR":
+        prediction = A[0]
+        for i in range(p):
+            tmp1 = data[..., -(i + 1)].flatten()
+            prediction += np.dot(A[i + 1], tmp1)
+        prediction = prediction.reshape(data.shape[0], data.shape[1])
+        
+    elif mod == "VAR":
+        for i in range(p):
+            tmp1 = data[..., -(i + 1)].flatten()
+            tmp1 = tmp1.reshape(tmp1.shape[0], 1)
+            tmp2 = np.dot(A[i], tmp1)
+            tmp3 = tmp2.reshape(data.shape[0], data.shape[1])
+            prediction += tmp3
+    
+    return prediction
 
 
 
@@ -190,14 +222,10 @@ def BHTAR(data, par, mod):
     
     # Apply Hankelization
     X_hat, S_pinv = MDT(X_train, par['r']) 
-    #print("X_hat shape: ", X_hat.shape)
     
     Rs = get_ranks(X_hat)
     print("Tucker Ranks: ", Rs)
-    # print(X_hat.shape)
-    # Rs = np.array([40, 2])
     Rs = np.array([par['R1'], par['R2']])
-    # Rs = np.array([40, 5])
     
     # Us Initialization
     Us = initialize_Us(X_hat, Rs) 
@@ -222,15 +250,17 @@ def BHTAR(data, par, mod):
         # print(conv)
         convergences.append(conv)
         epoch += 1
-
         
-        #G_pred_old, A_old = train_predict(X_hat, Us, S_pinv, par, mod)
-        
+        # Re-calculate the core tensor using the updated U matrices
         G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
+        
+        # Estimate the coefficients for the new core tensor
         A = fit_model(G, par['p'], mod)
+        
+        # Forecast the next cores
         G_pred = forecast(G, par['p'], A, mod)
         
-
+        
         X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
 
         dim_list = list(X_pred.shape)
@@ -239,7 +269,6 @@ def BHTAR(data, par, mod):
     
         pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat_temp[..., 1:], 0), S_pinv, -1)
         prediction = pred_mat[:, -1]
-        # print(prediction[:5])
 
         rmse = compute_rmse(prediction, X_test)
         nrmse = compute_nrmse(prediction, X_test)
@@ -249,30 +278,10 @@ def BHTAR(data, par, mod):
 
 
 
-def forecast(data, p, A, mod):
-    
-    prediction = 0
-    
-    if mod == "AR":
-        for i in range(p):
-            prediction += A[i] * data[..., -(i + 1)]
-    
-    elif mod == "myVAR":
-        prediction = A[0]
-        for i in range(p):
-            tmp1 = data[..., -(i + 1)].flatten()
-            prediction += np.dot(A[i + 1], tmp1)
-        prediction = prediction.reshape(data.shape[0], data.shape[1])
-        
-    elif mod == "VAR":
-        for i in range(p):
-            tmp1 = data[..., -(i + 1)].flatten()
-            tmp1 = tmp1.reshape(tmp1.shape[0], 1)
-            tmp2 = np.dot(A[i], tmp1)
-            tmp3 = tmp2.reshape(data.shape[0], data.shape[1])
-            prediction += tmp3
-    
-    return prediction
+
+
+
+
 
 
 

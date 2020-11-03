@@ -57,7 +57,3 @@ def MDT(X, r):
     return mdt_data, S_pinv # np.linalg.pinv(S)
 
 
-# def get_S_pinv(r, T):
-#     S = get_duplication_matrix(r, T)
-#     S_pinv = np.dot( np.linalg.inv( np.dot(S.T, S) ), S.T )
-#     return S_pinv

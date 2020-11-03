@@ -171,30 +171,42 @@ def fit_model(data, p, mod):
 #   mod: A string "AR" or "VAR" that selects the model to be used
 # Returns:
 #   prediction: The predicted values of the next step
-def forecast(data, p, A, mod):
+def forecast(data, p, A, mod, n_forecast):
     
-    prediction = 0
+    predictions_list = list([])
     
-    if mod == "AR":
-        for i in range(p):
-            prediction += A[i] * data[..., -(i + 1)]
-    
-    elif mod == "myVAR":
-        prediction = A[0]
-        for i in range(p):
-            tmp1 = data[..., -(i + 1)].flatten()
-            prediction += np.dot(A[i + 1], tmp1)
-        prediction = prediction.reshape(data.shape[0], data.shape[1])
+    for j in range(n_forecast):
+        prediction = 0
         
-    elif mod == "VAR":
-        for i in range(p):
-            tmp1 = data[..., -(i + 1)].flatten()
-            tmp1 = tmp1.reshape(tmp1.shape[0], 1)
-            tmp2 = np.dot(A[i], tmp1)
-            tmp3 = tmp2.reshape(data.shape[0], data.shape[1])
-            prediction += tmp3
+        if mod == "AR":
+            for i in range(p):
+                prediction += A[i] * data[..., -(i + 1)]
+        
+        elif mod == "myVAR":
+            prediction = A[0]
+            for i in range(p):
+                tmp1 = data[..., -(i + 1)].flatten()
+                prediction += np.dot(A[i + 1], tmp1)
+            prediction = prediction.reshape(data.shape[0], data.shape[1])
+            
+        elif mod == "VAR":
+            for i in range(p):
+                #print("data shape: ", data[..., -(i + 1)].shape)
+                tmp1 = data[..., -(i + 1)].flatten()
+                #print("tmp1 shape: ", tmp1.shape)
+                tmp1 = tmp1.reshape(tmp1.shape[0], 1)
+                #print("tmp1 reshaped: ", tmp1.shape)
+                tmp2 = np.dot(A[i], tmp1)
+                tmp3 = tmp2.reshape(data.shape[0], data.shape[1])
+                prediction += tmp3
+        
+
+        dim_list = list(prediction.shape)
+        dim_list.append(1)
+        data = np.append(data, prediction.reshape(tuple(dim_list)), axis=-1)  
+        predictions_list.append(prediction)
     
-    return prediction
+    return predictions_list
 
 
 
@@ -258,7 +270,7 @@ def BHTAR(data, par, mod):
         A = fit_model(G, par['p'], mod)
         
         # Forecast the next cores
-        G_pred = forecast(G, par['p'], A, mod)
+        G_pred = forecast(G, par['p'], A, mod, 2)
         
         
         X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)

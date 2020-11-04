@@ -31,6 +31,7 @@ def plot_results(data, title, ytitle):
     plt.plot(epoch, data)
 
 
+
 # Creates a sample based on the coefficients of the book tsa4
 # Input:
 #   sample_size: The number of observations to generate
@@ -55,6 +56,7 @@ def book_data(sample_size):
         X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(3,)
         
     return X_total[..., (total-sample_size):], A1, A2
+
 
 
 # Creates a sample based on the coefficients of the book tsa4
@@ -87,6 +89,7 @@ def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     return X, A1, A2
 
 
+
 # The function that creates and returns the simulation data
 # Input:
 #   p: AR model order
@@ -107,6 +110,7 @@ def create_synthetic_data(p, dim, n_samples):
     return data
 
 
+
 # The function that creates and returns the simulation data
 # Input:
 #   p: AR model order
@@ -123,6 +127,7 @@ def create_synthetic_data2(p, dim, n_samples):
     return X[:, -n_samples:]
 
 
+
 # The function that computes and returns the rmse
 # Input:
 #   y_pred: predicted values
@@ -132,6 +137,7 @@ def create_synthetic_data2(p, dim, n_samples):
 def compute_rmse(y_pred, y_true):
     rmse = np.sqrt( np.linalg.norm(y_pred - y_true)**2 / np.size(y_true) )
     return rmse
+
 
 
 # The function that computes and returns the rmse
@@ -146,6 +152,7 @@ def compute_nrmse(y_pred, y_true):
     t2 = np.sum(abs(y_true)) / np.size(y_true)
     nrmse = t1 / t2
     return nrmse
+
 
 
 # The function that calculates and returns the ranks of each mode-d unfolding of a tensor.

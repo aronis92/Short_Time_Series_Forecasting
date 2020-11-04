@@ -292,14 +292,12 @@ def BHTAR(X_train, X_val, par, mod):
 
 
 def BHTAR_test(data, data_test, A, Us, par, mod):
-    
-    metrics = list([])
-    
+       
     X_hat, S_pinv = MDT(data, par['r'])
     
     G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
 
-    G_pred = forecast(G, par['p'], A, mod, par['n_test'])
+    G_pred = forecast(G, par['p'], A, mod, data_test.shape[-1])
 
     dim_list = [u.shape[0] for u in Us]
     dim_list.append(len(G_pred))
@@ -314,9 +312,9 @@ def BHTAR_test(data, data_test, A, Us, par, mod):
       
     rmse = compute_rmse(prediction, data_test)
     nrmse = compute_nrmse(prediction, data_test)
-    metrics.append([rmse, nrmse])
     
-    return np.array(metrics)
+    
+    return rmse, nrmse
 
 
 

@@ -16,7 +16,7 @@ import time
 
 '''Create/Load Dataset'''
 np.random.seed(0)
-n_train = 500
+n_train = 100
 n_val = 2
 n_test = 5
 n_total = n_train + n_val + n_test
@@ -59,7 +59,12 @@ convergences, changes, A, prediction, Us = BHTAR(X_train = data_train,
 #duration_VAR = end - start
 
 
-test_metrics = BHTAR_test(np.append(data_train, data_val, axis=-1), data_test, A, Us, parameters, mod="VAR")
+test_rmse, test_nrmse = BHTAR_test(np.append(data_train, data_val, axis=-1),
+                                   data_test,
+                                   A, 
+                                   Us,
+                                   parameters, 
+                                   mod = "VAR")
 
 print("\nBHT_VAR\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
 
@@ -70,9 +75,26 @@ nrmse_VAR = changes[:,1]
 print("Validation NRMSE_VAR: ", nrmse_VAR[-1])#min(nrmse_VAR))
 #print("Validation duration_VAR: ", duration_VAR)
 
+#print("Test RMSE_VAR: ", test_rmse)
+print("Test NRMSE_VAR: ", test_nrmse)
+
+
 #plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")
 #plot_results(changes[:,0], 'BHT_VAR RMSE', "RMSE Value")
 #plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Test
 # rmse_VAR, nrmse_VAR = predict("VAR", Us, A, parameters, X, X_test)

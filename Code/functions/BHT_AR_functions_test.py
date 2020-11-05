@@ -57,8 +57,9 @@ def update_cores(m, p, A, Us, X, G, lam, mod):
             for i in range(p):
                 summary += A[i] * tl.unfold(G[..., t - i - 1], m)
             
-            if summary.shape != G[..., 0].shape:
-                summary = summary.T
+            # if summary.shape != G[..., 0].shape:
+            #     summary = summary.T
+            summary = tl.fold(unfolded_tensor = summary, mode = m, shape = G[..., 0].shape)
             
             temp_G.append(summary/(1 + lam))
             
@@ -69,16 +70,19 @@ def update_cores(m, p, A, Us, X, G, lam, mod):
             v3 = outer.T
             summary = lam * np.linalg.multi_dot( [v1, v2, v3] )
             
-            # Diorthwsh auto me to fold gia na pianei kai to case n_col = n_row
-            if summary.shape != G[..., 0].shape:
-                summary = summary.T
+            
+            # if summary.shape != G[..., 0].shape:
+            #     summary = summary.T
             
             for i in range(p):
-                tmp1 = G[..., t - i - 1].flatten()
+                tmp1 = G[..., t - i - 1].reshape((G.shape[0]*G.shape[1], 1))
                 tmp1 = tmp1.reshape((tmp1.shape[0], 1))
                 tmp2 = np.dot(A[i], tmp1)
                 tmp3 = tmp2.reshape((G.shape[0], G.shape[1]))
+                tmp3 = tl.unfold(tmp3, m)
                 summary += tmp3
+            
+            summary = tl.fold(unfolded_tensor = summary, mode = m, shape = G[..., 0].shape)
             
             temp_G.append(summary/(1 + lam))
     
@@ -222,7 +226,7 @@ def forecast(data, p, A, mod, n_forecast):
 #   metric: A numpy matrix containing the rmse and nrmse values of each iteration
 #   A: The coefficient matrix
 #   prediction: The predicted values of the next step
-def BHTAR(X_train, X_val, par, mod):
+def BHTAR(data_train, data_val, par, mod):
     
     # Initializations
     conv = 10
@@ -233,7 +237,7 @@ def BHTAR(X_train, X_val, par, mod):
     #X_test = data[..., (n_train + par['n_val']):]
     
     # Apply Hankelization
-    X_hat, S_pinv = MDT(X_train, par['r']) 
+    X_hat, S_pinv = MDT(data_train, par['r']) 
     
     Rs = get_ranks(X_hat)
     print("Tucker Ranks: ", Rs)
@@ -268,7 +272,7 @@ def BHTAR(X_train, X_val, par, mod):
         A = fit_model(G, par['p'], mod)
         
         # Forecast the next cores
-        G_pred = forecast(G, par['p'], A, mod, X_val.shape[-1])
+        G_pred = forecast(G, par['p'], A, mod, data_val.shape[-1])
         
         
         dim_list = [u.shape[0] for u in Us]
@@ -284,16 +288,30 @@ def BHTAR(X_train, X_val, par, mod):
         
         
         
-        rmse = compute_rmse(prediction, X_val)
-        nrmse = compute_nrmse(prediction, X_val)
+        rmse = compute_rmse(prediction, data_val)
+        nrmse = compute_nrmse(prediction, data_val)
         metrics.append([rmse, nrmse])
         
     return np.array(convergences), np.array(metrics), A, prediction, Us
 
 
-def BHTAR_test(data, data_test, A, Us, par, mod):
+
+
+# The function that implements and trains the whole algorithm.
+# Input:
+#   data: The loaded dataset
+#   par: A dictionary that contains the hyperparameters of the model
+#   mod: A string "AR" or "VAR" that selects the model to be used
+# Returns:
+#   Us: The list containing the U matrices
+#   convergences: A numpy matrix containing the convergence value of each iteration
+#   metric: A numpy matrix containing the rmse and nrmse values of each iteration
+#   A: The coefficient matrix
+#   prediction: The predicted values of the next step
+def BHTAR_test(data_test_start, data_test, A, Us, par, mod):
        
-    X_hat, S_pinv = MDT(data, par['r'])
+    X_hat, S_pinv = MDT(data_test_start, par['r'])
+    # print("Test X_hat: ", X_hat.shape)
     
     G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
 

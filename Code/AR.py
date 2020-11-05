@@ -46,29 +46,31 @@ parameters = {'R1':5,
               'max_epoch': 15,
               'threshold': 0.000001}
 
-data_train = X[..., :n_train]
-data_val = X[..., n_train:(n_val+n_train)]
-data_test = X[..., -n_test:]
+X_train = X[..., :n_train]
+X_val = X[..., n_train:(n_val+n_train)]
+X_test = X[..., -n_test:]
 
-#start = time.clock()
-convergences, changes, A, prediction, Us = BHTAR(X_train = data_train,
-                                                 X_val = data_val,
+start = time.clock()
+convergences, changes, A, prediction, Us = BHTAR(data_train = X_train,
+                                                 data_val = X_val,
                                                  par = parameters,
                                                  mod = "AR")
-#end = time.clock()
-#duration_AR = end - start
+end = time.clock()
+duration_AR = end - start
 
-if data_val.shape[-1] >= parameters['p'] + parameters['r'] - 1:
-    dummy = data_val 
+# Prepare the data needed for the testing predictions
+if X_val.shape[-1] >= parameters['p'] + parameters['r'] - 1:
+    X_test_start = X_val 
 else:
-    dummy = np.append(data_train[..., -(parameters['p'] + parameters['r'] - 1 - data_val.shape[-1]):], data_val, axis=-1)
+    X_test_start = np.append(X_train[..., -(parameters['p'] + parameters['r'] - 1 - X_val.shape[-1]):], X_val, axis=-1)
 
-test_rmse, test_nrmse = BHTAR_test(dummy,
-                                   data_test,
+test_rmse, test_nrmse = BHTAR_test(X_test_start,
+                                   X_test,
                                    A, 
                                    Us,
                                    parameters, 
-                                   mod = "VAR")
+                                   mod = "AR")
+
 
 print("BHT_AR\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
 
@@ -80,7 +82,7 @@ print("Validation NRMSE_AR: ", nrmse_AR[-1])#min(nrmse_AR))
 #print("Validation duration_AR: ", duration_AR)
 
 #print("Test RMSE_VAR: ", test_rmse)
-print("Test NRMSE_VAR: ", test_nrmse)
+print("Test NRMSE_AR: ", test_nrmse)
 
 # plot_results(convergences, 'BHT_AR Convergence', "Convergence Value")
 # plot_results(changes[:,0], 'BHT_AR RMSE', "RMSE Value")

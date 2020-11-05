@@ -33,11 +33,15 @@ X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=6, n_columns=5)
 # X2 = X2[:, :-1]
 
 
+X_train = X[..., :n_train]
+X_val = X[..., n_train:(n_val+n_train)]
+X_test = X[..., -n_test:]
+
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 '''      BHT_AR_Matrix_Coefficients      '''
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
-# Set the parameters for BHT_VAR
+# Set the algorithm's parameters
 parameters = {'R1':5,
               'R2':3,
               'p': 2,
@@ -46,21 +50,23 @@ parameters = {'R1':5,
               'max_epoch': 15,
               'threshold': 0.000001}
 
-data_train = X[..., :n_train]
-data_val = X[..., n_train:(n_val+n_train)]
-data_test = X[..., -n_test:]
-
-#start = time.clock()
-convergences, changes, A, prediction, Us = BHTAR(X_train = data_train,
-                                                 X_val = data_val,
+start = time.clock()
+convergences, changes, A, prediction, Us = BHTAR(data_train = X_train,
+                                                 data_val = X_val,
                                                  par = parameters,
                                                  mod = "VAR")
-#end = time.clock()
-#duration_VAR = end - start
+end = time.clock()
+duration_VAR = end - start
+
+# Prepare the data needed for the testing predictions
+if X_val.shape[-1] >= parameters['p'] + parameters['r'] - 1:
+    X_test_start = X_val 
+else:
+    X_test_start = np.append(X_train[..., -(parameters['p'] + parameters['r'] - 1 - X_val.shape[-1]):], X_val, axis=-1)
 
 
-test_rmse, test_nrmse = BHTAR_test(np.append(data_train, data_val, axis=-1),
-                                   data_test,
+test_rmse, test_nrmse = BHTAR_test(X_test_start,
+                                   X_test,
                                    A, 
                                    Us,
                                    parameters, 

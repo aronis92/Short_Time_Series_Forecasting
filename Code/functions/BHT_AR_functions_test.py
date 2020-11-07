@@ -234,13 +234,12 @@ def BHTAR(data_train, data_val, par, mod):
     convergences = list([])
     metrics = list([])
     
-    #X_test = data[..., (n_train + par['n_val']):]
-    
     # Apply Hankelization
-    X_hat, S_pinv = MDT(data_train, par['r']) 
+    X_hat, S_pinv = MDT(data_train, par['r'])
+    #print("X_hat shape: ", X_hat.shape)
     
-    Rs = get_ranks(X_hat)
-    print("Tucker Ranks: ", Rs)
+    #Rs = get_ranks(X_hat)
+    #print("Tucker Ranks: ", Rs)
     Rs = np.array([par['R1'], par['R2']])
     
     # Us Initialization
@@ -251,6 +250,7 @@ def BHTAR(data_train, data_val, par, mod):
         old_Us = copy.deepcopy(Us)
         # Step 9 - Calculate the Core Tensors
         G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
+        #print("G shape: ", G.shape)
         
         # Calculate par of AR model
         A = fit_model(G, par['p'], mod)       
@@ -337,16 +337,7 @@ def BHTAR_test(data_test_start, data_test, A, Us, par, mod):
 
 
 
-# The function that trains the AR model and returns the next step prediction and the coefficients of the model.
-# Input:
-#   X_hat: The Hankelized data
-#   Us: List that contains all U matrices
-#   S_pinv: The pseudoinverse matrix to de-Hankelize the data
-#   par: A dictionary that contains the hyperparameters of the model
-#   mod: The model that will be used for the coefficient estimation
-# Returns:
-#   pred_value: The predicted value
-#   A: The coefficient matrix
+# TO DELETE
 def train_predict(X_hat, Us, S_pinv, par, mod):
     p = par['p']
     # Estimate the core tensor with the given Us.
@@ -385,8 +376,6 @@ def train_predict(X_hat, Us, S_pinv, par, mod):
     pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat[..., 1:], 0), S_pinv, -1)
     pred_value = pred_mat[:, -1]
     return pred_value, A
-
-
 
 
 def predict(mod, Us, A, par, X, X_test):

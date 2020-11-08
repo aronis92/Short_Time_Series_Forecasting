@@ -42,7 +42,7 @@ print("\nBHT_AR")
 parameters = {'R1':3,
               'R2':2,
               'p': 2,
-              'r': 2,
+              'r': 5,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
@@ -71,14 +71,14 @@ for l in l_list:
     end = time.clock()
     duration_AR = end - start
     
-    print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
+    #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
     print("\nlam:", parameters['lam'])
     # Validation
     rmse_AR = changes[:,0]
     nrmse_AR = changes[:,1]
-    print("Validation RMSE_AR: ", rmse_AR[-1], min(rmse_AR))
+    #print("Validation RMSE_AR: ", rmse_AR[-1], min(rmse_AR))
     print("Validation NRMSE_AR: ", nrmse_AR[-1], min(nrmse_AR))
-    print("Validation duration_AR: ", duration_AR)
+    #print("Validation duration_AR: ", duration_AR)
 
 
 # Prepare the data needed for the testing predictions

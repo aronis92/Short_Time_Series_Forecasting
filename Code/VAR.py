@@ -23,7 +23,7 @@ n_total = n_train + n_val + n_test
 
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-# X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=6, n_columns=5)
+# X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=3, n_columns=1)
 X, _, _ = book_data(sample_size=n_total)
 # X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 # X = X.to_numpy()
@@ -42,8 +42,8 @@ X_test = X[..., -n_test:]
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 # Set the algorithm's parameters
-parameters = {'R1':2,
-              'R2':3,
+parameters = {'R1':3,
+              'R2':2,
               'p': 2,
               'r': 5,
               'lam': 1, #2.1 for VAR
@@ -69,7 +69,7 @@ for l in l_list:
     end = time.clock()
     duration_VAR = end - start
     
-    # print("R1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
+    #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
     print("\nlam:", parameters['lam'])
     # Validation
     rmse_VAR = changes[:,0]

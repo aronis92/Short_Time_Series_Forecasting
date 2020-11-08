@@ -41,19 +41,19 @@ def plot_results(data, title, ytitle):
 def book_data(sample_size):
     np.random.seed(69)
     A1 = np.array([[.3, -.2, .04],
-                    [-.11, .26, -.05],
-                    [.08, -.39, .39]])
+                   [-.11, .26, -.05],
+                   [.08, -.39, .39]])
     #print(la.norm(A_1, 'fro'))
     A2 = np.array([[.28, -.08, .07],
-                    [-.04, .36, -.1],
-                    [-.33, .05, .38]])
+                   [-.04, .36, -.1],
+                   [-.33, .05, .38]])
     #print(la.norm(A_2, 'fro'))
     total = sample_size + 2000
     
     X_total = np.zeros((3, total))
     X_total[..., 0:2] = np.random.rand(3,2)
     for i in range(2, total):
-        X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(3,)
+        X_total[..., i] = np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + np.random.rand(3,)
         
     return X_total[..., (total-sample_size):], A1, A2
 

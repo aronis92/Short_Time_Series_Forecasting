@@ -7,7 +7,6 @@
 
 from functions.utils import compute_nrmse, compute_rmse
 from functions.utils import get_matrix_coeff_data, create_synthetic_data2, book_data
-from functions.AR_functions import fit_ar, estimate_matrix_coefficients
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
 import matplotlib.pyplot as plt
@@ -26,18 +25,18 @@ import time
 #   duration: The total time of training
 #   rmse: The RMSE for the predicted value
 #   nrmse: The NRMSE for the predicted value
-def VAR_results(data_train, data_val, p):
+def VAR_results(data, p):
     start = time.clock()
-    model = VAR(data_train.T)
+    model = VAR(data[..., :-1].T)
     results = model.fit(p)
-    end = time.clock()
+
     A = results.coefs
-    
-    predictions = results.forecast(data_train[..., -p:].T, data_val.shape[-1])
+    end = time.clock()
+    prediction = results.forecast(data[..., -p:].T, 1)
 
     duration = end - start
-    rmse = compute_rmse(predictions.T, data_val)
-    nrmse = compute_nrmse(predictions.T, data_val)
+    rmse = compute_rmse(prediction, data[..., -1])
+    nrmse = compute_nrmse(prediction, data[..., -1])
     return A, duration, rmse, nrmse
 
 
@@ -51,67 +50,64 @@ def VAR_results(data_train, data_val, p):
 #   duration: The total time of training
 #   rmse: The RMSE for the predicted value
 #   nrmse: The NRMSE for the predicted value
-def AR_results(data_train, data_val, data_test, p):
+def ARIMA_results(data_train, data_val, data_test, p):
     
     data_train2 = np.append(data_train, data_val, axis=-1)
     data_train2 = data_train2[..., data_val.shape[-1]:]
     
+    prediction = np.zeros([1, data_train.shape[0]])
     start = time.clock()
-    A = fit_ar(data_train2, p)
+    alpha = 0
+    for i in range(data_train2.shape[0]):
+        model = ARIMA(data_train2[i, :-1].T, order=(p,0, 0))
+        results = model.fit()
+        prediction[0, i] = results.forecast()
+        alpha += results.polynomial_ar
     end = time.clock()
-    
-    predictions = np.zeros(data_test.shape)
-    predictions = np.append(data_train2[..., -p:], predictions, axis=-1)
-    
-    for i in range(p, p+data_test.shape[-1]):
-        for j in range(p):
-            predictions[..., i] += A[j]*predictions[..., i-j-1]
-    
+
     duration = end - start
-    rmse = compute_rmse(predictions[..., p:], data_test)
-    nrmse = compute_nrmse(predictions[..., p:], data_test)
+    rmse = compute_rmse(prediction, data_train2[..., -1])
+    nrmse = compute_nrmse(prediction, data_train2[..., -1])
+    #print(data_train2.shape[0])
+    print(-alpha[1:])
+    A = -alpha[1:]/data_train2.shape[0]
     return A, duration, rmse, nrmse
 
 
 # Create/Load Dataset
 np.random.seed(0)
-n_train = 300
+n_train = 40
 n_val = 5
 n_test = 5
 n_total = n_train + n_val + n_test
 
 # X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
 # X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
-# X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=3, n_columns=2)
-X, _, _ = book_data(sample_size=n_total)
+# X, A1, A2 = get_matrix_coeff_data(sample_size=500, n_rows=3, n_columns=3)
+X, A1, A2 = book_data(sample_size=n_total)
 # X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 # X = X.to_numpy()
 # X = X.T
-
-plt.figure(figsize = (12,5))
-plt.ylim(-1, 2)
-plt.plot(X[0,:].T)
-
 
 X_train = X[..., :n_train]
 X_val = X[..., n_train:(n_val+n_train)]
 X_test = X[..., -n_test:]
 
-var_A, var_duration, var_rmse, var_nrmse = VAR_results(data_train = np.append(X_train, X_val, axis=-1), 
-                                                      data_val = X_test, 
-                                                      p = 2)
+# var_A, var_duration, var_rmse, var_nrmse = VAR_results(data_train=X,
+#                                                        data_val = X_test,
+#                                                        p=2)
 
-ar_A, ar_duration, ar_rmse, ar_nrmse,  = AR_results(data_train = X_train, 
-                                                    data_val = X_val,
-                                                    data_test = X_test,
-                                                    p=2)
+ar_A, ar_duration, ar_rmse, ar_nrmse,  = ARIMA_results(data_train = X_train, 
+                                                       data_val = X_val,
+                                                       data_test = X_test,
+                                                       p=2)
 
-print("RMSE AR: ", ar_rmse)
+# print("RMSE AR: ", ar_rmse)
 print("NRMSE AR: ", ar_nrmse)
-print("Duration AR: ", ar_duration)
-print("RMSE VAR: ", var_rmse)
-print("NRMSE VAR: ", var_nrmse)
-print("Duration VAR: ", var_duration)
+# print("Duration AR: ", ar_duration)
+# print("RMSE VAR: ", var_rmse)
+#print("NRMSE VAR: ", var_nrmse)
+# print("Duration VAR: ", var_duration)
 
 
 
@@ -130,6 +126,3 @@ print("Duration VAR: ", var_duration)
 # del arima_duration, arima_rmse, arima_nrmse
 # model = VARMAX(X[..., :-1], order = (2, 0), enforce_stationarity=False) # 
 # model_fit = model.fit(maxiter = 100, disp = False)
-
-
-

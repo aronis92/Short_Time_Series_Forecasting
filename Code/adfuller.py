@@ -47,7 +47,7 @@ def book_data(sample_size):
                    [-.04, .36, -.1],
                    [-.33, .05, .38]])
     #print(la.norm(A_2, 'fro'))
-    total = sample_size + 2000
+    total = sample_size + 1000
     
     X_total = np.zeros((3, total))
     X_total[..., 0:2] = np.random.rand(3,2)
@@ -85,12 +85,12 @@ n_val = 5
 n_test = 5
 n_total = n_train + n_val + n_test
 
-X, A1, A2 = book_data(sample_size=n_total)
+X, _, _ = book_data(sample_size=n_total)
 #X, _, _ = get_matrix_coeff_data(sample_size = n_total, n_rows=3, n_columns=2)
 
 
 plt.figure(figsize = (12,5))
-#plt.ylim(-1, 2)
+plt.ylim(-1, 1.7)
 plt.plot(X.T)
 
 

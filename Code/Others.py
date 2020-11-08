@@ -75,7 +75,7 @@ def AR_results(data_train, data_val, data_test, p):
 
 # Create/Load Dataset
 np.random.seed(0)
-n_train = 300
+n_train = 40
 n_val = 5
 n_test = 5
 n_total = n_train + n_val + n_test
@@ -90,7 +90,7 @@ X, _, _ = book_data(sample_size=n_total)
 
 plt.figure(figsize = (12,5))
 plt.ylim(-1, 2)
-plt.plot(X[0,:].T)
+plt.plot(X.T)
 
 
 X_train = X[..., :n_train]
@@ -101,14 +101,14 @@ var_A, var_duration, var_rmse, var_nrmse = VAR_results(data_train = np.append(X_
                                                       data_val = X_test, 
                                                       p = 2)
 
-ar_A, ar_duration, ar_rmse, ar_nrmse,  = AR_results(data_train = X_train, 
-                                                    data_val = X_val,
-                                                    data_test = X_test,
-                                                    p=2)
+# ar_A, ar_duration, ar_rmse, ar_nrmse,  = AR_results(data_train = X_train, 
+#                                                     data_val = X_val,
+#                                                     data_test = X_test,
+#                                                     p=2)
 
-print("RMSE AR: ", ar_rmse)
-print("NRMSE AR: ", ar_nrmse)
-print("Duration AR: ", ar_duration)
+# print("RMSE AR: ", ar_rmse)
+# print("NRMSE AR: ", ar_nrmse)
+# print("Duration AR: ", ar_duration)
 print("RMSE VAR: ", var_rmse)
 print("NRMSE VAR: ", var_nrmse)
 print("Duration VAR: ", var_duration)

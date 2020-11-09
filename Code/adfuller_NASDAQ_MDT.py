@@ -10,17 +10,25 @@ import time
 np.random.seed(0)
 r = 3
 d = 1
-n = 40 + d
+n = 200
 X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = n)
 X = X.to_numpy()
 X = X.T
+X = X[..., (160-d):]
 
-X_hat, _ = MDT(X, r)
+X_norm = np.zeros(X.shape)
+
+for i in range(X.shape[0]):
+    m = np.mean(X[i, ...])
+    std = np.std(X[i, ...])
+    X_norm[i, ...] = ( X[i, ...] - m )/std
+
+X_hat, _ = MDT(X_norm, r)
 X_hat_vec = tl.unfold(X_hat, -1).T
 df_hat = pd.DataFrame(X_hat_vec).T
 
-# plt.figure(figsize = (12,5))
-# plt.plot(X[0,...].T)
+plt.figure(figsize = (12,5))
+plt.plot(X_hat_vec[0,...].T)
 
 counter = 0
 indices = []

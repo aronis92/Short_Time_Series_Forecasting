@@ -5,6 +5,7 @@
 ####################################################
 
 from statsmodels.tsa.arima_process import arma_generate_sample
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
 from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 from random import random, seed
@@ -12,6 +13,23 @@ from numpy import linalg as la
 from numpy import log
 import tensorly as tl
 import numpy as np
+
+
+
+
+def cointegration_test(df, alpha=0.05): 
+    """Perform Johanson's Cointegration Test and Report Summary"""
+    out = coint_johansen(df,-1,5)
+    d = {'0.90':0, '0.95':1, '0.99':2}
+    traces = out.lr1
+    cvts = out.cvt[:, d[str(1-alpha)]]
+    def adjust(val, length= 6): return str(val).ljust(length)
+
+    # Summary
+    print('Name   ::  Test Stat > C(95%)    =>   Signif  \n', '--'*20)
+    for col, trace, cvt in zip(df.columns, traces, cvts):
+        print(adjust(col), ':: ', adjust(round(trace,2), 9), ">", adjust(cvt, 8), ' =>  ' , trace > cvt)
+
 
 
 

@@ -1,10 +1,10 @@
-import numpy as np
+from functions.AR_functions import autocorrelation
+from statsmodels.tsa.stattools import adfuller
+import matplotlib.pyplot as plt
 from random import random, seed
 from numpy import linalg as la
 from numpy import log
-from functions.AR_functions import autocorrelation
-import matplotlib.pyplot as plt
-from statsmodels.tsa.stattools import adfuller
+import numpy as np
 
 def plot_results(data, title, ytitle):
     epoch = [int(i + 1) for i in range(len(data))]
@@ -17,6 +17,7 @@ def plot_results(data, title, ytitle):
     # plt.ylim(0.001924, 0.00193) # VAR NRMSE
     # plt.ylim(0.089, 0.09) # VAR RMSE
     plt.plot(epoch, data)
+
 
 
 def matrix_coeff_data(order, sample_size, n_rows, n_columns):

@@ -5,12 +5,43 @@
 ####################################################
 
 from statsmodels.tsa.arima_process import arma_generate_sample
+from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 from random import random, seed
 from numpy import linalg as la
 from numpy import log
 import tensorly as tl
 import numpy as np
+
+
+
+def adfuller_test(series, signif=0.05, name='', verbose=False):
+    counter = 0
+    """Perform ADFuller to test for Stationarity of given series and print report"""
+    r = adfuller(series, autolag='AIC')
+    output = {'test_statistic':round(r[0], 4), 'pvalue':round(r[1], 4), 'n_lags':round(r[2], 4), 'n_obs':r[3]}
+    p_value = output['pvalue'] 
+    def adjust(val, length= 6): return str(val).ljust(length)
+
+    # Print Summary
+    print(f'    Augmented Dickey-Fuller Test on "{name}"', "\n   ", '-'*47)
+    print(f' Null Hypothesis: Data has unit root. Non-Stationary.')
+    print(f' Significance Level    = {signif}')
+    print(f' Test Statistic        = {output["test_statistic"]}')
+    print(f' No. Lags Chosen       = {output["n_lags"]}')
+
+    for key,val in r[4].items():
+        print(f' Critical value {adjust(key)} = {round(val, 3)}')
+
+    if p_value <= signif:
+        print(f" => P-Value = {p_value}. Rejecting Null Hypothesis.")
+        print(f" => Series is Stationary.")
+        counter = 1
+    else:
+        print(f" => P-Value = {p_value}. Weak evidence to reject the Null Hypothesis.")
+        print(f" => Series is Non-Stationary.") 
+        counter = 0
+    return counter
 
 
 # Plots the results
@@ -48,15 +79,14 @@ def book_data(sample_size):
                    [-.04, .36, -.1],
                    [-.33, .05, .38]])
     #print(la.norm(A_2, 'fro'))
-    total = sample_size + 2000
+    total = sample_size + 1000
     
     X_total = np.zeros((3, total))
     X_total[..., 0:2] = np.random.rand(3,2)
     for i in range(2, total):
-        X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(3,)
+        X_total[..., i] = np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + np.random.rand(3,)
         
     return X_total[..., (total-sample_size):], A1, A2
-
 
 
 # Creates a sample based on the coefficients of the book tsa4
@@ -87,7 +117,6 @@ def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     
     X = X_total[..., (total-sample_size):]
     return X, A1, A2
-
 
 
 # The function that creates and returns the simulation data

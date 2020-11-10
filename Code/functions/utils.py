@@ -17,10 +17,9 @@ import numpy as np
 
 
 
-# Plots the results
+# Executes the cointegration test and prints the results
 # Input:
-#   data: The data to plot
-#   title: The title of the graph
+#   df: The data as a pandas dataframe where each column is a time series
 def cointegration_test(df, alpha=0.05): 
     """Perform Johanson's Cointegration Test and Report Summary"""
     out = coint_johansen(df,-1,5)
@@ -37,10 +36,11 @@ def cointegration_test(df, alpha=0.05):
 
 
 
-# Plots the results
+# Function that applies the AdFuller test to check for time series stationarity
 # Input:
-#   data: The data to plot
-#   title: The title of the graph
+#   series: The data as a pandas dataframe where each column is a time series
+# Returns:
+#   counter: The number of Stationary Time Series
 def adfuller_test(series, signif=0.05, name='', verbose=False):
     counter = 0
     """Perform ADFuller to test for Stationarity of given series and print report"""
@@ -99,23 +99,25 @@ def plot_results(data, title, ytitle):
 #   X: The data as a numpy array
 #   A1, A2: The matrix coefficients as numpy arrays
 def book_data(sample_size):
-    np.random.seed(69)
+    np.random.seed(0)
     A1 = np.array([[.3, -.2, .04],
                    [-.11, .26, -.05],
                    [.08, -.39, .39]])
-    #print(la.norm(A_1, 'fro'))
+
     A2 = np.array([[.28, -.08, .07],
                    [-.04, .36, -.1],
                    [-.33, .05, .38]])
-    #print(la.norm(A_2, 'fro'))
-    total = sample_size + 1000
-    
+
+    total = sample_size + 50
     X_total = np.zeros((3, total))
+    
+    e = np.random.normal(0, 1, (3,total - 2))
+    
     X_total[..., 0:2] = np.random.rand(3,2)
     for i in range(2, total):
-        X_total[..., i] = np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + np.random.rand(3,)
+        X_total[..., i] = np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + e[..., i-2]
         
-    return X_total[..., (total-sample_size):], A1, A2
+    return X_total[..., -sample_size:], A1, A2
 
 
 
@@ -135,12 +137,12 @@ def get_matrix_coeff_data(sample_size, n_rows, n_columns):
 
     X_total = np.zeros((n_rows*n_columns, total))
     X_total[..., 0:2] = log(np.random.rand(n_rows*n_columns, 2))
-    max_v = 2.5
-    min_v = 1.5
+    #max_v = 2.5
+    #min_v = 1.5
     A1 = np.random.rand(n_rows*n_columns, n_rows*n_columns)
-    A1 = A1/((min_v + random()*(max_v - min_v))*la.norm(A1, 'fro'))
+    #A1 = A1/((min_v + random()*(max_v - min_v))*la.norm(A1, 'fro'))
     A2 = np.random.rand(n_rows*n_columns, n_rows*n_columns)
-    A2 = A2/((min_v + random()*(max_v - min_v))*la.norm(A2, 'fro'))
+    #A2 = A2/((min_v + random()*(max_v - min_v))*la.norm(A2, 'fro'))
 
     for i in range(2, total):
         X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(n_rows*n_columns)

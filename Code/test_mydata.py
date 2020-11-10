@@ -6,14 +6,22 @@ from math import log
 import numpy as np
 import pandas as pd
 
+def semi_definite(matrixSize):
+    from scipy import random, linalg
+    A = random.rand(matrixSize,matrixSize)
+    B = np.dot(A,A.transpose())
+    return B
 
 def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     np.random.seed(42)
     seed(42)
-    total = sample_size + int(sample_size/5)
-
+    total = sample_size + 20
+    
+    mean = np.zeros(n_rows*n_columns)
+    cov = semi_definite(n_rows*n_columns)
     X_total = np.zeros((n_rows*n_columns, total))
-    X_total[..., 0:2] = np.random.rand(n_rows*n_columns, 2)
+    
+    X_total[..., 0:2] = np.random.multivariate_normal(mean, cov, 2).T
     max_v = 3
     min_v = 2.5
     A1 = np.random.rand(n_rows*n_columns, n_rows*n_columns)
@@ -23,7 +31,7 @@ def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     #A2 = A2/((min_v + random()*(max_v - min_v))*la.norm(A2, 'fro'))
     A2 = A2/(3*la.norm(A2, 'fro'))
     for i in range(2, total):
-        X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2])# + np.random.rand(n_rows*n_columns)
+        X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(n_rows*n_columns)
     
     
     X = X_total[..., (total-sample_size):]
@@ -37,7 +45,6 @@ plt.plot(X.T)
 plt.show()
 
 print(np.mean(X, axis=1))
-
 df = pd.DataFrame(X.T)
 counter = 0
 indices = []
@@ -50,3 +57,7 @@ for name, column in df.iteritems():
     counter += c
     #print('\n')
 print(counter, "/", X.shape[0], "Series are Stationary")
+
+
+
+

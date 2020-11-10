@@ -8,7 +8,7 @@ import time
 
 np.random.seed(0)
 n = 1000
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = n)
+X = pd.read_csv('../data/nasdaq100/small/nasdaq100_padding.csv',  nrows = n)
 X = X.to_numpy()
 X = X.T
 #X = np.delete(X, [10, 15, 37, 71, 81], axis=0)

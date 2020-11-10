@@ -11,7 +11,7 @@ np.random.seed(0)
 r = 3
 d = 1
 n = 200
-X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = n)
+X = pd.read_csv('../data/nasdaq100/small/nasdaq100_padding.csv',  nrows = n)
 X = X.to_numpy()
 X = X.T
 X = X[..., (160-d):]

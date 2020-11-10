@@ -17,6 +17,10 @@ import numpy as np
 
 
 
+# Plots the results
+# Input:
+#   data: The data to plot
+#   title: The title of the graph
 def cointegration_test(df, alpha=0.05): 
     """Perform Johanson's Cointegration Test and Report Summary"""
     out = coint_johansen(df,-1,5)
@@ -33,6 +37,10 @@ def cointegration_test(df, alpha=0.05):
 
 
 
+# Plots the results
+# Input:
+#   data: The data to plot
+#   title: The title of the graph
 def adfuller_test(series, signif=0.05, name='', verbose=False):
     counter = 0
     """Perform ADFuller to test for Stationarity of given series and print report"""
@@ -62,6 +70,8 @@ def adfuller_test(series, signif=0.05, name='', verbose=False):
     return counter
 
 
+
+
 # Plots the results
 # Input:
 #   data: The data to plot
@@ -78,6 +88,7 @@ def plot_results(data, title, ytitle):
     # plt.ylim(0.001924, 0.00193) # VAR NRMSE
     # plt.ylim(0.089, 0.09) # VAR RMSE
     plt.plot(epoch, data)
+
 
 
 
@@ -105,6 +116,8 @@ def book_data(sample_size):
         X_total[..., i] = np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + np.random.rand(3,)
         
     return X_total[..., (total-sample_size):], A1, A2
+
+
 
 
 # Creates a sample based on the coefficients of the book tsa4
@@ -137,6 +150,8 @@ def get_matrix_coeff_data(sample_size, n_rows, n_columns):
     return X, A1, A2
 
 
+
+
 # The function that creates and returns the simulation data
 # Input:
 #   p: AR model order
@@ -158,6 +173,7 @@ def create_synthetic_data(p, dim, n_samples):
 
 
 
+
 # The function that creates and returns the simulation data
 # Input:
 #   p: AR model order
@@ -175,6 +191,7 @@ def create_synthetic_data2(p, dim, n_samples):
 
 
 
+
 # The function that computes and returns the rmse
 # Input:
 #   y_pred: predicted values
@@ -184,6 +201,7 @@ def create_synthetic_data2(p, dim, n_samples):
 def compute_rmse(y_pred, y_true):
     rmse = np.sqrt( np.linalg.norm(y_pred - y_true)**2 / np.size(y_true) )
     return rmse
+
 
 
 
@@ -199,6 +217,7 @@ def compute_nrmse(y_pred, y_true):
     t2 = np.sum(abs(y_true)) / np.size(y_true)
     nrmse = t1 / t2
     return nrmse
+
 
 
 

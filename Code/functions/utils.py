@@ -17,11 +17,14 @@ import numpy as np
 
 
 
-# Executes the cointegration test and prints the results
-# Input:
-#   df: The data as a pandas dataframe where each column is a time series
 def cointegration_test(df, alpha=0.05): 
-    """Perform Johanson's Cointegration Test and Report Summary"""
+    """
+    Perform Johanson's Cointegration Test and Report Summary
+    
+    Input:
+        df: The data as a pandas dataframe where each column is a time series
+    """
+    
     out = coint_johansen(df,-1,5)
     d = {'0.90':0, '0.95':1, '0.99':2}
     traces = out.lr1
@@ -36,14 +39,18 @@ def cointegration_test(df, alpha=0.05):
 
 
 
-# Function that applies the AdFuller test to check for time series stationarity
-# Input:
-#   series: The data as a pandas dataframe where each column is a time series
-# Returns:
-#   counter: The number of Stationary Time Series
 def adfuller_test(series, signif=0.05, name='', verbose=False):
+    """
+    Perform ADFuller to test for Stationarity of given series and print report
+    
+    Input:
+        series: The data as a pandas dataframe where each column is a time series
+    
+    Returns:
+        counter: The number of Stationary Time Series
+    """    
+    
     counter = 0
-    """Perform ADFuller to test for Stationarity of given series and print report"""
     r = adfuller(series, autolag='AIC')
     output = {'test_statistic':round(r[0], 4), 'pvalue':round(r[1], 4), 'n_lags':round(r[2], 4), 'n_obs':r[3]}
     p_value = output['pvalue'] 
@@ -72,11 +79,14 @@ def adfuller_test(series, signif=0.05, name='', verbose=False):
 
 
 
-# Plots the results
-# Input:
-#   data: The data to plot
-#   title: The title of the graph
 def plot_results(data, title, ytitle):
+    """
+    Plots the results
+    
+    Input:
+        data: The data to plot
+        title: The title of the graph
+    """
     # plt.plot(epoch[1:], data[1:])
     epoch = [int(i + 1) for i in range(len(data))]
     plt.figure(figsize = (12,5))
@@ -92,13 +102,41 @@ def plot_results(data, title, ytitle):
 
 
 
-# Creates a sample based on the coefficients of the book tsa4
-# Input:
-#   sample_size: The number of observations to generate
-# Return:
-#   X: The data as a numpy array
-#   A1, A2: The matrix coefficients as numpy arrays
+def get_data(dataset, Ns):
+    """
+    Splits and loads the dataset's partitions
+    
+    Input:
+        dataset: The dataset choice. Choose from "book", ""
+        Ns: The train, validation, test split numbers in a list
+        
+    Returns:
+        X_train: The training partition
+        X_val: The validation partition
+        X_test: The testing partition
+    """
+    if dataset == "book":
+        X = book_data(sum(Ns))
+        
+    X_train = X[..., :Ns[0]]
+    X_val = X[..., Ns[0]:(Ns[1] + Ns[0])]
+    X_test = X[..., -Ns[2]:]
+    return X_train, X_val, X_test
+
+
+
+
 def book_data(sample_size):
+    """
+    Creates a sample based on the coefficients of the book tsa4
+    
+    Input:
+      sample_size: The number of observations to generate
+      
+    Return:
+      X: The data as a numpy array
+      A1, A2: The matrix coefficients as numpy arrays
+    """
     np.random.seed(0)
     A1 = np.array([[.3, -.2, .04],
                    [-.11, .26, -.05],
@@ -117,103 +155,39 @@ def book_data(sample_size):
     for i in range(2, total):
         X_total[..., i] = np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + e[..., i-2]
         
-    return X_total[..., -sample_size:], A1, A2
+    return X_total[..., -sample_size:]#, A1, A2
 
 
 
-
-# Creates a sample based on the coefficients of the book tsa4
-# Input:
-#   sample_size: The number of observations to generate   
-#   n_rows: number of rows of the data matrix
-#   n_columns: number of columns of the data matrix
-# Return:
-#   X: The data as a numpy array
-#   A1, A2: The matrix coefficients as numpy arrays
-def get_matrix_coeff_data(sample_size, n_rows, n_columns):
-    np.random.seed(42)
-    seed(42)
-    total = 2000
-
-    X_total = np.zeros((n_rows*n_columns, total))
-    X_total[..., 0:2] = log(np.random.rand(n_rows*n_columns, 2))
-    #max_v = 2.5
-    #min_v = 1.5
-    A1 = np.random.rand(n_rows*n_columns, n_rows*n_columns)
-    #A1 = A1/((min_v + random()*(max_v - min_v))*la.norm(A1, 'fro'))
-    A2 = np.random.rand(n_rows*n_columns, n_rows*n_columns)
-    #A2 = A2/((min_v + random()*(max_v - min_v))*la.norm(A2, 'fro'))
-
-    for i in range(2, total):
-        X_total[..., i] = np.dot(A1, X_total[..., i-1]) + np.dot(A2, X_total[..., i-2]) + np.random.rand(n_rows*n_columns)
-    
-    
-    X = X_total[..., (total-sample_size):]
-    return X, A1, A2
-
-
-
-
-# The function that creates and returns the simulation data
-# Input:
-#   p: AR model order
-#   dim: dimensionality of data
-#   n_samples: number of samples to create
-# Returns:
-#   data: A numpy matrix
-def create_synthetic_data(p, dim, n_samples):
-    np.random.seed(0)
-    arparams = np.array([.75, -.25])
-    ar = np.r_[1, -arparams]
-    ma = np.array([1])
-    extra = 10
-    X = np.zeros([dim, extra*n_samples])
-    for i in range(dim):
-        X[i, :] = arma_generate_sample(ar, ma, nsample = extra*n_samples)
-    data = X[:, -n_samples:]
-    return data
-
-
-
-
-# The function that creates and returns the simulation data
-# Input:
-#   p: AR model order
-#   dim: dimensionality of data
-#   n_samples: number of samples to create
-# Returns:
-#   data: A numpy matrix
-def create_synthetic_data2(p, dim, n_samples):
-    X = np.random.random_sample((dim, p))
-    A = np.array([0.6, 0.3]).reshape((p, 1))
-    for t in range(n_samples):
-        x_t = A[0]*X[..., -1] + A[1]*X[..., -2] + np.random.random_sample((dim,))/2
-        X = np.hstack((X, x_t.reshape(dim,1)))
-    return X[:, -n_samples:]
-
-
-
-
-# The function that computes and returns the rmse
-# Input:
-#   y_pred: predicted values
-#   y_true: true values
-# Returns:
-#   The rmse value 
+ 
 def compute_rmse(y_pred, y_true):
+    """
+    The function that computes and returns the rmse
+    
+    Input:
+        y_pred: predicted values
+        y_true: true values
+    
+    Returns:
+        The rmse value
+    """
     rmse = np.sqrt( np.linalg.norm(y_pred - y_true)**2 / np.size(y_true) )
     return rmse
 
 
 
 
-# The function that computes and returns the rmse
-# Input:
-#   y_pred: predicted values
-#   y_true: true values
-# Returns:
-#   The nrmse value
 def compute_nrmse(y_pred, y_true):
+    """
+    The function that computes and returns the rmse
+    
+    Input:
+        y_pred: predicted values
+        y_true: true values
+    
+    Returns:
+        The nrmse value
+    """
     # t1 = np.linalg.norm(y_pred - y_true)**2 / np.size(y_true)
     t1 = compute_rmse(y_pred, y_true)
     t2 = np.sum(abs(y_true)) / np.size(y_true)
@@ -223,12 +197,16 @@ def compute_nrmse(y_pred, y_true):
 
 
 
-# The function that calculates and returns the ranks of each mode-d unfolding of a tensor.
-# Input:
-#   tensor: The tensor which will be unfolded
-# Returns:
-#   ranks: As a numpy array
 def get_ranks(tensor):
+    """
+    The function that calculates and returns the ranks of each mode-d unfolding of a tensor.
+    
+    Input:
+        tensor: The tensor which will be unfolded
+    
+    Returns:
+        ranks: As a numpy array
+    """
     ranks = []
     for i in range(len(tensor.shape) - 1):
         temp = tl.unfold(tensor, i)
@@ -237,6 +215,45 @@ def get_ranks(tensor):
 
 
 
+
+def difference(data, order):
+    """
+    Calculates the d-th order differencing of an array
+    
+    Input:
+        data: A numpy array
+        order: The order of differencing
+        
+    Returns:
+        data: The transformed array
+        inv: A list containing the elements required for the inverse differencing process
+    """
+    inv = []
+    for _ in range(order):
+        inv.append(data[:, 0])
+        data = np.diff(data)
+    return data, inv
+
+
+
+
+def inv_difference(data, inv, order):
+    """
+    Calculates the d-th order inverse differencing of an array
+    
+    Input:
+        data: A numpy array
+        inv: A list that contains the elements required for the inverse differencing process
+        order: The order of differencing
+        
+    Returns:
+        data: The transformed array
+    """
+    X_r = data
+    for _ in range(order):
+        tmp = inv.pop().reshape((data.shape[0],1))
+        data = np.cumsum(np.hstack([tmp, data]), axis=-1)
+    return data
 
 
 

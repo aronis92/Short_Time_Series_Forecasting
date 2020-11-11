@@ -6,7 +6,7 @@
 #################################################
 
 from functions.utils import compute_nrmse, compute_rmse
-from functions.utils import get_matrix_coeff_data, create_synthetic_data2, book_data
+from functions.utils import get_matrix_coeff_data, get_data
 from functions.AR_functions import fit_ar, estimate_matrix_coefficients
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import time
+np.random.seed(0)
 
 
 # The function that calculates and returns the 
@@ -73,33 +74,24 @@ def AR_results(data_train, data_val, data_test, p):
     return A, duration, rmse, nrmse
 
 
-# Create/Load Dataset
-np.random.seed(0)
-n_train = 40
-n_val = 5
-n_test = 5
-n_total = n_train + n_val + n_test
 
-# X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
-# X = create_synthetic_data(p = 2, dim = 100, n_samples=40)
+
+'''Create/Load Dataset'''
 # X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=3, n_columns=2)
-X, _, _ = book_data(sample_size=n_total)
 # X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 # X = X.to_numpy()
 # X = X.T
 
-plt.figure(figsize = (12,5))
-plt.ylim(-1, 2)
-plt.plot(X.T)
+X_train, X_val, X_test = get_data(dataset = "book",
+                                  Ns = [40, 5, 5])
 
-
-X_train = X[..., :n_train]
-X_val = X[..., n_train:(n_val+n_train)]
-X_test = X[..., -n_test:]
+# plt.figure(figsize = (12,5))
+# #plt.ylim(-1, 2)
+# plt.plot(X_train.T)
 
 var_A, var_duration, var_rmse, var_nrmse = VAR_results(data_train = np.append(X_train, X_val, axis=-1), 
-                                                      data_val = X_test, 
-                                                      p = 2)
+                                                       data_val = X_test, 
+                                                       p = 2)
 
 # ar_A, ar_duration, ar_rmse, ar_nrmse,  = AR_results(data_train = X_train, 
 #                                                     data_val = X_val,
@@ -116,20 +108,6 @@ print("Duration VAR: ", var_duration)
 
 
 
-
-# from test2 import estimate_matrix_coefficients
-# myA = estimate_matrix_coefficients(X, 2)
-
-
-# from statsmodels.tsa.statespace.varmax import VARMAX, VARMAXResults
-# from functions.ARIMA_functions import fit_ar, autocorrelation
-
-# import scipy as sp
-# import copy
-
-# del arima_duration, arima_rmse, arima_nrmse
-# model = VARMAX(X[..., :-1], order = (2, 0), enforce_stationarity=False) # 
-# model_fit = model.fit(maxiter = 100, disp = False)
 
 
 

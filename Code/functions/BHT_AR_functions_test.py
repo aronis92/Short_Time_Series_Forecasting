@@ -8,19 +8,23 @@ from functions.utils import compute_rmse, compute_nrmse, get_ranks
 from functions.AR_functions import fit_ar, estimate_matrix_coefficients
 from functions.MDT_functions import MDT
 from statsmodels.tsa.api import VAR
-#import statsmodels
 import tensorly as tl
 import numpy as np
 import copy
 
 
-# The function that initializes and returns the U matrices
-# Input:
-#   tensor: The data tensor
-#   ranks: The rank of each unfolding of the tensor
-# Returns:
-#   Us: List containing each U matrix
+
 def initialize_Us(tensor, ranks):
+    """
+    Ιnitialize and return the U matrices
+    
+    Input:
+      - tensor: The data tensor
+      - ranks: The rank of each unfolding of the tensor
+    
+    Returns:
+      - Us: List containing each U matrix
+    """
     Us = []
     # Exclude the Time dimension (-1) since it is the only dimension not decomposed.
     for i in range(len(tensor.shape) - 1):
@@ -29,21 +33,29 @@ def initialize_Us(tensor, ranks):
     return Us
 
 
-''' Update Functions '''
+##########################
+##                      ##
+##   Update Functions   ##
+##                      ##
+##########################
 
-# The function that updates and returns the core tensors
-# Input:
-#   m: The mode along which the update will take place
-#   p: AR model order
-#   A: Coeffients of the AR model
-#   Us: List containing the U matrices
-#   X: Data in their original form (before decomposition)
-#   G: Previous core tensors
-#   lam: Reguralization parameter
-#   mod: Model to be used
-# Returns:
-#   G: New core tensors
 def update_cores(m, p, A, Us, X, G, lam, mod):
+    """
+    The function that updates and returns the core tensors
+    
+    Input:
+      - m: The mode along which the update will take place
+      - p: AR model order
+      - A: Coeffients of the AR model
+      - Us: List containing the U matrices
+      - X: Data in their original form (before decomposition)
+      - G: Previous core tensors
+      - lam: Reguralization parameter
+      - mod: Model to be used
+    
+    Returns:
+      - G: New core tensors
+    """
     temp_G = []
     outer = tl.tenalg.kronecker([u.T for u, i in zip(Us[::-1], reversed(range(len(Us)))) if i!= m ])
     
@@ -96,16 +108,22 @@ def update_cores(m, p, A, Us, X, G, lam, mod):
     return G
 
 
-# The function that updates and returns the U matrix over mode m
-# Input:
-#   m: The mode along which the update will take place
-#   p: AR model order
-#   X: Data in their original form (before decomposition)
-#   G: Core tensors
-#   Us: List containing the U matrices
-# Returns:
-#   new_Um: New U matrix along mode-m
+
+
 def update_Um(m, p, X, G, Us):
+    """
+    Update and return the U matrix of mode m
+    
+    Input:
+      - m: The mode along which the update will take place
+      - p: AR model order
+      - X: Data in their original form (before decomposition)
+      - G: Core tensors
+      - Us: List containing the U matrices
+    
+    Returns:
+      - new_Um: New U matrix along mode-m
+    """
     Bs = []
     H = tl.tenalg.kronecker([u.T for u, i in zip(Us[::-1], reversed(range(len(Us)))) if i!= m ])
     for t in range(p, X.shape[-1]):
@@ -121,15 +139,25 @@ def update_Um(m, p, X, G, Us):
     return new_Um
 
 
-''' Metric Calculation Functions '''
 
-# The function that computes and returns the convergence criterion value
-# Input:
-#   new_Us: The new U values
-#   old_Us: The old U values
-# Returns:
-#   convergence_value: The value to be checked with the convergence criterion
+
+######################################
+##                                  ##
+##   Metric Calculation Functions   ##
+##                                  ##
+######################################
+
 def compute_convergence(new_Us, old_Us):
+    """
+    Compute and return the convergence criterion value
+    
+    Input:
+      - new_Us: The new U values
+      - old_Us: The old U values
+    
+    Returns:
+      - convergence_value: The value to be checked with the convergence criterion
+    """
     Us_difference = [ new - old for new, old in zip(new_Us, old_Us)]
     a = np.sum([np.sqrt(tl.tenalg.inner(e,e)) for e in Us_difference], axis=0)
     b = np.sum([np.sqrt(tl.tenalg.inner(e,e)) for e in new_Us], axis=0)
@@ -137,16 +165,26 @@ def compute_convergence(new_Us, old_Us):
     return convergence_value
 
 
-''' Training and Prediction functions '''
 
-# The function that estimates the coefficients of the AR model.
-# Input:
-#   data: The loaded dataset
-#   p: The order of the AR model
-#   mod: A string "AR" or "VAR" that selects the model to be used
-# Returns:
-#   A: The coefficients (scalar or matrix)
+
+###########################################
+##                                       ##
+##   Training and Prediction functions   ##
+##                                       ##
+###########################################
+
 def fit_model(data, p, mod):
+    """
+    The function that estimates the coefficients of the AR model.
+    
+    Input:
+      - data: The loaded dataset
+      - p: The order of the AR model
+      - mod: A string "AR" or "VAR" that selects the model to be used
+    
+    Returns:
+      - A: The coefficients (scalar or matrix)
+    """
     if mod == "AR":
         A = fit_ar(data, p)
             
@@ -168,16 +206,20 @@ def fit_model(data, p, mod):
 
 
 
-# The function that implements and trains the whole algorithm.
-# Input:
-#   data: The loaded dataset
-#   p: the order of the AR model
-#   A: The coefficients of the AR model
-#   mod: A string "AR" or "VAR" that selects the model to be used
-# Returns:
-#   prediction: The predicted values of the next step
+
 def forecast(data, p, A, mod, n_forecast):
+    """
+    The function that implements and trains the whole algorithm.
     
+    Input:
+      - data: The loaded dataset
+      - p: the order of the AR model
+      - A: The coefficients of the AR model
+      - mod: A string "AR" or "VAR" that selects the model to be used
+    
+    Returns:
+      - prediction: The predicted values of the next step
+    """
     predictions_list = list([])
     
     for j in range(n_forecast):
@@ -215,19 +257,23 @@ def forecast(data, p, A, mod, n_forecast):
 
 
 
-# The function that implements and trains the whole algorithm.
-# Input:
-#   data: The loaded dataset
-#   par: A dictionary that contains the hyperparameters of the model
-#   mod: A string "AR" or "VAR" that selects the model to be used
-# Returns:
-#   Us: The list containing the U matrices
-#   convergences: A numpy matrix containing the convergence value of each iteration
-#   metric: A numpy matrix containing the rmse and nrmse values of each iteration
-#   A: The coefficient matrix
-#   prediction: The predicted values of the next step
+
 def BHTAR(data_train, data_val, par, mod):
+    """
+    The function that implements and trains the whole algorithm.
     
+    Input:
+      - data: The loaded dataset
+      - par: A dictionary that contains the hyperparameters of the model
+      - mod: A string "AR" or "VAR" that selects the model to be used
+    
+    Returns:
+      - Us: The list containing the U matrices
+      - convergences: A numpy matrix containing the convergence value of each iteration
+      - metric: A numpy matrix containing the rmse and nrmse values of each iteration
+      - A: The coefficient matrix
+      - prediction: The predicted values of the next step
+    """
     # Initializations
     conv = 10
     epoch = 0
@@ -297,19 +343,22 @@ def BHTAR(data_train, data_val, par, mod):
 
 
 
-# The function that implements and trains the whole algorithm.
-# Input:
-#   data: The loaded dataset
-#   par: A dictionary that contains the hyperparameters of the model
-#   mod: A string "AR" or "VAR" that selects the model to be used
-# Returns:
-#   Us: The list containing the U matrices
-#   convergences: A numpy matrix containing the convergence value of each iteration
-#   metric: A numpy matrix containing the rmse and nrmse values of each iteration
-#   A: The coefficient matrix
-#   prediction: The predicted values of the next step
 def BHTAR_test(data_test_start, data_test, A, Us, par, mod):
-       
+    """
+    The function that implements and trains the whole algorithm.
+    
+    Input:
+      - data: The loaded dataset
+      - par: A dictionary that contains the hyperparameters of the model
+      - mod: A string "AR" or "VAR" that selects the model to be used
+    
+    Returns:
+      - Us: The list containing the U matrices
+      - convergences: A numpy matrix containing the convergence value of each iteration
+      - metric: A numpy matrix containing the rmse and nrmse values of each iteration
+      - A: The coefficient matrix
+      - prediction: The predicted values of the next step
+    """
     X_hat, S_pinv = MDT(data_test_start, par['r'])
     # print("Test X_hat: ", X_hat.shape)
     
@@ -331,101 +380,6 @@ def BHTAR_test(data_test_start, data_test, A, Us, par, mod):
     rmse = compute_rmse(prediction, data_test)
     nrmse = compute_nrmse(prediction, data_test)
     
-    
     return rmse, nrmse
-
-
-
-
-# TO DELETE
-def train_predict(X_hat, Us, S_pinv, par, mod):
-    p = par['p']
-    # Estimate the core tensor with the given Us.
-    G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
-    
-    A = fit_model(G, par['p'], mod) 
-         
-    # Predict the core
-    G_pred = 0
-    if mod == "AR":
-        for i in range(p):
-            G_pred += A[i] * G[..., -(i + 1)]
-        X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
-    
-    elif mod == "myVAR":
-        G_pred = A[0]
-        for i in range(p):
-            tmp1 = G[..., -(i + 1)].flatten()
-            G_pred += np.dot(A[i + 1], tmp1)
-        G_pred = G_pred.reshape(G.shape[0], G.shape[1])
-        
-    elif mod == "VAR":
-        for i in range(p):
-            tmp1 = G[..., -(i + 1)].flatten()
-            tmp1 = tmp1.reshape(tmp1.shape[0], 1)
-            tmp2 = np.dot(A[i], tmp1)
-            tmp3 = tmp2.reshape(G.shape[0], G.shape[1])
-            G_pred += tmp3
-    
-    X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
-
-    dim_list = list(X_pred.shape)
-    dim_list.append(1)
-    X_hat = np.append(X_hat, X_pred.reshape( tuple(dim_list) ), axis = -1)
-
-    pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat[..., 1:], 0), S_pinv, -1)
-    pred_value = pred_mat[:, -1]
-    return pred_value, A
-
-
-def predict(mod, Us, A, par, X, X_test):
-    p = par['p']
-    X_hat, S_pinv = MDT(X, par['r'])
-    # Estimate the core tensor with the given Us.
-    G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
-    # Predict the core
-    G_pred = 0
-    if mod == "AR":
-        for i in range(p):
-            G_pred += A[i] * G[..., -(i + 1)]
-            
-    elif mod == "VAR":
-        for i in range(p):
-            tmp1 = G[..., -(i + 1)].flatten()
-            tmp1 = tmp1.reshape(tmp1.shape[0], 1)
-            tmp2 = np.dot(A[i], tmp1)
-            tmp3 = tmp2.reshape(G.shape[0], G.shape[1])
-            G_pred += tmp3
-            
-    elif mod == "myVAR":
-        G_pred = A[0]
-        print("G_pred shape 1: ", G_pred.shape)
-        for i in range(p):
-            tmp1 = G[..., -(i + 1)].flatten()
-            #tmp1 = tmp1.reshape(tmp1.shape[0], 1)
-            print("tmp 1 shape: ", tmp1.shape)
-            G_pred += np.dot(A[i + 1], tmp1)
-            #print("tmp 2 shape: ", tmp2.shape)
-            G_pred = G_pred.reshape(G.shape[0], G.shape[1])
-    
-    X_pred = tl.tenalg.multi_mode_dot(G_pred, Us)
-            
-    dim_list = list(X_pred.shape)
-    dim_list.append(1)
-    X_hat = np.append(X_hat, X_pred.reshape( tuple(dim_list) ), axis = -1)
-    # Reverse differencing should happen here
-    pred_mat = tl.tenalg.mode_dot( tl.unfold(X_hat[..., 1:], 0), S_pinv, -1)
-    pred_value = pred_mat[:, -1]
-    pred_value = pred_value.reshape(pred_value.shape[0], 1)
-    
-    rmse = compute_rmse(pred_value, X_test)
-    nrmse = compute_nrmse(pred_value, X_test)
-    return rmse, nrmse
-
-
-
-
-
-
 
 

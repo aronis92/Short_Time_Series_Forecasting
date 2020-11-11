@@ -3,12 +3,6 @@ import numpy as np
 import pandas as pd
 from functions.utils import adfuller_test
 
-def semi_definite(matrixSize):
-    from scipy import random, linalg
-    A = random.rand(matrixSize,matrixSize)
-    B = np.dot(A,A.transpose())
-    return B
-
 np.random.seed(0)
 sample_size = 100
 

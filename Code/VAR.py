@@ -4,7 +4,7 @@
 ##                                                    ##
 ########################################################
 
-from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results, book_data
+from functions.utils import get_matrix_coeff_data, plot_results, get_data
 from functions.BHT_AR_functions_test import BHTAR, BHTAR_test
 import numpy as np
 import pandas as pd
@@ -13,30 +13,22 @@ import matplotlib.pyplot as plt
 #from functions.AR_functions import fit_ar
 #from functions.MAR_functions import fit_mar
 #from functions.MDT_functions import MDT
-
+np.random.seed(0)
 
 '''Create/Load Dataset'''
-np.random.seed(0)
-n_train = 40
-n_val = 5
-n_test = 5
-n_total = n_train + n_val + n_test
-
-# X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
-# X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=3, n_columns=2)
-# X, _, _ = book_data(sample_size=n_total)
+# X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=3, n_columns=2)
 # X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
 # X = X.to_numpy()
 # X = X.T
+
+X_train, X_val, X_test = get_data(dataset = "book",
+                                  Ns = [40, 5, 5])
 
 # plt.figure(figsize = (12,5))
 # plt.ylim(-1, 2)
 # plt.plot(X.T)
 
-X_train = X[..., :n_train]
-X_val = X[..., n_train:(n_val+n_train)]
-X_test = X[..., -n_test:]
+
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 '''      BHT_AR_Matrix_Coefficients      '''

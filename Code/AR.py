@@ -1,44 +1,30 @@
-#######################################################
-##                                                   ##
-##  This file contains main execution of the BHT_AR  ##
-##                                                   ##
-#######################################################
+##################################################
+##                                              ##
+##  This file contains tests conducted for the  ##
+##     Scalar Coefficients BHT_AR Algorithm     ##
+##                                              ##
+##################################################
 
-from functions.utils import get_matrix_coeff_data, create_synthetic_data2, plot_results, book_data
+from functions.utils import plot_results, get_data
 from functions.BHT_AR_functions_test import BHTAR, BHTAR_test
-import numpy as np
+import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import time
-#from functions.AR_functions import fit_ar
-#from functions.MAR_functions import fit_mar
-#from functions.MDT_functions import MDT
-# X = create_synthetic_data2(p = 2, dim = 10, n_samples=6)
-# X = create_synthetic_data(p = 2, dim = 100, n_samples=41)
-
-'''Create/Load Dataset'''
 np.random.seed(0)
-n_train = 40
-n_val = 5
-n_test = 5
-n_total = n_train + n_val + n_test
 
-# X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=6, n_columns=5)
-X, _, _ = book_data(sample_size=n_total)
-# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
-# X = X.to_numpy()
-# X = X.T
-# X2 = X[:, -41:]
-# X_test = X2[:, -1:]
-# X2 = X2[:, :-1]
-# X = X[:, :41]
 
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
-'''       BHT_AR_Scalar_Coefficients       '''
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+# Load the Dataset
+X_train, X_val, X_test = get_data(dataset = "book",
+                                  Ns = [40, 5, 5])
 
-print("\nBHT_AR")
+# Plot the loaded data
+# plt.figure(figsize = (12,5))
+# plt.ylim(-1, 2)
+# plt.plot(X.T)
 
-# Set the parameters for BHT_AR
+
+# Set the algorithm's parameters
 parameters = {'R1':3,
               'R2':2,
               'p': 2,
@@ -46,10 +32,6 @@ parameters = {'R1':3,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
-
-X_train = X[..., :n_train]
-X_val = X[..., n_train:(n_val+n_train)]
-X_test = X[..., -n_test:]
 
 
 # for r_val in range(2, 7):

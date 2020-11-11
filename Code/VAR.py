@@ -1,38 +1,28 @@
-########################################################
-##                                                    ##
-##  This file contains main execution of the BHT_VAR  ##
-##                                                    ##
-########################################################
+##################################################
+##                                              ##
+##  This file contains tests conducted for the  ##
+##     Matrix Coefficients BHT_AR Algorithm     ##
+##                                              ##
+##################################################
 
-from functions.utils import get_matrix_coeff_data, plot_results, get_data
+from functions.utils import plot_results, get_data
 from functions.BHT_AR_functions_test import BHTAR, BHTAR_test
-import numpy as np
-import pandas as pd
-import time
 import matplotlib.pyplot as plt
-#from functions.AR_functions import fit_ar
-#from functions.MAR_functions import fit_mar
-#from functions.MDT_functions import MDT
+import pandas as pd
+import numpy as np
+import time
 np.random.seed(0)
 
-'''Create/Load Dataset'''
-# X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=3, n_columns=2)
-# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
-# X = X.to_numpy()
-# X = X.T
 
-X_train, X_val, X_test = get_data(dataset = "book",
+# Load the Dataset
+X_train, X_val, X_test = get_data(dataset = "nasdaq",
                                   Ns = [40, 5, 5])
 
+# Plot the loaded data
 # plt.figure(figsize = (12,5))
 # plt.ylim(-1, 2)
 # plt.plot(X.T)
 
-
-
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
-'''      BHT_AR_Matrix_Coefficients      '''
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 # Set the algorithm's parameters
 parameters = {'R1':3,

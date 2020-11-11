@@ -17,17 +17,22 @@ import time
 np.random.seed(0)
 
 
-# The function that calculates and returns the 
-# results of vector AR with matrix coefficients
-# Input:
-#   data: The data matrix
-#   p: AR model order
-# Returns:
-#   A: The coefficient matrices as a list
-#   duration: The total time of training
-#   rmse: The RMSE for the predicted value
-#   nrmse: The NRMSE for the predicted value
+
 def VAR_results(data_train, data_val, p):
+    """
+    The function that calculates and returns the 
+    results of vector AR with matrix coefficients
+    
+    Input:
+        data: The data matrix
+        p: AR model order
+        
+    Returns:
+        A: The coefficient matrices as a list
+        duration: The total time of training
+        rmse: The RMSE for the predicted value
+        nrmse: The NRMSE for the predicted value
+    """
     start = time.clock()
     model = VAR(data_train.T)
     results = model.fit(p)
@@ -42,18 +47,21 @@ def VAR_results(data_train, data_val, p):
     return A, duration, rmse, nrmse
 
 
-# The function that calculates and returns the 
-# results of vector AR with scalar coefficients
-# Input:
-#   data: The data matrix
-#   p: AR model order
-# Returns:
-#   A: The coefficients as a list
-#   duration: The total time of training
-#   rmse: The RMSE for the predicted value
-#   nrmse: The NRMSE for the predicted value
 def AR_results(data_train, data_val, data_test, p):
+    """
+    The function that calculates and returns the 
+    results of vector AR with scalar coefficients
     
+    Input:
+        data: The data matrix
+        p: AR model order
+    
+    Returns:
+        A: The coefficients as a list
+        duration: The total time of training
+        rmse: The RMSE for the predicted value
+        nrmse: The NRMSE for the predicted value
+    """
     data_train2 = np.append(data_train, data_val, axis=-1)
     data_train2 = data_train2[..., data_val.shape[-1]:]
     

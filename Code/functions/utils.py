@@ -14,6 +14,7 @@ from numpy import log
 import tensorly as tl
 import pandas as pd
 import numpy as np
+import copy
 
 
 def plot_results(data, title, ytitle):
@@ -54,7 +55,7 @@ def get_data(dataset, Ns):
     if dataset == "book":
         X = book_data(sum(Ns))
     elif dataset == "nasdaq":
-        X = pd.read_csv('./data/nasdaq100/small/nasdaq100_padding.csv',  nrows = sum(Ns))
+        X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = sum(Ns))
         X = X.to_numpy()
         X = X.T
     elif dataset == "inflation":
@@ -62,11 +63,7 @@ def get_data(dataset, Ns):
         df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns))
         X = df.to_numpy()
         X = X.T
-    elif dataset == "nasdaq":
-        X = pd.read_csv('../data/nasdaq100/small/nasdaq100_padding.csv',  nrows = sum(Ns))
-        X = X.to_numpy()
-        X = X.T
-        
+
     X_train = X[..., :Ns[0]]
     X_val = X[..., Ns[0]:(Ns[1] + Ns[0])]
     X_test = X[..., -Ns[2]:]
@@ -169,7 +166,8 @@ def difference(data, order):
     """
     inv = []
     for _ in range(order):
-        inv.append(data[:, 0])
+        #print("Difference", data[...,0].shape)
+        inv.append(data[..., 0])
         data = np.diff(data)
     return data, inv
 
@@ -186,9 +184,13 @@ def inv_difference(data, inv, order):
     Returns:
         data: The transformed array
     """
-    for _ in range(order):
-        tmp = inv.pop().reshape((data.shape[0],1))
-        data = np.cumsum(np.hstack([tmp, data]), axis=-1)
+    inv_values = copy.deepcopy(inv)
+    for i in range(order):
+        
+        t = inv_values.pop()
+        tmp = t.reshape((t.shape[0], t.shape[1], 1))
+
+        data = np.cumsum(np.dstack([tmp, data]), axis=-1)
     return data
 
 

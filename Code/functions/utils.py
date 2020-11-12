@@ -62,6 +62,10 @@ def get_data(dataset, Ns):
         df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns))
         X = df.to_numpy()
         X = X.T
+    elif dataset == "nasdaq":
+        X = pd.read_csv('../data/nasdaq100/small/nasdaq100_padding.csv',  nrows = sum(Ns))
+        X = X.to_numpy()
+        X = X.T
         
     X_train = X[..., :Ns[0]]
     X_val = X[..., Ns[0]:(Ns[1] + Ns[0])]
@@ -182,7 +186,6 @@ def inv_difference(data, inv, order):
     Returns:
         data: The transformed array
     """
-    X_r = data
     for _ in range(order):
         tmp = inv.pop().reshape((data.shape[0],1))
         data = np.cumsum(np.hstack([tmp, data]), axis=-1)

@@ -15,7 +15,7 @@ np.random.seed(0)
 
 
 # Load the Dataset
-data_name = "nasdaq"
+data_name = "book"
 X_train, X_val, X_test = get_data(dataset = data_name,
                                   Ns = [50, 5, 5])
 
@@ -23,6 +23,7 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 # plt.figure(figsize = (12,5))
 # plt.ylim(-1, 2)
 # plt.plot(X.T)
+# plt.show()
 
 
 # Set the algorithm's parameters
@@ -30,7 +31,7 @@ parameters = {'R1':2,
               'R2':2,
               'p': 2,
               'r': 9,
-              'd': 5,
+              'd': 0,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
@@ -70,12 +71,12 @@ for r_val in range(2, 11):
             #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
             #print("\nlam:", parameters['lam'])
             #print("Validation RMSE_AR: ", rmse_AR[-1], min(rmse_AR))
-            print("Validation NRMSE_AR: ", nrmse_AR[-1], min(nrmse_AR))
+            # print("Validation NRMSE_AR: ", nrmse_AR[-1], min(nrmse_AR))
             #print("Validation duration_AR: ", duration_AR)
             
             #file.write("\nlam:", parameters['lam']")
             file.write("\nR1:"+str(R1_val)+" R2:"+str(R2_val)+" p:"+str(parameters['p'])+" r:"+str(r_val)) 
-            file.write("\nValidation NRMSE_AR: "+str(nrmse_AR[-1])+" "+str(min(nrmse_AR))+"\n") 
+            file.write("\nValidation NRMSE_AR: "+str(nrmse_AR[-1])+"\n") 
 
 file.close()
 

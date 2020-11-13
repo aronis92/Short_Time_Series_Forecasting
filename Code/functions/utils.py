@@ -97,7 +97,7 @@ def book_data(sample_size):
     
     X_total[..., 0:2] = np.random.rand(3,2)
     for i in range(2, total):
-        X_total[..., i] = np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + e[..., i-2]
+        X_total[..., i] = np.array([73.23, 67.59, 67.46]) + np.dot(-A1, X_total[..., i-1]) + np.dot(-A2, X_total[..., i-2]) + e[..., i-2]
         
     return X_total[..., -sample_size:]#, A1, A2
 

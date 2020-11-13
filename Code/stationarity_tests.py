@@ -94,11 +94,11 @@ def stationarity_tests(dataset_name, ds, rs, N):
 
 
 
-ds = [i for i in range(5, 7)]
-rs = [i for i in range(2, 11)]
-print("Dataset: NASDAQ \n")
-stationarity_tests("nasdaq", ds, rs, N=60)
-print("____________________________\n")
+# ds = [i for i in range(5, 7)]
+# rs = [i for i in range(2, 11)]
+# print("Dataset: NASDAQ \n")
+# stationarity_tests("nasdaq", ds, rs, N=60)
+# print("____________________________\n")
 
 # ds = [i for i in range(2, 5)]
 # rs = [i for i in range(2, 4)]
@@ -106,10 +106,10 @@ print("____________________________\n")
 # stationarity_tests("inflation", ds, rs, N=60)
 # print("____________________________\n")
 
-# ds = [i for i in range(1, 2)]
-# rs = [i for i in range(2, 11)]
-# print("Dataset: Book \n")
-# stationarity_tests("book", ds, rs, N=60)
+ds = [i for i in range(1, 3)]
+rs = [i for i in range(2, 11)]
+print("Dataset: Book \n")
+stationarity_tests("book", ds, rs, N=60)
 
 
 

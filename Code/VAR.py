@@ -15,7 +15,7 @@ np.random.seed(0)
 
 
 # Load the Dataset
-data_name = "book"
+data_name = "nasdaq"
 X_train, X_val, X_test = get_data(dataset = data_name,
                                   Ns = [50, 5, 5])
 
@@ -26,11 +26,11 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1':3,
-              'R2':2,
+parameters = {'R1':42,
+              'R2':5,
               'p': 2,
-              'r': 2,
-              'd': 0,
+              'r': 6,
+              'd': 5,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
@@ -42,42 +42,43 @@ if parameters['d']>0:
 Rs = get_ranks(X_hat)
 
 
-file = open("BHT_VAR_" + data_name + ".txt", 'a')
+# file = open("results/BHT_VAR_" + data_name + ".txt", 'a')
 
-for r_val in range(2, 11):
-    parameters['r'] = r_val
-    for R1_val in range(2, Rs[0]+1):
-        parameters['R1'] = R1_val
-        for R2_val in range(2, r_val+1):
-            parameters['R2'] = R2_val
+# for r_val in range(2, 11):
+#     parameters['r'] = r_val
+#     for R1_val in range(2, Rs[0]+1):
+#         parameters['R1'] = R1_val
+#         for R2_val in range(2, r_val+1):
+#             parameters['R2'] = R2_val
 
 # l_list = [.1, .2, .3, .4, .5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
 # for l in l_list:
 #     parameters['lam'] = l
         
-            start = time.clock()
-            convergences, changes, A, prediction, Us = BHTAR(data_train = X_train,
-                                                             data_val = X_val,
-                                                             par = parameters,
-                                                             mod = "VAR")
-            end = time.clock()
-            duration_VAR = end - start
-            
-            rmse_VAR = changes[:,0]
-            nrmse_VAR = changes[:,1]
-            
-            # Validation
-            #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
-            #print("\nlam:", parameters['lam'])
-            #print("Validation RMSE_VAR: ", rmse_VAR[-1], min(rmse_VAR))
-            #print("Validation NRMSE_VAR: ", nrmse_VAR[-1], min(nrmse_VAR))
-            #print("Validation duration_VAR: ", duration_VAR)
-        
-            #file.write("\nlam:", parameters['lam']")
-            file.write("\nR1:"+str(R1_val)+" R2:"+str(R2_val)+" p:"+str(parameters['p'])+" r:"+str(r_val)) 
-            file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+" "+str(min(nrmse_VAR))+"\n") 
+start = time.clock()
+convergences, changes, A, prediction, Us = BHTAR(data_train = X_train,
+                                                 data_val = X_val,
+                                                 par = parameters,
+                                                 mod = "VAR")
+end = time.clock()
+duration_VAR = end - start
 
-file.close()
+rmse_VAR = changes[:,0]
+nrmse_VAR = changes[:,1]
+
+# Validation
+#print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
+#print("\nlam:", parameters['lam'])
+print("Validation RMSE_VAR: ", rmse_VAR[-1], min(rmse_VAR))
+print("Validation NRMSE_VAR: ", nrmse_VAR[-1], min(nrmse_VAR))
+#print("Validation duration_VAR: ", duration_VAR)
+        
+            # if nrmse_VAR[-1] < 0.07:
+            #     file.write("\nlam:", parameters['lam']")
+            #     file.write("\nR1:"+str(R1_val)+" R2:"+str(R2_val)+" p:"+str(parameters['p'])+" r:"+str(r_val)) 
+            #     file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+" "+str(min(nrmse_VAR))+"\n") 
+
+# file.close()
 
 
 

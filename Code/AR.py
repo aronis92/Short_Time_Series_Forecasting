@@ -15,7 +15,7 @@ np.random.seed(0)
 
 
 # Load the Dataset
-data_name = "book"
+data_name = "nasdaq"
 X_train, X_val, X_test = get_data(dataset = data_name,
                                   Ns = [50, 5, 5])
 
@@ -26,11 +26,11 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1':3,
+parameters = {'R1':2,
               'R2':2,
               'p': 2,
-              'r': 2,
-              'd': 0,
+              'r': 9,
+              'd': 5,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
@@ -42,7 +42,7 @@ if parameters['d']>0:
 Rs = get_ranks(X_hat)
 
 
-file = open("BHT_AR_" + data_name + ".txt", 'a')
+file = open("results/BHT_AR_" + data_name + ".txt", 'a')
 
 for r_val in range(2, 11):
     parameters['r'] = r_val
@@ -70,7 +70,7 @@ for r_val in range(2, 11):
             #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
             #print("\nlam:", parameters['lam'])
             #print("Validation RMSE_AR: ", rmse_AR[-1], min(rmse_AR))
-            #print("Validation NRMSE_AR: ", nrmse_AR[-1], min(nrmse_AR))
+            print("Validation NRMSE_AR: ", nrmse_AR[-1], min(nrmse_AR))
             #print("Validation duration_AR: ", duration_AR)
             
             #file.write("\nlam:", parameters['lam']")

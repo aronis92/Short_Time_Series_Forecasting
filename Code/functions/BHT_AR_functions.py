@@ -274,6 +274,7 @@ def BHTAR(data_train, data_val, par, mod):
       - A: The coefficient matrix
       - prediction: The predicted values of the next step
     """
+    
     # Initializations
     conv = 10
     epoch = 0

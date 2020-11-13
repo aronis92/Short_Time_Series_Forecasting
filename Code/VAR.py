@@ -5,7 +5,7 @@
 ##                                              ##
 ##################################################
 
-from functions.utils import plot_results, get_data, get_ranks
+from functions.utils import plot_results, get_data, get_ranks, difference
 from functions.BHT_AR_functions import BHTAR, BHTAR_test, MDT
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -15,7 +15,7 @@ np.random.seed(0)
 
 
 # Load the Dataset
-data_name = "nasdaq"
+data_name = "book"
 X_train, X_val, X_test = get_data(dataset = data_name,
                                   Ns = [50, 5, 5])
 
@@ -31,7 +31,7 @@ parameters = {'R1':3,
               'p': 2,
               'r': 2,
               'd': 0,
-              'lam': 1, #2.1 for VAR
+              'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
 
@@ -42,9 +42,9 @@ if parameters['d']>0:
 Rs = get_ranks(X_hat)
 
 
-file = open('BHT_VAR_'+data_name+'.txt', 'a')
+file = open("BHT_VAR_" + data_name + ".txt", 'a')
 
-for r_val in range(2, 4):
+for r_val in range(2, 11):
     parameters['r'] = r_val
     for R1_val in range(2, Rs[0]+1):
         parameters['R1'] = R1_val
@@ -66,7 +66,6 @@ for r_val in range(2, 4):
             rmse_VAR = changes[:,0]
             nrmse_VAR = changes[:,1]
             
-            #if nrmse_VAR[-1] < 0.018:
             # Validation
             #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
             #print("\nlam:", parameters['lam'])

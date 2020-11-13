@@ -119,7 +119,7 @@ def compute_rmse(y_pred, y_true):
 
 def compute_nrmse(y_pred, y_true):
     """
-    The function that computes and returns the rmse
+    The function that computes and returns the nrmse
     
     Input:
         y_pred: predicted values

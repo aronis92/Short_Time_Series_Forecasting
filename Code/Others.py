@@ -8,10 +8,8 @@
 from functions.utils import compute_nrmse, compute_rmse
 from functions.utils import get_data
 from functions.AR_functions import fit_ar, estimate_matrix_coefficients
-from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 import time
 np.random.seed(0)
@@ -62,13 +60,23 @@ def AR_results(data_train, data_val, data_test, p):
         rmse: The RMSE for the predicted value
         nrmse: The NRMSE for the predicted value
     """
-    data_train2 = np.append(data_train, data_val, axis=-1)
-    data_train2 = data_train2[..., data_val.shape[-1]:]
-    
     start = time.clock()
-    A = fit_ar(data_train2, p)
+    A = fit_ar(data_train, p)
     end = time.clock()
     
+    predictions_val = np.append(data_train[..., -p:], np.zeros(data_val.shape), axis=-1)
+    
+    for i in range(p, p+data_val.shape[-1]):
+        for j in range(p):
+            predictions_val[..., i] += A[j]*predictions_val[..., i-j-1]
+    
+    rmse_val = compute_rmse(predictions_val[..., p:], data_val)
+    nrmse_val = compute_nrmse(predictions_val[..., p:], data_val)
+    
+    
+    data_train2 = np.append(data_train, data_val, axis=-1)
+    data_train2 = data_train2[..., data_val.shape[-1]:]
+
     predictions = np.zeros(data_test.shape)
     predictions = np.append(data_train2[..., -p:], predictions, axis=-1)
     
@@ -79,24 +87,25 @@ def AR_results(data_train, data_val, data_test, p):
     duration = end - start
     rmse = compute_rmse(predictions[..., p:], data_test)
     nrmse = compute_nrmse(predictions[..., p:], data_test)
-    return A, duration, rmse, nrmse
+    
+    return A, duration, rmse, nrmse, rmse_val, nrmse_val
 
 
 
 
 '''Create/Load Dataset'''
-X_train, X_val, X_test = get_data(dataset = "book", Ns = [50, 5, 5])
+X_train, X_val, X_test = get_data(dataset = "book", Ns = [50, 1, 1])
 
 
-fig = plt.figure(figsize = (12,9))
-gs = fig.add_gridspec(4, hspace=0)
-axs = gs.subplots(sharex=True, sharey=False)
-# fig.suptitle('Sharing both axes')
-axs[0].plot(X_train.T)
-axs[1].plot(X_train[1, :].T, 'tab:orange')
-axs[2].plot(X_train[0, :].T, 'tab:blue')
-axs[3].plot(X_train[2, :].T, 'tab:green')
-plt.show()
+# fig = plt.figure(figsize = (12,9))
+# gs = fig.add_gridspec(4, hspace=0)
+# axs = gs.subplots(sharex=True, sharey=False)
+# # fig.suptitle('Sharing both axes')
+# axs[0].plot(X_train.T)
+# axs[1].plot(X_train[1, :].T, 'tab:orange')
+# axs[2].plot(X_train[0, :].T, 'tab:blue')
+# axs[3].plot(X_train[2, :].T, 'tab:green')
+# plt.show()
 
 
 
@@ -105,16 +114,17 @@ var_A, var_duration, var_rmse, var_nrmse = VAR_results(data_train = np.append(X_
                                                        data_val = X_test, 
                                                        p = 2)
 
-ar_A, ar_duration, ar_rmse, ar_nrmse,  = AR_results(data_train = X_train, 
-                                                    data_val = X_val,
-                                                    data_test = X_test,
-                                                    p=2)
-
-print("RMSE AR: ", ar_rmse)
-print("NRMSE AR: ", ar_nrmse)
+ar_A, ar_duration, ar_rmse, ar_nrmse, ar_rmse_val, ar_nrmse_val = AR_results(data_train = X_train, 
+                                                                             data_val = X_val,
+                                                                             data_test = X_test,
+                                                                             p=2)
+print("Validation RMSE AR: ", ar_rmse_val)
+print("Validation NRMSE AR: ", ar_nrmse_val)
+print("Test RMSE AR: ", ar_rmse)
+print("Test NRMSE AR: ", ar_nrmse)
 # print("Duration AR: ", ar_duration)
-print("RMSE VAR: ", var_rmse)
-print("NRMSE VAR: ", var_nrmse)
+print("Test RMSE VAR: ", var_rmse)
+print("Test NRMSE VAR: ", var_nrmse)
 # print("Duration VAR: ", var_duration)
 
 

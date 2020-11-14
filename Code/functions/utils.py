@@ -103,9 +103,6 @@ def book_data(sample_size):
     #                       np.dot(A1, X_total[..., i-1]) + \
     #                       np.dot(A2, X_total[..., i-2]) + e[..., i]
     
-    # X_total = X_total[..., -sample_size:]
-    # X_total = np.subtract(X_total, np.mean(X_total, axis=-1).reshape(3, 1)) / np.std(X_total, axis = -1).reshape(3, 1)
-    
     X_total[..., 0:2] = e[..., 0:2]
     for i in range(2, total):
         X_total[..., i] = np.dot(A1, X_total[..., i-1]) + \

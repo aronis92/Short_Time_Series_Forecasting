@@ -6,11 +6,6 @@ import pandas as pd
 import numpy as np
 import time
 
-# train = 50, val = 5, test = 5
-# d = 1, 2, 3 does not provide stationarity for original time series
-# d = 4 does not provide stationarity for all MDT orders r = [2, 10]
-# d = 5, 6, 7 provides stationarity for original Series and MDT orders r = [2, 10]
-
 
 def stationarity_tests(dataset_name, ds, rs, N):
     X, _, _ = get_data(dataset = dataset_name, Ns = [N, 1, 1])
@@ -92,32 +87,25 @@ def stationarity_tests(dataset_name, ds, rs, N):
 
 
 
-
-
-# ds = [i for i in range(5, 7)]
-# rs = [i for i in range(2, 11)]
-# print("Dataset: NASDAQ \n")
-# stationarity_tests("nasdaq", ds, rs, N=60)
-# print("____________________________\n")
-
-# ds = [i for i in range(2, 5)]
-# rs = [i for i in range(2, 4)]
-# print("Dataset: Inflation \n")
-# stationarity_tests("inflation", ds, rs, N=60)
-# print("____________________________\n")
-
-ds = [i for i in range(1, 3)]
+ds = [i for i in range(1, 8)]
 rs = [i for i in range(2, 11)]
 print("Dataset: Book \n")
-stationarity_tests("book", ds, rs, N=60)
+stationarity_tests("book", ds, rs, N=70)
+print("____________________________\n")
+
+ds = [i for i in range(1, 8)]
+rs = [i for i in range(2, 11)]
+print("Dataset: NASDAQ \n")
+stationarity_tests("nasdaq", ds, rs, N=70)
+print("____________________________\n")
+
+ds = [i for i in range(1, 8)]
+rs = [i for i in range(2, 11)]
+print("Dataset: Inflation \n")
+stationarity_tests("inflation", ds, rs, N=70)
 
 
 
 
 
-    
-    
-    
-    
-    
-    
+

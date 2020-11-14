@@ -20,10 +20,10 @@ X_train, X_val, X_test = get_data(dataset = data_name,
                                   Ns = [50, 5, 5])
 
 # Plot the loaded data
-# plt.figure(figsize = (12,5))
-# plt.ylim(-1, 2)
-# plt.plot(X_train.T)
-# plt.show()
+plt.figure(figsize = (12,5))
+#plt.ylim(20, 70)
+plt.plot(X_train.T)
+plt.show()
 
 
 # Set the algorithm's parameters
@@ -31,7 +31,7 @@ parameters = {'R1':42,
               'R2':5,
               'p': 2,
               'r': 6,
-              'd': 0,
+              'd': 2,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}

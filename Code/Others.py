@@ -6,7 +6,7 @@
 #################################################
 
 from functions.utils import compute_nrmse, compute_rmse
-from functions.utils import get_matrix_coeff_data, get_data
+from functions.utils import get_data
 from functions.AR_functions import fit_ar, estimate_matrix_coefficients
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.api import VAR
@@ -85,33 +85,37 @@ def AR_results(data_train, data_val, data_test, p):
 
 
 '''Create/Load Dataset'''
-# X, _, _ = get_matrix_coeff_data(sample_size=n_total, n_rows=3, n_columns=2)
-# X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = 6)
-# X = X.to_numpy()
-# X = X.T
+X_train, X_val, X_test = get_data(dataset = "book", Ns = [50, 5, 5])
 
-X_train, X_val, X_test = get_data(dataset = "book",
-                                  Ns = [40, 5, 5])
 
-# plt.figure(figsize = (12,5))
-# #plt.ylim(-1, 2)
-# plt.plot(X_train.T)
+fig = plt.figure(figsize = (12,9))
+gs = fig.add_gridspec(4, hspace=0)
+axs = gs.subplots(sharex=True, sharey=False)
+# fig.suptitle('Sharing both axes')
+axs[0].plot(X_train.T)
+axs[1].plot(X_train[1, :].T, 'tab:orange')
+axs[2].plot(X_train[0, :].T, 'tab:blue')
+axs[3].plot(X_train[2, :].T, 'tab:green')
+plt.show()
+
+
+
 
 var_A, var_duration, var_rmse, var_nrmse = VAR_results(data_train = np.append(X_train, X_val, axis=-1), 
                                                        data_val = X_test, 
                                                        p = 2)
 
-# ar_A, ar_duration, ar_rmse, ar_nrmse,  = AR_results(data_train = X_train, 
-#                                                     data_val = X_val,
-#                                                     data_test = X_test,
-#                                                     p=2)
+ar_A, ar_duration, ar_rmse, ar_nrmse,  = AR_results(data_train = X_train, 
+                                                    data_val = X_val,
+                                                    data_test = X_test,
+                                                    p=2)
 
-# print("RMSE AR: ", ar_rmse)
-# print("NRMSE AR: ", ar_nrmse)
+print("RMSE AR: ", ar_rmse)
+print("NRMSE AR: ", ar_nrmse)
 # print("Duration AR: ", ar_duration)
 print("RMSE VAR: ", var_rmse)
 print("NRMSE VAR: ", var_nrmse)
-print("Duration VAR: ", var_duration)
+# print("Duration VAR: ", var_duration)
 
 
 

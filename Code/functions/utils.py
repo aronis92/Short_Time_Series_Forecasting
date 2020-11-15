@@ -55,7 +55,7 @@ def get_data(dataset, Ns):
     if dataset == "book":
         X = book_data(sum(Ns))
     elif dataset == "nasdaq":
-        X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = sum(Ns))
+        X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = sum(Ns), skiprows = 100)
         X = X.to_numpy()
         X = X.T
     elif dataset == "inflation":
@@ -63,8 +63,16 @@ def get_data(dataset, Ns):
         df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns))
         X = df.to_numpy()
         X = X.T
+    elif dataset == "yahoo":
+        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/yahoo.csv'
+        df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns)+100)
+        df = df[['VIX.Open', 'VIX.High', 'VIX.Low', 'VIX.Close', 'VIX.Adjusted']]
+        X = df.to_numpy()
+        X = X[100:,...].T
     elif dataset=="noise":
         X = np.random.normal(0, 1, (3, sum(Ns)))
+    elif dataset=="traffic":
+        X = np.load('data/traffic_40.npy').T
 
     X_train = X[..., :Ns[0]]
     X_val = X[..., Ns[0]:(Ns[1] + Ns[0])]
@@ -195,12 +203,15 @@ def inv_difference(data, inv, order):
         data: The transformed array
     """
     inv_values = copy.deepcopy(inv)
-    for i in range(order):
-        
+    for _ in range(order):
         t = inv_values.pop()
-        tmp = t.reshape((t.shape[0], t.shape[1], 1))
-
-        data = np.cumsum(np.dstack([tmp, data]), axis=-1)
+        t_shape = list(t.shape)
+        t_shape.append(1)
+        tmp = t.reshape(tuple(t_shape))
+        if len(t_shape) == 2:
+            data = np.cumsum(np.hstack([tmp, data]), axis=-1)
+        elif len(t_shape) == 3:
+            data = np.cumsum(np.dstack([tmp, data]), axis=-1)
     return data
 
 

@@ -6,17 +6,19 @@
 #################################################
 
 from functions.utils import compute_nrmse, compute_rmse
-from functions.utils import get_data
+from functions.utils import get_data, difference, inv_difference
 from functions.AR_functions import fit_ar, estimate_matrix_coefficients
 from statsmodels.tsa.api import VAR
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import time
+import copy
 np.random.seed(0)
 
 
 
-def VAR_results(data_train, data_val, p):
+def VAR_results(data_train, data_val, data_test, p, d):
     """
     The function that calculates and returns the 
     results of vector AR with matrix coefficients
@@ -31,21 +33,60 @@ def VAR_results(data_train, data_val, p):
         rmse: The RMSE for the predicted value
         nrmse: The NRMSE for the predicted value
     """
-    start = time.clock()
+    '''
     model = VAR(data_train.T)
     results = model.fit(p)
-    end = time.clock()
     A = results.coefs
+    predictions_val = results.forecast(data_train[..., -p:].T, data_val.shape[-1])
+    rmse = compute_rmse(predictions_val.T, data_val)
+    nrmse = compute_nrmse(predictions_val.T, data_val)
+    results_val = [rmse, nrmse]
+    print(results_val)
+    '''
+    if d>0:
+        data_train_original = copy.deepcopy(data_train)
+        data_train, inv = difference(data_train, d)
     
-    predictions = results.forecast(data_train[..., -p:].T, data_val.shape[-1])
-
+    start = time.clock()
+    A = estimate_matrix_coefficients(data_train, p)
+    end = time.clock()
     duration = end - start
-    rmse = compute_rmse(predictions.T, data_val)
-    nrmse = compute_nrmse(predictions.T, data_val)
-    return A, duration, rmse, nrmse
+    
+    # Create the validation prediction array
+    # The last p elements of data_train concatened 
+    # with zeroes for the values to be predicted
+    predictions_val = np.append(data_train[..., -p:], np.zeros(data_val.shape), axis=-1)
+    
+    # Forecast the next values
+    for i in range(p, p+data_val.shape[-1]):
+        predictions_val[..., i] += A[0]
+        for j in range(p):
+            predictions_val[..., i] += np.dot(A[j+1], predictions_val[..., i-j-1])
+    
+    predictions_val = predictions_val[..., -data_val.shape[-1]:]
+    
+    tmp = np.append(data_train, predictions_val, axis=-1)    
+    
+    if d>0:
+        predictions_val = inv_difference(tmp, inv, d)
+    
+    rmse = compute_rmse(predictions_val[..., -data_val.shape[-1]:], data_val)
+    nrmse = compute_nrmse(predictions_val[..., -data_val.shape[-1]:], data_val)
+    results_val = [rmse, nrmse]
 
 
-def AR_results(data_train, data_val, data_test, p):
+    
+    
+    data_test_start = np.append(data_train, data_val, axis=-1)
+    predictions_test = np.zeros(data_test.shape)
+    predictions_test = np.append(data_test_start[..., -p:], predictions_test, axis=-1)
+    
+    results_test = []
+    
+    return results_val, results_test, duration
+
+
+def AR_results(data_train, data_val, data_test, p, d):
     """
     The function that calculates and returns the 
     results of vector AR with scalar coefficients
@@ -60,35 +101,45 @@ def AR_results(data_train, data_val, data_test, p):
         rmse: The RMSE for the predicted value
         nrmse: The NRMSE for the predicted value
     """
+    # Fit with the training data
     start = time.clock()
     A = fit_ar(data_train, p)
     end = time.clock()
+    duration = end - start
     
+    # Create the validation prediction array
+    # The last p elements of data_train concatened 
+    # with zeroes for the values to be predicted
     predictions_val = np.append(data_train[..., -p:], np.zeros(data_val.shape), axis=-1)
     
+    # Forecast the next values
     for i in range(p, p+data_val.shape[-1]):
         for j in range(p):
             predictions_val[..., i] += A[j]*predictions_val[..., i-j-1]
     
+    # Compute the RMSE and NRMSE for the validation set
     rmse_val = compute_rmse(predictions_val[..., p:], data_val)
     nrmse_val = compute_nrmse(predictions_val[..., p:], data_val)
+    results_val = [rmse_val, nrmse_val]
     
+    # Create the test prediction array
+    # The last p elements of data_test_start 
+    # with zeroes for the values to be predicted
+    data_test_start = np.append(data_train, data_val, axis=-1)
+    predictions_test = np.zeros(data_test.shape)
+    predictions_test = np.append(data_test_start[..., -p:], predictions_test, axis=-1)
     
-    data_train2 = np.append(data_train, data_val, axis=-1)
-    data_train2 = data_train2[..., data_val.shape[-1]:]
-
-    predictions = np.zeros(data_test.shape)
-    predictions = np.append(data_train2[..., -p:], predictions, axis=-1)
-    
+    # Forecast the next values
     for i in range(p, p+data_test.shape[-1]):
         for j in range(p):
-            predictions[..., i] += A[j]*predictions[..., i-j-1]
+            predictions_test[..., i] += A[j]*predictions_test[..., i-j-1]
     
-    duration = end - start
-    rmse = compute_rmse(predictions[..., p:], data_test)
-    nrmse = compute_nrmse(predictions[..., p:], data_test)
+    # Compute the RMSE and NRMSE for the test set
+    rmse_test = compute_rmse(predictions_test[..., p:], data_test)
+    nrmse_test = compute_nrmse(predictions_test[..., p:], data_test)
+    results_test = [rmse_test, nrmse_test]
     
-    return A, duration, rmse, nrmse, rmse_val, nrmse_val
+    return results_val, results_test, duration
 
 
 
@@ -96,6 +147,8 @@ def AR_results(data_train, data_val, data_test, p):
 '''Create/Load Dataset'''
 X_train, X_val, X_test = get_data(dataset = "book", Ns = [50, 1, 1])
 
+
+# X_train, _ = difference(X_train, 2)
 
 # fig = plt.figure(figsize = (12,9))
 # gs = fig.add_gridspec(4, hspace=0)
@@ -108,27 +161,31 @@ X_train, X_val, X_test = get_data(dataset = "book", Ns = [50, 1, 1])
 # plt.show()
 
 
+ar_results_val, ar_results_test, ar_duration = AR_results(data_train = X_train, 
+                                                          data_val = X_val,
+                                                          data_test = X_test,
+                                                          p = 2,
+                                                          d = 1)
 
+var_results_val, var_results_test, var_duration = VAR_results(data_train = X_train, 
+                                                              data_val = X_val, 
+                                                              data_test = X_test,
+                                                              p = 2,
+                                                              d = 3)
 
-var_A, var_duration, var_rmse, var_nrmse = VAR_results(data_train = np.append(X_train, X_val, axis=-1), 
-                                                       data_val = X_test, 
-                                                       p = 2)
-
-ar_A, ar_duration, ar_rmse, ar_nrmse, ar_rmse_val, ar_nrmse_val = AR_results(data_train = X_train, 
-                                                                             data_val = X_val,
-                                                                             data_test = X_test,
-                                                                             p=2)
-print("Validation RMSE AR: ", ar_rmse_val)
-print("Validation NRMSE AR: ", ar_nrmse_val)
-print("Test RMSE AR: ", ar_rmse)
-print("Test NRMSE AR: ", ar_nrmse)
+print("Autoregression with Scalar Coefficients")
+print("Validation RMSE:  ", ar_results_val[0])
+print("Validation NRMSE: ", ar_results_val[1])
+print("Test RMSE:  ", ar_results_test[0])
+print("Test NRMSE: ", ar_results_test[1])
 # print("Duration AR: ", ar_duration)
-print("Test RMSE VAR: ", var_rmse)
-print("Test NRMSE VAR: ", var_nrmse)
-# print("Duration VAR: ", var_duration)
 
-
-
+print("\nAutoregression with Matrix Coefficients")
+print("Validation RMSE:  ", var_results_val[0])
+print("Validation NRMSE: ", var_results_val[1])
+# print("Test RMSE:  ", var_results_test[0])
+# print("Test NRMSE: ", var_results_test[1])
+print("Duration VAR: ", var_duration)
 
 
 

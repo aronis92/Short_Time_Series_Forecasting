@@ -100,7 +100,7 @@ def book_data(sample_size):
                    [-.04, .36, -.1],
                    [-.33, .05, .38]])
 
-    total = sample_size + 50
+    total = sample_size + 100
     X_total = np.zeros((3, total))
     
     e = np.random.normal(0, 1, (3, total))

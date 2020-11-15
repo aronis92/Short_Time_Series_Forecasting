@@ -29,11 +29,29 @@ from functions.utils import get_data
 # plt.plot(X[1:, ...].T)
 # plt.show()
 
-data = sm.datasets.copper.load_pandas().data
+# data = sm.datasets.fertility.load_pandas().data
+# data = data.iloc[:, 4:-2]
+# data = data.dropna()
+# X = data.to_numpy()
+# X = X.T
+# plt.figure(figsize = (12,5))
+# plt.title("Fertility dataset")
+# plt.plot(X.T)
+# plt.show()
+
+# data = sm.datasets.stackloss.load_pandas().data
+# X = data.to_numpy()
+# X = X.T
+# plt.figure(figsize = (12,5))
+# plt.title("Stack Loss dataset")
+# plt.plot(X.T)
+# plt.show()
+
+data = sm.datasets.stackloss.load_pandas().data
 X = data.to_numpy()
-X = X[..., :-1].T
+X = X.T
 plt.figure(figsize = (12,5))
-plt.title("Copper Market dataset")
+plt.title("Stack Loss dataset")
 plt.plot(X.T)
 plt.show()
 

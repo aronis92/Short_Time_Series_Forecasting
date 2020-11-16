@@ -7,8 +7,8 @@ import numpy as np
 import time
 
 
-def stationarity_tests(dataset_name, ds, rs, N):
-    X, _, _ = get_data(dataset = dataset_name, Ns = [N, 1, 1])
+def stationarity_tests(dataset_name, ds, rs, Ns):
+    X, _, _ = get_data(dataset_name, Ns)
     
     '''Check if Series are Stationary'''
     counter = 0
@@ -47,7 +47,7 @@ def stationarity_tests(dataset_name, ds, rs, N):
     
     
     for d in ds:
-        X, _, _ = get_data(dataset = dataset_name,  Ns = [N + d, 1, 1])
+        X, _, _ = get_data(dataset_name,  Ns)
         #print("X shape:", X.shape)
   
         '''Check differenced data for Stationarity'''

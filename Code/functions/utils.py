@@ -10,6 +10,7 @@ from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 from random import random, seed
 from numpy import linalg as la
+import statsmodels.api as sm
 from numpy import log
 import tensorly as tl
 import pandas as pd
@@ -53,27 +54,131 @@ def get_data(dataset, Ns):
     """
     np.random.seed(0)
     if dataset == "book":
+        """
+        Variables : 3
+        Timepoints: sum(Ns)
+        """
         X = book_data(sum(Ns))
+    
     elif dataset == "nasdaq":
-        X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv',  nrows = sum(Ns), skiprows = 100)
+        """
+        Variables : 82
+        Timepoints: 40560
+        """
+        X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv')
         X = X.to_numpy()
         X = X.T
+    
     elif dataset == "inflation":
+        """
+        Variables : 8
+        Timepoints: 123
+        """
         filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/Raotbl6.csv'
         df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns))
         X = df.to_numpy()
         X = X.T
+    
     elif dataset == "yahoo":
+        """
+        Variables : 5
+        Timepoints: 2469
+        """
         filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/yahoo.csv'
-        df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns)+100)
+        df = pd.read_csv(filepath, parse_dates=['date'], index_col='date', skiprows=range(1, 1400), nrows = sum(Ns)+100)
         df = df[['VIX.Open', 'VIX.High', 'VIX.Low', 'VIX.Close', 'VIX.Adjusted']]
         X = df.to_numpy()
-        X = X[100:,...].T
-    elif dataset=="noise":
+        X = X.T
+    
+    elif dataset == "noise":
         X = np.random.normal(0, 1, (3, sum(Ns)))
-    elif dataset=="traffic":
+    
+    elif dataset == "traffic":
+        """
+        Variables : 40
+        Timepoints: 228
+        """
         X = np.load('data/traffic_40.npy').T
-
+        
+    elif dataset == "macro":
+        """
+        Variables : 12
+        Timepoints: 203
+        """
+        data = sm.datasets.macrodata.load_pandas().data
+        X = data[['realgdp', 'realcons', 'realinv', 'realgovt', 'realdpi', 'cpi', 'm1', 'tbilrate', 'unemp', 'pop', 'infl', 'realint']]
+        X = X.to_numpy()
+        X = X.T
+        
+    elif dataset == "elnino":
+        """
+        Variables : 12
+        Timepoints: 61
+        """
+        data = sm.datasets.elnino.load_pandas().data
+        X = data.to_numpy()
+        X = X[..., 1:].T
+        
+    elif dataset == "copper":
+        """
+        Variables : 5
+        Timepoints: 25
+        """
+        data = sm.datasets.copper.load_pandas().data
+        X = data.to_numpy()
+        X = X[..., :-1].T
+        
+    elif dataset == "fertility":
+        """
+        Variables : 192
+        Timepoints: 52
+        """
+        data = sm.datasets.fertility.load_pandas().data
+        data = data.iloc[:, 4:-2]
+        data = data.dropna()
+        X = data.to_numpy()
+        
+    elif dataset == "stackloss":
+        """
+        Variables : 4
+        Timepoints: 21
+        """
+        data = sm.datasets.stackloss.load_pandas().data
+        X = data.to_numpy()
+        X = X.T
+        
+    elif dataset == "nightvisitors":
+        """
+        Variables : 8
+        Timepoints: 56
+        """
+        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/nightvisitors_multi_ts.csv'
+        df = pd.read_csv(filepath, nrows = 100)
+        X = df.to_numpy()
+        X = X.T
+        
+    elif dataset == "mortality":
+        """
+        Variables : 2
+        Timepoints: 72
+        """
+        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/mortality.csv'
+        df = pd.read_csv(filepath, nrows = sum(Ns))
+        X = df.to_numpy()
+        X = X[..., 1:].T  
+        
+    elif dataset == "ozone":
+        """
+        Variables : 8
+        Timepoints: 203
+        """
+        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/ozone.csv'
+        df = pd.read_csv(filepath, sum(Ns))
+        df = df.iloc[:, [3, 5, 6, 7, 8, 10, 11, 12]]
+        X = df.to_numpy()
+        X = X.T 
+        
+        
     X_train = X[..., :Ns[0]]
     X_val = X[..., Ns[0]:(Ns[1] + Ns[0])]
     X_test = X[..., -Ns[2]:]

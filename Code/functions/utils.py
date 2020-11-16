@@ -173,7 +173,7 @@ def get_data(dataset, Ns):
         Timepoints: 203
         """
         filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/ozone.csv'
-        df = pd.read_csv(filepath, sum(Ns))
+        df = pd.read_csv(filepath, nrows = sum(Ns))
         df = df.iloc[:, [3, 5, 6, 7, 8, 10, 11, 12]]
         X = df.to_numpy()
         X = X.T 

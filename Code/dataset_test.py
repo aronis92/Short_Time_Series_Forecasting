@@ -86,7 +86,7 @@ def stationarity_tests(dataset_name, ds, rs, Ns):
 datasets = ['macro', #__________0     12 x 203
             'elnino', #_________1     12 x 61
             'copper', #_________2      5 x 25    # DROP
-            'fertility', #______3    192 x 52    # Maybe drop
+            'fertility', #______3    192 x 52    # DROP
             'stackloss', #______4      4 x 21
             'nightvisitors', #__5      8 x 56
             'mortality', #______6      2 x 72
@@ -109,7 +109,7 @@ plt.show()
 
 
 
-ds = [i for i in range(8, 10)]
+ds = [i for i in range(1, 8)]
 rs = [i for i in range(2, 11)]
 print("Dataset: " + data_name + " \n")
 stationarity_tests(data_name, ds, rs, Ns)

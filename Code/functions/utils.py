@@ -93,12 +93,12 @@ def get_data(dataset, Ns):
     elif dataset == "noise":
         X = np.random.normal(0, 1, (3, sum(Ns)))
     
-    elif dataset == "traffic":
-        """
-        Variables : 40
-        Timepoints: 228
-        """
-        X = np.load('data/traffic_40.npy').T
+    # elif dataset == "traffic":
+    #     """
+    #     Variables : 40
+    #     Timepoints: 228
+    #     """
+    #     X = np.load('data/traffic_40.npy').T
         
     elif dataset == "macro":
         """
@@ -119,24 +119,24 @@ def get_data(dataset, Ns):
         X = data.to_numpy()
         X = X[..., 1:].T
         
-    elif dataset == "copper":
-        """
-        Variables : 5
-        Timepoints: 25
-        """
-        data = sm.datasets.copper.load_pandas().data
-        X = data.to_numpy()
-        X = X[..., :-1].T
+    # elif dataset == "copper":
+    #     """
+    #     Variables : 5
+    #     Timepoints: 25
+    #     """
+    #     data = sm.datasets.copper.load_pandas().data
+    #     X = data.to_numpy()
+    #     X = X[..., :-1].T
         
-    elif dataset == "fertility":
-        """
-        Variables : 192
-        Timepoints: 52
-        """
-        data = sm.datasets.fertility.load_pandas().data
-        data = data.iloc[:, 4:-2]
-        data = data.dropna()
-        X = data.to_numpy()
+    # elif dataset == "fertility":
+    #     """
+    #     Variables : 192
+    #     Timepoints: 52
+    #     """
+    #     data = sm.datasets.fertility.load_pandas().data
+    #     data = data.iloc[:, 4:-2]
+    #     data = data.dropna()
+    #     X = data.to_numpy()
         
     elif dataset == "stackloss":
         """

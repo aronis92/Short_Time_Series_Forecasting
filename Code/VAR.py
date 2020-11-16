@@ -12,9 +12,20 @@ import numpy as np
 import time
 np.random.seed(0)
 
+#                             Index  Var x Time
+datasets = ['macro', #__________0     12 x 203
+            'elnino', #_________1     12 x 61
+            'stackloss', #______2      4 x 21
+            'nightvisitors', #__3      8 x 56
+            'mortality', #______4      2 x 72
+            'ozone', #__________5      8 x 203
+            'inflation', #______6      8 x 123  
+            'nasdaq', #_________7     82 x 40560 # Pending
+            'yahoo', #__________8     5 x 2469  
+            'book'] #___________9     3 x sum(Ns)
 
 # Load the Dataset
-data_name = "book"
+data_name = datasets[0]
 X_train, X_val, X_test = get_data(dataset = data_name,
                                   Ns = [50, 1, 1])
 
@@ -24,38 +35,28 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 # plt.plot(X_train.T)
 # plt.show()
 
-'''       50-01-01    50-05-05    50-10-10
-Book      d: 2-7      d: 2-7      d: 1-7
-NASDAQ    d: 6-7      d: 5-7      d: 4-7
-Inflation d: 2, 5-7   d: 5-7      d: 5-7
-'''
+
 # Set the algorithm's parameters
-parameters = {'R1':42,
-              'R2':5,
+parameters = {'R1':2,
+              'R2':2,
               'p': 2,
-              'r': 6,
+              'r': 2,
               'd': 2,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
 
 
-X_hat, _ = MDT(X_train, parameters['r'])
-if parameters['d']>0:
-    X_hat, _ = difference(X_hat, parameters['d'])
-Rs = get_ranks(X_hat)
-
-
-#file = open("results/BHT_VAR_d_" + str(parameters['d']) + "_" + data_name + ".txt", 'a')
 file = open("results/BHT_VAR_" + data_name + ".txt", 'a')
 
-
+ds = [2, 3, 4, 5]
     
 for r_val in range(2, 11):
     parameters['r'] = r_val
-    for d_val in [i for i in range(2, 8)]:
+    
+    for d_val in ds:
         parameters['d'] = d_val
-        print(r_val, d_val)
+        print("r:", r_val, "d:", d_val)
         X_hat, _ = MDT(X_train, parameters['r'])
         if parameters['d']>0:
             X_hat, _ = difference(X_hat, parameters['d'])
@@ -63,6 +64,7 @@ for r_val in range(2, 11):
         
         for R1_val in range(2, Rs[0]+1):
             parameters['R1'] = R1_val
+            
             for R2_val in range(2, r_val+1):
                 parameters['R2'] = R2_val
 

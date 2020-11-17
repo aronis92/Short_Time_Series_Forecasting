@@ -37,9 +37,9 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1':2,
+parameters = {'R1':5,
               'R2':2,
-              'p': 2,
+              'p': 5,
               'r': 2,
               'd': 2, 
               'lam': 1,
@@ -49,7 +49,7 @@ parameters = {'R1':2,
 
 file = open("results/BHT_AR_" + data_name + ".txt", 'a')
 
-ds = [2, 3, 4, 5]
+ds = [0, 1]#[2, 3, 4, 5]
 
 for p_val in range(1,6):
     parameters['p'] = p_val
@@ -94,8 +94,8 @@ for p_val in range(1,6):
                     # print("Validation NRMSE_AR: ", nrmse_AR[-1], min(nrmse_AR))
                     #print("Validation duration_AR: ", duration_AR)
                     
-                    if nrmse_AR[-1] < 0.01047:
-                    #    file.write("\nlam:", parameters['lam']")
+                    if nrmse_AR[-1] < 0.00803:
+                        #file.write("\nlam:" + str(parameters['lam']))
                         file.write("\nR1:"+str(R1_val)+" R2:"+str(R2_val)+" p:"+str(parameters['p'])+" r:"+str(r_val)+" d:"+str(d_val)) 
                         file.write("\nValidation RMSE_AR: "+str(rmse_AR[-1])) 
                         file.write("\nValidation NRMSE_AR: "+str(nrmse_AR[-1])+"\n") 

@@ -37,9 +37,9 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1':2,
+parameters = {'R1':5,
               'R2':2,
-              'p': 2,
+              'p': 1,
               'r': 2,
               'd': 2,
               'lam': 1,
@@ -49,52 +49,55 @@ parameters = {'R1':2,
 
 file = open("results/BHT_VAR_" + data_name + ".txt", 'a')
 
-ds = [2, 3, 4, 5]
+ds = [0, 1]#[2, 3, 4, 5]
     
-for r_val in range(2, 11):
-    parameters['r'] = r_val
+for p_val in range(1,6):
+    parameters['p'] = p_val
     
-    for d_val in ds:
-        parameters['d'] = d_val
-        print("r:", r_val, "d:", d_val)
-        X_hat, _ = MDT(X_train, parameters['r'])
-        if parameters['d']>0:
-            X_hat, _ = difference(X_hat, parameters['d'])
-        Rs = get_ranks(X_hat)
+    for r_val in range(2, 11):
+        parameters['r'] = r_val
         
-        for R1_val in range(2, Rs[0]+1):
-            parameters['R1'] = R1_val
+        for d_val in ds:
+            parameters['d'] = d_val
+            print("p:", p_val, "r:", r_val, "d:", d_val)
+            X_hat, _ = MDT(X_train, parameters['r'])
+            if parameters['d']>0:
+                X_hat, _ = difference(X_hat, parameters['d'])
+            Rs = get_ranks(X_hat)
             
-            for R2_val in range(2, r_val+1):
-                parameters['R2'] = R2_val
+            for R1_val in range(2, Rs[0]+1):
+                parameters['R1'] = R1_val
+                
+                for R2_val in range(2, r_val+1):
+                    parameters['R2'] = R2_val
 
 # l_list = [.1, .2, .3, .4, .5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
 # for l in l_list:
 #     parameters['lam'] = l
         
-                start = time.clock()
-                convergences, changes, A, prediction, Us = BHTAR(data_train = X_train,
-                                                                 data_val = X_val,
-                                                                 par = parameters,
-                                                                 mod = "VAR")
-                end = time.clock()
-                duration_VAR = end - start
-                
-                rmse_VAR = changes[:,0]
-                nrmse_VAR = changes[:,1]
-                
-                # Validation
-                #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
-                #print("\nlam:", parameters['lam'])
-                # print("Validation RMSE_VAR: ", rmse_VAR[-1], min(rmse_VAR))
-                # print("Validation NRMSE_VAR: ", nrmse_VAR[-1], min(nrmse_VAR))
-                #print("Validation duration_VAR: ", duration_VAR)
-            
-                if nrmse_VAR[-1] < 0.99:
-                #    file.write("\nlam:", parameters['lam']")
-                    file.write("\nd:"+str(d_val)+" R1:"+str(R1_val)+" R2:"+str(R2_val)+" p:"+str(parameters['p'])+" r:"+str(r_val)) 
-                    file.write("\nValidation RMSE_VAR: "+str(rmse_VAR[-1])) 
-                    file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+"\n")
+                    start = time.clock()
+                    convergences, changes, A, prediction, Us = BHTAR(data_train = X_train,
+                                                                     data_val = X_val,
+                                                                     par = parameters,
+                                                                     mod = "VAR")
+                    end = time.clock()
+                    duration_VAR = end - start
+                    
+                    rmse_VAR = changes[:,0]
+                    nrmse_VAR = changes[:,1]
+                    
+                    # Validation
+                    #print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'])
+                    #print("\nlam:", parameters['lam'])
+                    # print("Validation RMSE_VAR: ", rmse_VAR[-1], min(rmse_VAR))
+                    # print("Validation NRMSE_VAR: ", nrmse_VAR[-1], min(nrmse_VAR))
+                    #print("Validation duration_VAR: ", duration_VAR)
+                    
+                    if nrmse_VAR[-1] < 0.0039:
+                        file.write("\nlam:" + str(parameters['lam']))
+                        #file.write("\n R1:"+str(R1_val)+" R2:"+str(R2_val)+" p:"+str(parameters['p'])+" r:"+str(r_val)+" d:"+str(d_val)) 
+                        file.write("\nValidation RMSE_VAR: "+str(rmse_VAR[-1])) 
+                        file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+"\n")
             
 
 file.close()

@@ -25,9 +25,9 @@ datasets = ['macro', #__________0     12 x 203
             'book'] #___________9     3 x sum(Ns)
 
 # Load the Dataset
-data_name = datasets[0]
+data_name = datasets[3]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [100, 1, 1])
+                                  Ns = [54, 1, 1])
 
 # Plot the loaded data
 # plt.figure(figsize = (12,5))

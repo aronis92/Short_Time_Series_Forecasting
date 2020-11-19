@@ -13,21 +13,21 @@ import time
 np.random.seed(0)
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203
-            'elnino', #_________1     12 x 61
-            'stackloss', #______2      4 x 21
-            'nightvisitors', #__3      8 x 56
-            'mortality', #______4      2 x 72
-            'ozone', #__________5      8 x 203
-            'inflation', #______6      8 x 123  
-            'nasdaq', #_________7     82 x 40560 # Pending
-            'yahoo', #__________8     5 x 2469  
-            'book'] #___________9     3 x sum(Ns)
+datasets = ['macro', #__________0     12 x 203    #
+            'elnino', #_________1     12 x 61     # DONE
+            'stackloss', #______2      4 x 21     #
+            'nightvisitors', #__3      8 x 56     #
+            'mortality', #______4      2 x 72     #
+            'ozone', #__________5      8 x 203    # 
+            'inflation', #______6      8 x 123    # 
+            'nasdaq', #_________7     82 x 40560  # Pending
+            'yahoo', #__________8     5 x 2469    #
+            'book'] #___________9     3 x sum(Ns) #
 
 # Load the Dataset
 data_name = datasets[0]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [100, 1, 1])
+                                  Ns = [150, 1, 1])
 
 # Plot the loaded data
 # plt.figure(figsize = (12,5))

@@ -169,7 +169,7 @@ datasets = ['macro', #__________0     12 x 203
             'book'] #___________9     3 x sum(Ns)
 
 '''Create/Load Dataset'''
-X_train, X_val, X_test = get_data(dataset = datasets[0], Ns = [201, 1, 1])
+X_train, X_val, X_test = get_data(dataset = datasets[0], Ns = [50, 1, 1])
 # data_train = X_train
 # data_val = X_val
 # data_test = X_test
@@ -189,6 +189,7 @@ X_train, X_val, X_test = get_data(dataset = datasets[0], Ns = [201, 1, 1])
 # plt.show()
 
 print("Autoregression with Scalar Coefficients")
+min_v = 1000
 for p_val in range(1, 9):
     for d_val in range(0, 8):
         
@@ -197,13 +198,15 @@ for p_val in range(1, 9):
                                                                   data_test = X_test,
                                                                   p = p_val,
                                                                   d = d_val)
-        if ar_results_val[1]<0.0108:
+        if ar_results_val[1] < min_v:
+            min_v = ar_results_val[1]
             print("p:"+str(p_val)+" d:"+str(d_val))
             print("Validation RMSE:  ", ar_results_val[0])
             print("Validation NRMSE: ", ar_results_val[1])
   
         
 print("\nAutoregression with Matrix Coefficients")
+min_v = 1000
 for p_val in range(1, 9):
     for d_val in range(0, 8):
         
@@ -212,7 +215,8 @@ for p_val in range(1, 9):
                                                                       data_test = X_test,
                                                                       p = p_val,
                                                                       d = d_val)
-        if var_results_val[1]<0.0108:
+        if var_results_val[1] < min_v:
+            min_v = var_results_val[1]
             print("p:"+str(p_val)+" d:"+str(d_val))
             print("Validation RMSE:  ", var_results_val[0])
             print("Validation NRMSE: ", var_results_val[1])

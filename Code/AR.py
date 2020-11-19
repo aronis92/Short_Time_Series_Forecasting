@@ -13,21 +13,21 @@ import time
 np.random.seed(0)
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203
-            'elnino', #_________1     12 x 61
-            'stackloss', #______2      4 x 21
-            'nightvisitors', #__3      8 x 56
-            'mortality', #______4      2 x 72
-            'ozone', #__________5      8 x 203
-            'inflation', #______6      8 x 123  
-            'nasdaq', #_________7     82 x 40560 # Pending
-            'yahoo', #__________8     5 x 2469  
-            'book'] #___________9     3 x sum(Ns)
+datasets = ['macro', #__________0     12 x 203    #
+            'elnino', #_________1     12 x 61     # DONE
+            'stackloss', #______2      4 x 21     #
+            'nightvisitors', #__3      8 x 56     #
+            'mortality', #______4      2 x 72     #
+            'ozone', #__________5      8 x 203    # 
+            'inflation', #______6      8 x 123    # 
+            'nasdaq', #_________7     82 x 40560  # Pending
+            'yahoo', #__________8     5 x 2469    #
+            'book'] #___________9     3 x sum(Ns) #
 
 # Load the Dataset
-data_name = datasets[3]
+data_name = datasets[0]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [54, 1, 1])
+                                  Ns = [150, 1, 1])
 
 # Plot the loaded data
 # plt.figure(figsize = (12,5))
@@ -97,6 +97,7 @@ for p_val in range(1,6):
                     if nrmse_AR[-1] < min_v:
                         min_v = nrmse_AR[-1]
                         file.write("\nR1:"+str(R1_val)+"  R2:"+str(R2_val)+"  p:"+str(parameters['p'])+"  r:"+str(r_val)+"  d:"+str(d_val)+"  lam:" + str(parameters['lam'])) 
+                        #file.write("lambda:"+str(l))
                         file.write("\nValidation RMSE_AR: "+str(rmse_AR[-1])) 
                         file.write("\nValidation NRMSE_AR: "+str(nrmse_AR[-1])+"\n") 
             

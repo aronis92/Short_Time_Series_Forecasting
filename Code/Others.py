@@ -65,28 +65,31 @@ def VAR_results(data_train, data_val, data_test, p, d):
     results_val = [rmse, nrmse]
 
     # Testing Phase
-    # data_test_start = np.append(data_train_original, data_val, axis=-1)
     
-    # if d>0:
-    #     data_test_start, inv = difference(data_test_start, d)
-        
-    # predictions_test = np.append(data_test_start[..., -p:], np.zeros(data_test.shape), axis=-1)
+    
+    if d>0:
+        data_test_start = np.append(data_train_original, data_val, axis=-1)
+        data_test_start, inv = difference(data_test_start, d)
+    else:
+        data_test_start = np.append(data_train, data_val, axis=-1)
+      
+    predictions_test = np.append(data_test_start[..., -p:], np.zeros(data_test.shape), axis=-1)
     
     # # Forecast the next values
-    # for i in range(p, p+data_test.shape[-1]):
-    #     predictions_test[..., i] += A[0]
-    #     for j in range(p):
-    #         predictions_test[..., i] += np.dot(A[j+1], predictions_test[..., i-j-1])
+    for i in range(p, p+data_test.shape[-1]):
+        predictions_test[..., i] += A[0]
+        for j in range(p):
+            predictions_test[..., i] += np.dot(A[j+1], predictions_test[..., i-j-1])
     
-    # predictions_test = predictions_test[..., -data_test.shape[-1]:]
+    predictions_test = predictions_test[..., -data_test.shape[-1]:]
     
-    # if d>0:
-    #     predictions_test = inv_difference(np.append(data_test_start, predictions_test, axis=-1) , inv, d)
+    if d>0:
+        predictions_test = inv_difference(np.append(data_test_start, predictions_test, axis=-1) , inv, d)
     
-    # rmse = compute_rmse(predictions_test[..., -data_test.shape[-1]:], data_test)
-    # nrmse = compute_nrmse(predictions_test[..., -data_test.shape[-1]:], data_test)
-    # results_test = [rmse, nrmse]
-    results_test = []
+    rmse = compute_rmse(predictions_test[..., -data_test.shape[-1]:], data_test)
+    nrmse = compute_nrmse(predictions_test[..., -data_test.shape[-1]:], data_test)
+    results_test = [rmse, nrmse]
+    # results_test = []
     return results_val, results_test, duration
 
 
@@ -140,9 +143,18 @@ def AR_results(data_train, data_val, data_test, p, d):
     # Create the test prediction array
     # The last p elements of data_test_start 
     # with zeroes for the values to be predicted
-    data_test_start = np.append(data_train, data_val, axis=-1)
-    predictions_test = np.zeros(data_test.shape)
-    predictions_test = np.append(data_test_start[..., -p:], predictions_test, axis=-1)
+    if d>0:
+        data_test_start = np.append(data_train_original, data_val, axis=-1)
+        data_test_start, inv = difference(data_test_start, d)
+    else:
+        data_test_start = np.append(data_train, data_val, axis=-1)
+      
+    predictions_test = np.append(data_test_start[..., -p:], np.zeros(data_test.shape), axis=-1)
+    
+    
+    # data_test_start = np.append(data_train, data_val, axis=-1)
+    # predictions_test = np.zeros(data_test.shape)
+    # predictions_test = np.append(data_test_start[..., -p:], predictions_test, axis=-1)
     
     # Forecast the next values
     for i in range(p, p+data_test.shape[-1]):
@@ -167,10 +179,11 @@ datasets = ['macro', #__________0     12 x 203    #
             'nasdaq', #_________5     82 x 40560  # Pending
             'yahoo', #__________6     5 x 2469    #
             'book', #___________7     3 x sum(Ns) #
-            'stackloss'] #______8     4 x 21  
+            'stackloss', #______8     4 x 21      #
+            'book1'] #__________9     3 x sum(Ns) # 
 
 '''Create/Load Dataset'''
-X_train, X_val, X_test = get_data(dataset = datasets[8], Ns = [19, 1, 1])
+X_train, X_val, X_test = get_data(dataset = datasets[9], Ns = [70, 1, 1])
 # data_train = X_train
 # data_val = X_val
 # data_test = X_test
@@ -191,7 +204,7 @@ X_train, X_val, X_test = get_data(dataset = datasets[8], Ns = [19, 1, 1])
 
 print("Autoregression with Scalar Coefficients")
 min_v = 1000
-for p_val in range(1, 9):
+for p_val in range(1, 2):#9):
     for d_val in range(0, 8):
         
         ar_results_val, ar_results_test, ar_duration = AR_results(data_train = X_train, 
@@ -201,14 +214,16 @@ for p_val in range(1, 9):
                                                                   d = d_val)
         if ar_results_val[1] < min_v:
             min_v = ar_results_val[1]
-            print("p:"+str(p_val)+" d:"+str(d_val))
+            print("\np:"+str(p_val)+" d:"+str(d_val))
             print("Validation RMSE:  ", ar_results_val[0])
             print("Validation NRMSE: ", ar_results_val[1])
+            print("Test RMSE:  ", ar_results_test[0])
+            print("Test NRMSE: ", ar_results_test[1])
   
         
 print("\nAutoregression with Matrix Coefficients")
 min_v = 1000
-for p_val in range(1, 6):
+for p_val in range(1, 2):#6):
     for d_val in range(0, 8):
         
         var_results_val, var_results_test, var_duration = VAR_results(data_train = X_train, 
@@ -221,6 +236,9 @@ for p_val in range(1, 6):
             print("p:"+str(p_val)+" d:"+str(d_val))
             print("Validation RMSE:  ", var_results_val[0])
             print("Validation NRMSE: ", var_results_val[1])
+            print("Test RMSE:  ", var_results_test[0])
+            print("Test NRMSE: ", var_results_test[1])
+
 
 
 

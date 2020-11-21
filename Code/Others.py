@@ -14,6 +14,8 @@ import pandas as pd
 import numpy as np
 import time
 import copy
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 np.random.seed(0)
 
 
@@ -157,19 +159,18 @@ def AR_results(data_train, data_val, data_test, p, d):
 
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203
-            'elnino', #_________1     12 x 61
-            'stackloss', #______2      4 x 21
-            'nightvisitors', #__3      8 x 56
-            'mortality', #______4      2 x 72
-            'ozone', #__________5      8 x 203
-            'inflation', #______6      8 x 123  
-            'nasdaq', #_________7     82 x 40560 # Pending
-            'yahoo', #__________8     5 x 2469  
-            'book'] #___________9     3 x sum(Ns)
+datasets = ['macro', #__________0     12 x 203    # 
+            'elnino', #_________1     12 x 61     # DONE
+            'ozone', #__________2      8 x 203    # DONE
+            'nightvisitors', #__3      8 x 56     #
+            'inflation', #______4      8 x 123    # DROP PROBABLY
+            'nasdaq', #_________5     82 x 40560  # Pending
+            'yahoo', #__________6     5 x 2469    #
+            'book', #___________7     3 x sum(Ns) #
+            'stackloss'] #______8     4 x 21  
 
 '''Create/Load Dataset'''
-X_train, X_val, X_test = get_data(dataset = datasets[0], Ns = [50, 1, 1])
+X_train, X_val, X_test = get_data(dataset = datasets[8], Ns = [19, 1, 1])
 # data_train = X_train
 # data_val = X_val
 # data_test = X_test
@@ -207,7 +208,7 @@ for p_val in range(1, 9):
         
 print("\nAutoregression with Matrix Coefficients")
 min_v = 1000
-for p_val in range(1, 9):
+for p_val in range(1, 6):
     for d_val in range(0, 8):
         
         var_results_val, var_results_test, var_duration = VAR_results(data_train = X_train, 

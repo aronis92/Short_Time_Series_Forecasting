@@ -1,0 +1,20 @@
+
+R1:2  R2:2  p:1  r:2  d:0  lam:1
+Validation RMSE_AR: 17.149603424471202
+Validation NRMSE_AR: 0.5070659252532418
+
+R1:2  R2:3  p:1  r:3  d:0  lam:1
+Validation RMSE_AR: 17.141742792845417
+Validation NRMSE_AR: 0.5068335083075113
+
+R1:2  R2:4  p:1  r:4  d:0  lam:1
+Validation RMSE_AR: 17.11910265556567
+Validation NRMSE_AR: 0.5061641026149438
+
+R1:2  R2:4  p:1  r:5  d:0  lam:1
+Validation RMSE_AR: 12.79173467019873
+Validation NRMSE_AR: 0.3782159047994598
+
+R1:2  R2:5  p:1  r:6  d:0  lam:1
+Validation RMSE_AR: 10.948522195965
+Validation NRMSE_AR: 0.32371725456525113

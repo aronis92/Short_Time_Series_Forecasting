@@ -10,24 +10,25 @@ from functions.BHT_AR_functions import BHTAR, BHTAR_test, MDT
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 np.random.seed(0)
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203    #
+datasets = ['macro', #__________0     12 x 203    # 
             'elnino', #_________1     12 x 61     # DONE
-            'stackloss', #______2      4 x 21     #
+            'ozone', #__________2      8 x 203    # DONE
             'nightvisitors', #__3      8 x 56     #
-            'mortality', #______4      2 x 72     #
-            'ozone', #__________5      8 x 203    # 
-            'inflation', #______6      8 x 123    # 
-            'nasdaq', #_________7     82 x 40560  # Pending
-            'yahoo', #__________8     5 x 2469    #
-            'book'] #___________9     3 x sum(Ns) #
+            'inflation', #______4      8 x 123    # DROP PROBABLY
+            'nasdaq', #_________5     82 x 40560  # Pending
+            'yahoo', #__________6     5 x 2469    #
+            'book', #___________7     3 x sum(Ns) #
+            'stackloss'] #______8     4 x 21   
 
 # Load the Dataset
-data_name = datasets[0]
+data_name = datasets[8]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [150, 1, 1])
+                                  Ns = [19, 1, 1])
 
 # Plot the loaded data
 # plt.figure(figsize = (12,5))
@@ -37,10 +38,10 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1':5,
-              'R2':2,
+parameters = {'R1':3,
+              'R2':3,
               'p': 1,
-              'r': 2,
+              'r': 4,
               'd': 2,
               'lam': 1,
               'max_epoch': 15,
@@ -50,12 +51,12 @@ parameters = {'R1':5,
 file = open("results/BHT_VAR_" + data_name + ".txt", 'a')
 
 ds = [0, 1, 2, 3, 4, 5]
-l_list = [.1, .2, .3, .4, .5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+l_list = [.1, .2, .3, .4, .5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 10, 50, 100, 1000]
 min_v = 1000
 for p_val in range(1,6):
     parameters['p'] = p_val
     
-    for r_val in range(2, 11):
+    for r_val in range(2, 6):#11):
         parameters['r'] = r_val
         
         for d_val in ds:
@@ -72,8 +73,8 @@ for p_val in range(1,6):
                 for R2_val in range(2, r_val+1):
                     parameters['R2'] = R2_val
 
-                    # for l in l_list:
-                    #     parameters['lam'] = l
+# for l in l_list:
+#     parameters['lam'] = l
         
                     start = time.clock()
                     convergences, changes, A, prediction, Us = BHTAR(data_train = X_train,
@@ -95,6 +96,7 @@ for p_val in range(1,6):
                     
                     if nrmse_VAR[-1] < min_v:
                         min_v = nrmse_VAR[-1]
+                        #file.write("\nlambda: "+str(l))
                         file.write("\nR1:"+str(R1_val)+"  R2:"+str(R2_val)+"  p:"+str(parameters['p'])+"  r:"+str(r_val)+"  d:"+str(d_val)+"  lam:" + str(parameters['lam'])) 
                         file.write("\nValidation RMSE_VAR: "+str(rmse_VAR[-1])) 
                         file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+"\n")

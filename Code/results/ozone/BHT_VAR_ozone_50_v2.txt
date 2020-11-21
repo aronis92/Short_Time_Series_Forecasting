@@ -1,0 +1,4 @@
+
+lambda: 0.1
+Validation RMSE_VAR: 6.204470949007227
+Validation NRMSE_VAR: 0.1126523855383623

@@ -29,7 +29,7 @@ datasets = ['macro', #__________0     12 x 203    # DONE
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [10, 1, 1])
+                                  Ns = [20, 1, 1])
 
 # Plot the loaded data
 # plt.figure(figsize = (12,5))
@@ -39,10 +39,10 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1':2,
-              'R2':5,
+parameters = {'R1': 2,
+              'R2': 3,
               'p': 1,
-              'r': 6,
+              'r': 3,
               'd': 0, 
               'lam': 1,
               'max_epoch': 15,
@@ -61,7 +61,7 @@ rmse_AR = changes[:,0]
 nrmse_AR = changes[:,1]
 
 # Validation
-print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'], " lam:", parameters['lam'])
+print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'], " d:", parameters['d'], " lam:", parameters['lam'])
 print("Validation RMSE_AR: ", rmse_AR[-1], min(rmse_AR))
 print("Validation NRMSE_AR: ", nrmse_AR[-1], min(nrmse_AR))
 print("Validation duration_AR: ", duration_AR)
@@ -73,11 +73,11 @@ print("Validation duration_AR: ", duration_AR)
 X_test_start = np.append(X_train, X_val, axis=-1)
 
 test_rmse, test_nrmse = BHTAR_test(X_test_start,
-                                    X_test,
-                                    A, 
-                                    Us,
-                                    parameters, 
-                                    mod = "AR")
+                                   X_test,
+                                   A, 
+                                   Us,
+                                   parameters, 
+                                   mod = "AR")
 
 print("Test RMSE_AR: ", test_rmse)
 print("Test NRMSE_AR: ", test_nrmse)
@@ -87,4 +87,4 @@ print("Test NRMSE_AR: ", test_nrmse)
 
 # plot_results(convergences, 'BHT_AR Convergence', "Convergence Value")
 # plot_results(changes[:,0], 'BHT_AR RMSE', "RMSE Value")
-# plot_results(changes[:,1], 'BHT_AR ΝRMSE', "NRMSE Value")
+plot_results(changes[:,1], 'BHT_AR ΝRMSE', "NRMSE Value")

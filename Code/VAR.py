@@ -29,16 +29,16 @@ datasets = ['macro', #__________0     12 x 203    # DONE
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [75, 1, 1])
+                                  Ns = [20, 10, 10])
 
 # Set the algorithm's parameters
-parameters = {'R1':2,
-              'R2':2,
+parameters = {'R1': 2,
+              'R2': 5,
               'p': 1,
-              'r': 6,
-              'd': 3,
-              'lam': 1,
-              'max_epoch': 15,
+              'r': 5,
+              'd': 1, 
+              'lam': 0.1,
+              'max_epoch': 25,
               'threshold': 0.000001}
 
 
@@ -54,7 +54,7 @@ rmse_VAR = changes[:,0]
 nrmse_VAR = changes[:,1]
 
 # Validation
-print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'], " lam:", parameters['lam'])
+print("\nR1:", parameters['R1'], " R2:", parameters['R2'], " p:", parameters['p'], " r:", parameters['r'], " d:", parameters['d'], " lam:", parameters['lam'])
 print("Validation RMSE_VAR: ", rmse_VAR[-1], min(rmse_VAR))
 print("Validation NRMSE_VAR: ", nrmse_VAR[-1], min(nrmse_VAR))
 print("Validation duration_VAR: ", duration_VAR)
@@ -80,4 +80,4 @@ print("Test NRMSE_VAR: ", test_nrmse)
 
 #plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")
 #plot_results(changes[:,0], 'BHT_VAR RMSE', "RMSE Value")
-#plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")
+plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")

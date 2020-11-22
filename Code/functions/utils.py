@@ -52,7 +52,6 @@ def get_data(dataset, Ns):
         X_val: The validation partition
         X_test: The testing partition
     """
-    np.random.seed(0)
     if dataset == "book":
         """
         Variables : 3

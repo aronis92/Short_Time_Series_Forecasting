@@ -29,7 +29,7 @@ datasets = ['macro', #__________0     12 x 203    #
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [75, 1, 1])
+                                  Ns = [20, 1, 1])
 
 # Set the algorithm's parameters
 parameters = {'R1':2,
@@ -44,7 +44,7 @@ parameters = {'R1':2,
 
 file = open("results/BHT_AR_" + data_name + ".txt", 'a')
 
-ds = [0, 1, 2, 3, 4, 5]
+ds = [0, 1, 2]#, 3, 4, 5]
 min_v = 1000
 for p_val in range(1, 2):#,6):
     parameters['p'] = p_val

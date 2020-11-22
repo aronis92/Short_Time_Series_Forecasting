@@ -29,7 +29,7 @@ datasets = ['macro', #__________0     12 x 203    #
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [75, 1, 1])
+                                  Ns = [20, 1, 1])
 
 # Set the algorithm's parameters
 parameters = {'R1':2,
@@ -44,7 +44,7 @@ parameters = {'R1':2,
 
 file = open("results/BHT_VAR_" + data_name + ".txt", 'a')
 
-ds = [0, 1, 2, 3, 4, 5]
+ds = [0, 1, 2]#, 3, 4, 5]
 min_v = 1000
 for p_val in range(1, 2):#,6):
     parameters['p'] = p_val
@@ -80,7 +80,7 @@ for p_val in range(1, 2):#,6):
                     
                     if nrmse_VAR[-1] < min_v:
                         min_v = nrmse_VAR[-1]
-                        file.write("\nR1:"+str(R1_val)+"  R2:"+str(R2_val)+"  p:"+str(parameters['p'])+"  r:"+str(r_val)+"  d:"+str(d_val)+"  lam:" + str(parameters['lam'])) 
+                        file.write("\nR1:"+str(parameters['R1'])+"  R2:"+str(parameters['R2'])+"  p:"+str(parameters['p'])+"  r:"+str(parameters['r'])+"  d:"+str(parameters['d'])+"  lam:" + str(parameters['lam'])) 
                         file.write("\nValidation RMSE_VAR: "+str(rmse_VAR[-1])) 
                         file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+"\n")
 file.close()
@@ -88,10 +88,10 @@ file.close()
 
 '''Lambda Grid Search'''
 # parameters = {'R1':2,
-#               'R2':2,
+#               'R2':4,
 #               'p': 1,
-#               'r': 6,
-#               'd': 3,
+#               'r': 8,
+#               'd': 2,
 #               'lam': 1,
 #               'max_epoch': 15,
 #               'threshold': 0.000001}

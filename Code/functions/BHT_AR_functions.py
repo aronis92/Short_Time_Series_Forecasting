@@ -131,7 +131,6 @@ def update_Um(m, p, X, G, Us):
         dot1 = np.dot(unfold_X, H.T)
         Bs.append(np.dot(dot1, tl.unfold(G[..., t], m).T ))
     b = np.sum(Bs, axis=0)
-    np.random.seed(0)
     U1, _, V1 = np.linalg.svd(b, full_matrices=False)
     proc1 = np.dot(U1, V1)
     Us[m] = proc1
@@ -274,7 +273,7 @@ def BHTAR(data_train, data_val, par, mod):
       - A: The coefficient matrix
       - prediction: The predicted values of the next step
     """
-    
+    np.random.seed(0)
     # Initializations
     conv = 10
     epoch = 0

@@ -95,10 +95,11 @@ datasets = ['macro', #__________0     12 x 203
             'nasdaq', #_________9     82 x 40560 # Pending
             'traffic', #________10   228 x 40    # DROP
             'yahoo', #__________11     5 x 2469  
-            'book'] #___________12     3 x sum(Ns)
+            'book', #___________12     3 x sum(Ns)
+            'book1'] #__________13     3 x sum(Ns)
 
-Ns = [1000, 1, 1]
-data_name = datasets[10]
+Ns = [20, 5, 5]
+data_name = datasets[13]
 
 X, _, _ = get_data(data_name, Ns)
 

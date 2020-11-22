@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 np.random.seed(0)
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203    # 
+datasets = ['macro', #__________0     12 x 203    # DONE
             'elnino', #_________1     12 x 61     # DONE
             'ozone', #__________2      8 x 203    # DONE
             'nightvisitors', #__3      8 x 56     #
@@ -29,7 +29,7 @@ datasets = ['macro', #__________0     12 x 203    #
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [20, 1, 1])
+                                  Ns = [20, 7, 7])
 
 # Set the algorithm's parameters
 parameters = {'R1':2,

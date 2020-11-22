@@ -32,6 +32,7 @@ def plot_results(data, title, ytitle):
     plt.title(title)
     plt.xlabel('Iteration')
     plt.ylabel(ytitle)
+    #plt.ylim(0.0137248, 0.013726)
     # plt.ylim(0.001924, 0.00193) # AR NRMSE
     # plt.ylim(0.2691, 0.2702) # AR RMSE
     # plt.ylim(0.001924, 0.00193) # VAR NRMSE

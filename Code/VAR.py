@@ -29,16 +29,16 @@ datasets = ['macro', #__________0     12 x 203    # DONE
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [20, 10, 10])
+                                  Ns = [20, 7, 7])
 
 # Set the algorithm's parameters
-parameters = {'R1': 2,
-              'R2': 5,
+parameters = {'R1': 3,
+              'R2': 4,
               'p': 1,
-              'r': 5,
-              'd': 1, 
-              'lam': 0.1,
-              'max_epoch': 25,
+              'r': 6,
+              'd': 2, 
+              'lam': 1,
+              'max_epoch': 15,
               'threshold': 0.000001}
 
 

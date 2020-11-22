@@ -29,10 +29,10 @@ datasets = ['macro', #__________0     12 x 203    # DONE
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [20, 2, 2])
+                                  Ns = [150, 15, 15])
 
 # Set the algorithm's parameters
-parameters = {'R1': 2,
+parameters = {'R1': 3,
               'R2': 3,
               'p': 1,
               'r': 3,

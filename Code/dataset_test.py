@@ -98,22 +98,30 @@ datasets = ['macro', #__________0     12 x 203
             'book', #___________12     3 x sum(Ns)
             'book1'] #__________13     3 x sum(Ns)
 
-Ns = [20, 5, 5]
+Ns = [500, 1, 1]
 data_name = datasets[13]
 
-X, _, _ = get_data(data_name, Ns)
+X_train, _, _ = get_data(data_name, Ns)
 
 
-plt.figure(figsize = (12,5))
-plt.plot(X.T)
+# plt.figure(figsize = (12,5))
+# plt.plot(X.T)
+# plt.show()
+fig = plt.figure(figsize = (12,9))
+gs = fig.add_gridspec(3, hspace=0)
+axs = gs.subplots(sharex=True, sharey=False)
+# fig.suptitle('Sharing both axes')
+#axs[0].plot(X_train.T)
+axs[0].plot(X_train[0, :].T, 'tab:orange')
+axs[1].plot(X_train[1, :].T, 'tab:blue')
+axs[2].plot(X_train[2, :].T, 'tab:green')
 plt.show()
 
 
-
-ds = [i for i in range(1, 8)]
-rs = [i for i in range(2, 11)]
-print("Dataset: " + data_name + " \n")
-stationarity_tests(data_name, ds, rs, Ns)
+# ds = [i for i in range(1, 8)]
+# rs = [i for i in range(2, 11)]
+# print("Dataset: " + data_name + " \n")
+# stationarity_tests(data_name, ds, rs, Ns)
 
 
 

@@ -72,7 +72,7 @@ def get_data(dataset, Ns):
         Variables : 82
         Timepoints: 40560
         """
-        X = pd.read_csv('data/nasdaq100/small/nasdaq100_padding.csv')
+        X = pd.read_csv('data/nasdaq100_padding.csv')
         X = X.to_numpy()
         X = X.T
     

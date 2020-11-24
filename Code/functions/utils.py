@@ -93,7 +93,7 @@ def get_data(dataset, Ns):
         """
         filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/yahoo.csv'
         df = pd.read_csv(filepath, parse_dates=['date'], index_col='date', skiprows=range(1, 1400), nrows = sum(Ns)+100)
-        df = df[['VIX.Open', 'VIX.High', 'VIX.Low', 'VIX.Close', 'VIX.Adjusted']]
+        df = df[['VIX.Open', 'VIX.High', 'VIX.Low', 'VIX.Close']]
         X = df.to_numpy()
         X = X.T
     

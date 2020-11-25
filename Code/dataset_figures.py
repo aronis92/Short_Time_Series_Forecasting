@@ -47,10 +47,10 @@ plt.close()
 
 
 fig = plt.figure(figsize = (14,14))
-gs = fig.add_gridspec(6, 2, hspace=0.04)
+gs = fig.add_gridspec(4, 3, hspace=0.04)
 fig.suptitle("US Macroeconomic Time Series", fontsize=16, y=0.91)
 axs = gs.subplots(sharex=True, sharey=False)
-for i in range(0, X.shape[0], 2):
+for i in range(0, X.shape[0], 3):
     axs[int(i/2), 0].plot(X[i, :].T, c=colors[i])
     axs[int(i/2), 1].plot(X[i+1, :].T, c=colors[i+1])
     if i != X.shape[0]-2:
@@ -58,6 +58,18 @@ for i in range(0, X.shape[0], 2):
         axs[int(i/2), 1].axes.xaxis.set_visible(False)
 plt.savefig('./figures/macro2.png')
 plt.close()
+
+
+fig = plt.figure(figsize = (14,14))
+gs = fig.add_gridspec(4, 3, hspace=0, wspace=0)
+fig.suptitle("US Macroeconomic Time Series", fontsize=16, y=0.91)
+axs = gs.subplots(sharex=False, sharey=False)
+for i in range(4):
+    for j in range(3):
+        axs[i, j].plot(X[4*i+j, :].T, c=colors[4*i+j])
+        axs[i, j].axes.xaxis.set_visible(False)
+        axs[i, j].axes.yaxis.set_visible(False)
+plt.show()
 
 
 
@@ -169,7 +181,7 @@ plt.close()
 fig = plt.figure(figsize = (12,9))
 gs = fig.add_gridspec(4, hspace=0)
 axs = gs.subplots(sharex=True, sharey=False)
-fig.suptitle("Yahoo Time Series", fontsize=16, y=0.915)
+fig.suptitle("Yahoo Stock Time Series", fontsize=16, y=0.915)
 axs[0].plot(X[0, :].T, c = colors[0])
 axs[1].plot(X[1, :].T, c = colors[1])
 axs[2].plot(X[2, :].T, c = colors[2])

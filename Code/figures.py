@@ -1,5 +1,6 @@
 from functions.utils import get_data
 import matplotlib.pyplot as plt
+import random
 
 # plt.figure(figsize = (12,5))
 # plt.plot(X.T)
@@ -10,7 +11,7 @@ datasets = ['macro', #__________0     12 x 203    # DONE
             'elnino', #_________1     12 x 61     # DONE
             'ozone', #__________2      8 x 203    # DONE
             'nightvisitors', #__3      8 x 56     # DONE
-            'nasdaq', #_________4     82 x 40560  # 
+            'nasdaq', #_________4     82 x 40560  # DONE
             'yahoo', #__________5     5 x 2469    # DONE
             'stackloss', #______6     4 x 21      # DONE
             'book1'] #__________7     3 x sum(Ns) # DONE 
@@ -59,38 +60,24 @@ plt.savefig('./figures/macro2.png')
 plt.close()
 
 
-# fig = plt.figure(figsize = (14,14))
-# gs = fig.add_gridspec(4, 3, hspace=0.04)
-# fig.suptitle("US Macroeconomic Time Series", fontsize=16, y=0.91)
-# axs = gs.subplots(sharex=True, sharey=False)
-# for i in range(0, X.shape[0], 3):
-#     axs[int(i/3), 0].plot(X[i, :].T, c=colors[i])
-#     axs[int(i/3), 1].plot(X[i+1, :].T, c=colors[i+1])
-#     axs[int(i/3), 2].plot(X[i+2, :].T, c=colors[i+2])
-#     if i != X.shape[0]-3:
-#         axs[int(i/3), 0].axes.xaxis.set_visible(False)
-#         axs[int(i/3), 1].axes.xaxis.set_visible(False)
-#         axs[int(i/3), 2].axes.xaxis.set_visible(False)
-# plt.savefig('./figures/macro3.png')
-# plt.close()
-
 
 '''El Nino'''
-X, _, _ = get_data(datasets[2], [500, 1, 1])
+X, _, _ = get_data(datasets[1], [500, 1, 1])
 colors = ['tab:blue', 'tab:orange', 'tab:green', 
           'tab:red', 'tab:purple', 'tab:brown', 
-          'tab:pink', 'tab:gray']
+          'tab:pink', 'tab:gray', 'tab:olive', 
+          'tab:cyan', 'saddlebrown', 'k']
 plt.figure(figsize = (12,5))
 plt.title("El Nino Time Series", fontsize=16)
 for i in range(len(colors)):
     plt.plot(X[i, :].T, c=colors[i])
-plt.savefig('./figures/ozone1.png')
+plt.savefig('./figures/elnino1.png')
 plt.close()
 
 
 fig = plt.figure(figsize = (14,14))
 gs = fig.add_gridspec(6, 2, hspace=0.04)
-fig.suptitle("Ozone Time Series", fontsize=16, y=0.91)
+fig.suptitle("El Nino Time Series", fontsize=16, y=0.91)
 axs = gs.subplots(sharex=True, sharey=False)
 for i in range(0, X.shape[0], 2):
     axs[int(i/2), 0].plot(X[i, :].T, c=colors[i])
@@ -98,7 +85,7 @@ for i in range(0, X.shape[0], 2):
     if i != X.shape[0]-2:
         axs[int(i/2), 0].axes.xaxis.set_visible(False)
         axs[int(i/2), 1].axes.xaxis.set_visible(False)
-plt.savefig('./figures/ozone2.png')
+plt.savefig('./figures/elnino2.png')
 plt.close()
 
 
@@ -194,13 +181,68 @@ plt.close()
 
 '''nasdaq'''
 X, _, _ = get_data(datasets[4], [100, 1, 1])
-plt.figure(figsize = (12,5))
-plt.title("NASDAQ Time Series", fontsize=16)
-plt.plot(X.T)
+fig = plt.figure(figsize = (12,9))
+gs = fig.add_gridspec(3, hspace=0)
+axs = gs.subplots(sharex=True, sharey=False)
+fig.suptitle("NASDAQ Time Series", fontsize=16, y=0.915)
+colors = []
+for i in range(X.shape[0]):
+    r = random.random()
+    g = random.random()
+    b = random.random()
+    colors.append(tuple([r,g,b]))
+    axs[0].plot(X[i, :].T, c = colors[i])
+axs[1].plot(X[-2, :].T, c = colors[-2])
+axs[2].plot(X[-1, :].T, c = colors[-1])
+# plt.show()
 plt.savefig('./figures/nasdaq.png')
 plt.close()
 
 
+fig = plt.figure(figsize = (12,9))
+rows = 7
+cols = 4
+gs = fig.add_gridspec(rows, cols, hspace=0, wspace=0)
+axs = gs.subplots(sharex=True, sharey=False)
+fig.suptitle("NASDAQ Time Series", fontsize=16, y=0.915)
+for i in range(rows):
+    for j in range(cols):
+        axs[i, j].plot(X[rows*i+j, :].T, c=colors[rows*i+j])
+        axs[i, j].axes.xaxis.set_visible(False)
+        axs[i, j].axes.yaxis.set_visible(False)
+#plt.show()
+plt.savefig('./figures/nasdaq1.png')
+plt.close()
+
+
+fig = plt.figure(figsize = (12,9))
+gs = fig.add_gridspec(rows, cols, hspace=0, wspace=0)
+axs = gs.subplots(sharex=True, sharey=False)
+fig.suptitle("NASDAQ Time Series", fontsize=16, y=0.915)
+for i in range(rows):
+    for j in range(cols):
+        axs[i, j].plot(X[rows*cols + rows*i+j, :].T, c=colors[rows*cols + rows*i+j])
+        axs[i, j].axes.xaxis.set_visible(False)
+        axs[i, j].axes.yaxis.set_visible(False)
+#plt.show()
+plt.savefig('./figures/nasdaq2.png')
+plt.close()
+
+
+fig = plt.figure(figsize = (12,9))
+rows = 6
+cols = 4
+gs = fig.add_gridspec(rows, cols, hspace=0, wspace=0)
+axs = gs.subplots(sharex=True, sharey=False)
+fig.suptitle("NASDAQ Time Series", fontsize=16, y=0.915)
+for i in range(rows):
+    for j in range(cols):
+        axs[i, j].plot(X[2*rows*cols + rows*i+j, :].T, c=colors[2*rows*cols + rows*i+j])
+        axs[i, j].axes.xaxis.set_visible(False)
+        axs[i, j].axes.yaxis.set_visible(False)
+#plt.show()
+plt.savefig('./figures/nasdaq3.png')
+plt.close()
 
 
 

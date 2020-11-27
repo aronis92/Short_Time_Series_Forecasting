@@ -19,7 +19,7 @@ data = np.array([[1.0304,  0.0154,  0.0182,  0.0195,  0.0085],  #  1
 
 
 
-plt.figure(figsize = (10,5))
+plt.figure(figsize = (10, 4))
 plt.title("Synthetic Data NRMSE over Volume",
           fontname = 'Arial',
           fontweight = 'bold', 
@@ -47,7 +47,7 @@ data = np.array([[1.0390,  0.0124,  0.0142,  0.0159,  0.0092],  #  1
                  [1.0370,  0.0186,  0.0205,  0.0199,  0.0205],])# 15
 
 
-plt.figure(figsize = (10,5))
+plt.figure(figsize = (10, 4))
 plt.title("Synthetic Data NRMSE over Volume",
           fontname = 'Arial',
           fontweight = 'bold', 

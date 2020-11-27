@@ -376,7 +376,9 @@ def BHTAR_test(data_test_start, data_test, A, Us, par, mod):
         X_hat, inv = difference(X_hat, par['d'])
     
     G = tl.tenalg.multi_mode_dot(X_hat, Us, modes = [i for i in range(len(Us))], transpose = True)
-
+    
+    #A = fit_model(G, par['p'], mod) 
+    
     G_pred = forecast(G, par['p'], A, mod, data_test.shape[-1])
 
     dim_list = [u.shape[0] for u in Us]

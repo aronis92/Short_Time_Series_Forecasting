@@ -76,33 +76,75 @@ def get_results():
     
     return ar_nrmse, var_nrmse, ar_conv, var_conv
 
+
 ar_nrmse, var_nrmse, ar_conv, var_conv = get_results()
 
+
+
+
+
 names = ["AR_SC", "AR_MC", "Prophet", "BHT_AR_SC", "BHT_AR_MC"]
+colors = ['tab:blue', 'tab:green', 'tab:orange', 'tab:red', 'tab:purple', 
+          'tab:pink', 'tab:brown', 'tab:olive', 'tab:gray', 'tab:cyan']
+titles = ["Convergence Value Comparison", "NRMSE Value Comparison"]
+n_rows = 2
+n_val = 5
+c_1 = 8 #0,1 #2,3 #4,5 #6,7
+c_2 = 9
+fig = plt.figure(figsize = (12,9))
+gs = fig.add_gridspec(n_rows, hspace = 0.3)
+axs = gs.subplots(sharex=False, sharey=False)
+
+for k in range(2):
+    plt.sca(axs[k])
+    plt.xticks(ticks=[i for i in range(15)],
+                labels=[str(i+1) for i in range(15)])
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0), useMathText=True)
+
+
+fig.suptitle("Train: 20,    Validation: " + str(2*n_val - 1), 
+             fontname = 'Arial', 
+             fontweight = 'bold', 
+             fontstyle = 'oblique',
+             fontsize = 18, 
+             y = 0.96)#0.915)
+
+for i in range(n_rows):
+    axs[i].set_title(titles[i], fontname = 'Arial', fontweight = 'bold', fontstyle = 'oblique', fontsize = 14)
+    axs[i].set_xlabel('Iteration', fontname = 'Arial', fontstyle = 'oblique', fontsize = 12)
+    axs[i].set_ylabel("Convergence Value", fontname = 'Arial', fontstyle = 'oblique', fontsize = 12)
+
+axs[0].plot(ar_conv[:, n_val-1], label = "BHT_AR_SC Convergence Value", c = colors[c_1], marker='o')
+axs[0].plot(var_conv[:, n_val-1], label = "BHT_AR_MC Convergence Value", c = colors[c_2], marker='o')   
+axs[1].plot(ar_nrmse[:, n_val-1], label = "BHT_AR_SC NRMSE Value", c = colors[c_1], marker='o')
+axs[1].plot(var_nrmse[:, n_val-1], label = "BHT_AR_MC NRMSE Value", c = colors[c_2], marker='o')
+axs[0].legend(fancybox = True, framealpha = 1, shadow = True, borderpad = 1, ncol = 1, fontsize = 12)
+axs[1].legend(fancybox = True, framealpha = 1, shadow = True, borderpad = 1, ncol = 1, fontsize = 12)
+plt.show() #loc=9, 
 
 
 
 
-plt.figure(figsize = (10, 4))
-plt.title("Synthetic Data NRMSE over Volume",
-          fontname = 'Arial',
-          fontweight = 'bold', 
-          fontstyle = 'oblique',
-          fontsize = 16, 
-          y = 1)
-plt.xlabel('Dataset Volume')
-plt.ylabel("NRMSE")
-plt.xticks(ticks=[i for i in range(10)],
-           labels=[str(i+1) for i in range(10)])
-plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0), useMathText=True)
-plt.plot(data[:,1], label="VAR", marker='o')
-plt.plot(data[:,2], label="Prophet", marker='o')
-plt.plot(data[:,3], label="BHT_AR", marker='o')
-plt.plot(data[:,4], label="BHT_VAR", marker='o')
-plt.legend(fancybox = True, framealpha = 1, shadow = True, borderpad = 1, ncol = 2, fontsize = 12)
-plt.show()
 
 
+
+
+
+
+
+# fig = plt.figure(figsize = (10,12))
+# gs = fig.add_gridspec(5, hspace=0)
+# axs = gs.subplots(sharex=True, sharey=False)
+# fig.suptitle("BHT_AR_SC Convergences", 
+#              fontname = 'Arial', 
+#              fontweight = 'bold', 
+#              fontstyle = 'oblique',
+#              fontsize = 16, 
+#              y = 0.915)
+# colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple']
+# for i in range(len(colors)):
+#     axs[i].plot(ar_conv[:, i], c = colors[i])
+# plt.show()
 
 
 

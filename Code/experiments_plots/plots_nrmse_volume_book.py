@@ -20,13 +20,13 @@ data = np.array([[1.0304,  0.0154,  0.0182,  0.0195,  0.0085],  #  1
 
 
 plt.figure(figsize = (10, 4))
-plt.title("Synthetic Data NRMSE over Volume",
+plt.title("NRMSE - Test Set Volume",#" Comparison on a 20-point Train set",
           fontname = 'Arial',
           fontweight = 'bold', 
           fontstyle = 'oblique',
           fontsize = 16, 
-          y = 1)
-plt.xlabel('Dataset Volume')
+          y = 1.05)
+plt.xlabel('Test Set Volume')
 plt.ylabel("NRMSE")
 plt.xticks(ticks=[i for i in range(10)],
            labels=[str(i+1) for i in range(10)])
@@ -48,13 +48,13 @@ data = np.array([[1.0390,  0.0124,  0.0142,  0.0159,  0.0092],  #  1
 
 
 plt.figure(figsize = (10, 4))
-plt.title("Synthetic Data NRMSE over Volume",
+plt.title("NRMSE - Test Set Volume",# Comparison on a 150-point Train set",
           fontname = 'Arial',
           fontweight = 'bold', 
           fontstyle = 'oblique',
           fontsize = 16, 
-          y = 1)
-plt.xlabel('Dataset Volume')
+          y = 1.05)
+plt.xlabel('Test Set Volume')
 plt.ylabel("NRMSE")
 plt.xticks(ticks=[i for i in range(4)],
            labels=['1', '5', '10', '15'])

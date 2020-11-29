@@ -15,21 +15,19 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 np.random.seed(0)
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203    # DONE
-            'elnino', #_________1     12 x 61     # DONE
-            'ozone', #__________2      8 x 203    # DONE
-            'nightvisitors', #__3      8 x 56     # 
-            'inflation', #______4      8 x 123    # DROP PROBABLY
-            'nasdaq', #_________5     82 x 40560  # Pending
-            'yahoo', #__________6     5 x 2469    #
-            'book', #___________7     3 x sum(Ns) #
-            'stackloss', #______8     4 x 21      #
-            'book1'] #__________9     3 x sum(Ns) #
+datasets = ['book1', #__________0     3 x sum(Ns) # DONE
+            'stackloss', #______1     4 x 21      #
+            'macro', #__________2     12 x 203    # 
+            'elnino', #_________3     12 x 61     # 
+            'ozone', #__________4      8 x 203    # 
+            'nightvisitors', #__5      8 x 56     # 
+            'nasdaq', #_________6     82 x 40560  # 
+            'yahoo'] #__________7     5 x 2469    #      
 
 # Load the Dataset
-data_name = datasets[9]
+data_name = datasets[1]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [150, 15, 15])
+                                  Ns = [19, 1, 1])
 
 # Plot the loaded data
 # plt.figure(figsize = (12,5))
@@ -39,11 +37,11 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1': 3,
-              'R2': 2,
-              'p': 1,
-              'r': 7,
-              'd': 0,
+parameters = {'R1': 2,
+              'R2': 3,
+              'p': 3,
+              'r': 5,
+              'd': 2,
               'lam': 1,
               'max_epoch': 15,
               'threshold': 0.000001}
@@ -85,6 +83,6 @@ print("Test NRMSE_AR: ", test_nrmse)
 
 
 
-plot_results(convergences, 'BHT_AR Convergence', "Convergence Value")
+#plot_results(convergences, 'BHT_AR Convergence', "Convergence Value")
 #plot_results(changes[:,0], 'BHT_AR RMSE', "RMSE Value")
-plot_results(changes[:,1], 'BHT_AR ΝRMSE', "NRMSE Value")
+#plot_results(changes[:,1], 'BHT_AR ΝRMSE', "NRMSE Value")

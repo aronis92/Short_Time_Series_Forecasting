@@ -15,21 +15,19 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 np.random.seed(0)
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203    # DONE
-            'elnino', #_________1     12 x 61     # DONE
-            'ozone', #__________2      8 x 203    # DONE
-            'nightvisitors', #__3      8 x 56     #
-            'inflation', #______4      8 x 123    # DROP PROBABLY
-            'nasdaq', #_________5     82 x 40560  # Pending
-            'yahoo', #__________6     5 x 2469    #
-            'book', #___________7     3 x sum(Ns) #
-            'stackloss', #______8     4 x 21      #
-            'book1'] #__________9     3 x sum(Ns) #
+datasets = ['book1', #__________0     3 x sum(Ns) # DONE
+            'stackloss', #______1     4 x 21      # DONE
+            'macro', #__________2     12 x 203    # DONE
+            'elnino', #_________3     12 x 61     # DONE
+            'ozone', #__________4      8 x 203    # DONE
+            'nightvisitors', #__5      8 x 56     # 
+            'nasdaq', #_________6     82 x 40560  # 
+            'yahoo'] #__________7     5 x 2469    #    
 
 # Load the Dataset
-data_name = datasets[9]
+data_name = datasets[5]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [20, 9, 9])
+                                  Ns = [54, 1, 1])
 
 # Set the algorithm's parameters
 parameters = {'R1':2,
@@ -46,10 +44,10 @@ file = open("results/BHT_VAR_" + data_name + ".txt", 'a')
 
 ds = [0, 1, 2]#, 3, 4, 5]
 min_v = 1000
-for p_val in range(1, 2):#,6):
+for p_val in range(1, 4):#,6):
     parameters['p'] = p_val
     
-    for r_val in range(2, 11):
+    for r_val in range(2, 6):
         parameters['r'] = r_val
         
         for d_val in ds:

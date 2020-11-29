@@ -15,27 +15,25 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 np.random.seed(0)
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203    # DONE
-            'elnino', #_________1     12 x 61     # DONE
-            'ozone', #__________2      8 x 203    # DONE
-            'nightvisitors', #__3      8 x 56     #
-            'inflation', #______4      8 x 123    # DROP PROBABLY
-            'nasdaq', #_________5     82 x 40560  # Pending
-            'yahoo', #__________6     5 x 2469    #
-            'book', #___________7     3 x sum(Ns) #
-            'stackloss', #______8     4 x 21      #
-            'book1'] #__________9     3 x sum(Ns) #
+datasets = ['book1', #__________0     3 x sum(Ns) # DONE
+            'stackloss', #______1     4 x 21      #
+            'macro', #__________2     12 x 203    # 
+            'elnino', #_________3     12 x 61     # 
+            'ozone', #__________4      8 x 203    # 
+            'nightvisitors', #__5      8 x 56     # 
+            'nasdaq', #_________6     82 x 40560  # 
+            'yahoo'] #__________7     5 x 2469    #    
 
 # Load the Dataset
-data_name = datasets[9]
+data_name = datasets[1]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [150, 15, 15])
+                                  Ns = [19, 1, 1])
 
 # Set the algorithm's parameters
-parameters = {'R1': 3,
+parameters = {'R1': 4,
               'R2': 3,
               'p': 1,
-              'r': 3,
+              'r': 5,
               'd': 1,
               'lam': 1,
               'max_epoch': 15,
@@ -77,9 +75,9 @@ print("Test NRMSE_VAR: ", test_nrmse)
 
 
 
-plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")
+#plot_results(convergences, 'BHT_VAR Convergence', "Convergence Value")
 #plot_results(changes[:,0], 'BHT_VAR RMSE', "RMSE Value")
-plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")
+#plot_results(changes[:,1], 'BHT_VAR ΝRMSE', "NRMSE Value")
 
 
 

@@ -20,7 +20,7 @@ data = np.array([[1.0304,  0.0154,  0.0182,  0.0195,  0.0085],  #  1
 
 
 plt.figure(figsize = (10, 4))
-plt.title("NRMSE - Test Set Volume",#" Comparison on a 20-point Train set",
+plt.title("NRMSE vs Forecasting Horizon",#" Comparison on a 20-point Train set",
           fontname = 'Arial',
           fontweight = 'bold', 
           fontstyle = 'oblique',
@@ -33,8 +33,8 @@ plt.xticks(ticks=[i for i in range(10)],
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0), useMathText=True)
 plt.plot(data[:,1], label="VAR", marker='o')
 plt.plot(data[:,2], label="Prophet", marker='o')
-plt.plot(data[:,3], label="BHT_AR", marker='o')
-plt.plot(data[:,4], label="BHT_VAR", marker='o')
+plt.plot(data[:,3], label="BHT_AR_SC", marker='o')
+plt.plot(data[:,4], label="BHT_AR_MC", marker='o')
 plt.legend(fancybox = True, framealpha = 1, shadow = True, borderpad = 1, ncol = 2, fontsize = 12)
 plt.show()
 
@@ -48,7 +48,7 @@ data = np.array([[1.0390,  0.0124,  0.0142,  0.0159,  0.0092],  #  1
 
 
 plt.figure(figsize = (10, 4))
-plt.title("NRMSE - Test Set Volume",# Comparison on a 150-point Train set",
+plt.title("NRMSE vs Forecasting Horizon",# Comparison on a 150-point Train set",
           fontname = 'Arial',
           fontweight = 'bold', 
           fontstyle = 'oblique',
@@ -61,8 +61,8 @@ plt.xticks(ticks=[i for i in range(4)],
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0), useMathText=True)
 plt.plot(data[:,1], label="VAR", marker='o')
 plt.plot(data[:,2], label="Prophet", marker='o')
-plt.plot(data[:,3], label="BHT_AR", marker='o')
-plt.plot(data[:,4], label="BHT_VAR", marker='o')
+plt.plot(data[:,3], label="BHT_AR_SC", marker='o')
+plt.plot(data[:,4], label="BHT_AR_MC", marker='o')
 plt.legend(fancybox = True, framealpha = 1, shadow = True, borderpad = 1, ncol = 2, fontsize = 12)
 plt.show()
 

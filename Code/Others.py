@@ -171,19 +171,17 @@ def AR_results(data_train, data_val, data_test, p, d):
 
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203    # 
-            'elnino', #_________1     12 x 61     # DONE
-            'ozone', #__________2      8 x 203    # DONE
-            'nightvisitors', #__3      8 x 56     #
-            'inflation', #______4      8 x 123    # DROP PROBABLY
-            'nasdaq', #_________5     82 x 40560  # Pending
-            'yahoo', #__________6     5 x 2469    #
-            'book', #___________7     3 x sum(Ns) #
-            'stackloss', #______8     4 x 21      #
-            'book1'] #__________9     3 x sum(Ns) # 
+datasets = ['book1', #__________0     3 x sum(Ns) # DONE
+            'stackloss', #______1     4 x 21      # DONE
+            'macro', #__________2     12 x 203    # DONE
+            'elnino', #_________3     12 x 61     # DONE
+            'ozone', #__________4      8 x 203    # DONE
+            'nightvisitors', #__5      8 x 56     # 
+            'nasdaq', #_________6     82 x 40560  # 
+            'yahoo'] #__________7     5 x 2469    #    
 
 '''Create/Load Dataset'''
-X_train, X_val, X_test = get_data(dataset = datasets[9], Ns = [20, 1, 1])
+X_train, X_val, X_test = get_data(dataset = datasets[5], Ns = [54, 1, 1])
 # data_train = X_train
 # data_val = X_val
 # data_test = X_test
@@ -204,7 +202,7 @@ X_train, X_val, X_test = get_data(dataset = datasets[9], Ns = [20, 1, 1])
 
 print("Autoregression with Scalar Coefficients")
 min_v = 1000
-for p_val in range(1, 2):#9):
+for p_val in range(1, 5):
     for d_val in range(0, 3):
         
         ar_results_val, ar_results_test, ar_duration = AR_results(data_train = X_train, 
@@ -213,7 +211,7 @@ for p_val in range(1, 2):#9):
                                                                   p = p_val,
                                                                   d = d_val)
         if ar_results_val[1] < min_v:
-            #min_v = ar_results_val[1]
+            min_v = ar_results_val[1]
             print("\np:"+str(p_val)+" d:"+str(d_val))
             print("Duration: "+str(ar_duration))
             print("Validation RMSE:  ", ar_results_val[0])
@@ -224,7 +222,7 @@ for p_val in range(1, 2):#9):
         
 print("\nAutoregression with Matrix Coefficients")
 min_v = 1000
-for p_val in range(1, 2):#6):
+for p_val in range(1, 5):
     for d_val in range(0, 3):
         
         var_results_val, var_results_test, var_duration = VAR_results(data_train = X_train, 
@@ -233,7 +231,7 @@ for p_val in range(1, 2):#6):
                                                                       p = p_val,
                                                                       d = d_val)
         if var_results_val[1] < min_v:
-            #min_v = var_results_val[1]
+            min_v = var_results_val[1]
             print("\np:"+str(p_val)+" d:"+str(d_val))
             print("Duration: "+str(var_duration))
             print("Validation RMSE:  ", var_results_val[0])

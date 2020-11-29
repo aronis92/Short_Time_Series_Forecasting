@@ -29,7 +29,7 @@ datasets = ['macro', #__________0     12 x 203    # DONE
 # Load the Dataset
 data_name = datasets[9]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [20, 6, 6])
+                                  Ns = [150, 15, 15])
 
 # Plot the loaded data
 # plt.figure(figsize = (12,5))
@@ -39,10 +39,10 @@ X_train, X_val, X_test = get_data(dataset = data_name,
 
 
 # Set the algorithm's parameters
-parameters = {'R1': 2,
+parameters = {'R1': 3,
               'R2': 2,
               'p': 1,
-              'r': 10,
+              'r': 7,
               'd': 0,
               'lam': 1,
               'max_epoch': 15,

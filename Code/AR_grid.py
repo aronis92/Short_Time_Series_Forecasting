@@ -27,13 +27,13 @@ datasets = ['book1', #__________0     3 x sum(Ns) # DONE
 # Load the Dataset
 data_name = datasets[0]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [20, 1, 1])
+                                  Ns = [20, 10, 10])
 
 # Set the algorithm's parameters
-parameters = {'R1':2,
-              'R2':5,
+parameters = {'R1': 2,
+              'R2': 3,
               'p': 1,
-              'r': 6,
+              'r': 3,
               'd': 0, 
               'lam': 1,
               'max_epoch': 15,
@@ -76,7 +76,7 @@ for p_val in range(1, 2):#,6):
                     rmse_AR = changes[:,0]
                     nrmse_AR = changes[:,1]
                     
-                    if nrmse_AR[-1] < 0.016:#min_v:
+                    if nrmse_AR[-1] < 0.0225:#min_v:
                         min_v = nrmse_AR[-1]
                         file.write("\n"+str(R1_val)+" "+str(R2_val)+" "+str(p_val)+" "+str(r_val)+" "+str(d_val)+" "+str(nrmse_AR[-1])) 
                     #     file.write("\nR1:"+str(R1_val)+"  R2:"+str(R2_val)+"  p:"+str(parameters['p'])+"  r:"+str(r_val)+"  d:"+str(d_val)) 

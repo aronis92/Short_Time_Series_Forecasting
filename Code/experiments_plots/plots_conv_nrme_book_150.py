@@ -92,8 +92,8 @@ titles = ["Convergence Value Comparison", "NRMSE Value Comparison"]
 subtitles = ["Convergence Value", "NRMSE Value"]
 n_rows = 2
 n = 3
-c_1 = 2 #0,1 #2,3 #4,5 #6,7
-c_2 = 3
+c_1 = 6 #0,1 #2,3 #4,5 #6,7
+c_2 = 7
 fig = plt.figure(figsize = (12,9))
 gs = fig.add_gridspec(n_rows, hspace = 0.3)
 axs = gs.subplots(sharex=False, sharey=False)

@@ -92,8 +92,8 @@ datasets = ['macro', #__________0     12 x 203     #
             'yahoo', #__________6      5 x 2469    #
             'book1'] #__________7      3 x sum(Ns) #
 
-Ns = [500, 1, 1]
-data_name = datasets[13]
+Ns = [20, 1, 1]
+data_name = datasets[7]
 
 X_train, _, _ = get_data(data_name, Ns)
 
@@ -112,10 +112,10 @@ axs[3].plot(X_train[2, :].T, 'tab:green')
 plt.show()
 
 
-# ds = [i for i in range(1, 8)]
-# rs = [i for i in range(2, 11)]
-# print("Dataset: " + data_name + " \n")
-# stationarity_tests(data_name, ds, rs, Ns)
+ds = [i for i in range(1, 9)]
+rs = [i for i in range(2, 11)]
+print("Dataset: " + data_name + " \n")
+stationarity_tests(data_name, ds, rs, Ns)
 
 
 

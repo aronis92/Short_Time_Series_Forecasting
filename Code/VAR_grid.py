@@ -25,17 +25,17 @@ datasets = ['book1', #__________0     3 x sum(Ns) # DONE
             'yahoo'] #__________7     5 x 2469    #    
 
 # Load the Dataset
-data_name = datasets[5]
+data_name = datasets[0]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [54, 1, 1])
+                                  Ns = [20, 10, 10])
 
 # Set the algorithm's parameters
-parameters = {'R1':2,
-              'R2':4,
+parameters = {'R1': 2,
+              'R2': 5,
               'p': 1,
-              'r': 7,
-              'd': 2,
-              'lam': 1,
+              'r': 5,
+              'd': 1,
+              'lam': .1,
               'max_epoch': 15,
               'threshold': 0.000001}
 
@@ -44,10 +44,10 @@ file = open("results/BHT_VAR_" + data_name + ".txt", 'a')
 
 ds = [0, 1, 2]#, 3, 4, 5]
 min_v = 1000
-for p_val in range(1, 4):#,6):
+for p_val in range(1, 2):#,6):
     parameters['p'] = p_val
     
-    for r_val in range(2, 6):
+    for r_val in range(2, 11):
         parameters['r'] = r_val
         
         for d_val in ds:
@@ -76,11 +76,12 @@ for p_val in range(1, 4):#,6):
                     rmse_VAR = changes[:,0]
                     nrmse_VAR = changes[:,1]
                     
-                    if nrmse_VAR[-1] < min_v:
+                    if nrmse_VAR[-1] < 0.0215:#min_v:
                         min_v = nrmse_VAR[-1]
-                        file.write("\nR1:"+str(parameters['R1'])+"  R2:"+str(parameters['R2'])+"  p:"+str(parameters['p'])+"  r:"+str(parameters['r'])+"  d:"+str(parameters['d'])+"  lam:" + str(parameters['lam'])) 
-                        file.write("\nValidation RMSE_VAR: "+str(rmse_VAR[-1])) 
-                        file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+"\n")
+                        file.write("\n"+str(R1_val)+" "+str(R2_val)+" "+str(p_val)+" "+str(r_val)+" "+str(d_val)+" "+str(nrmse_VAR[-1])) 
+                        # file.write("\nR1:"+str(parameters['R1'])+"  R2:"+str(parameters['R2'])+"  p:"+str(parameters['p'])+"  r:"+str(parameters['r'])+"  d:"+str(parameters['d'])+"  lam:" + str(parameters['lam'])) 
+                        # file.write("\nValidation RMSE_VAR: "+str(rmse_VAR[-1])) 
+                        # file.write("\nValidation NRMSE_VAR: "+str(nrmse_VAR[-1])+"\n")
 file.close()
 
 

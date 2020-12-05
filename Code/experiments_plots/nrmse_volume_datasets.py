@@ -32,7 +32,7 @@ def get_results(name):
                  
                  
 
-data, data_name = get_results("macro")
+data, data_name = get_results("ozone")
 
 
 plt.figure(figsize = (12, 5))
@@ -48,8 +48,8 @@ plt.ylabel("NRMSE")
 plt.xticks(ticks=[i for i in range(4)],
            labels=['100%', '75%', '50%', '25%'])
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0), useMathText=True)
-plt.plot(data[:,0], label="AR", marker='o')
-plt.plot(data[:,1], label="VAR", marker='o')
+plt.plot(data[:,0], label="AR_SC", marker='o')
+plt.plot(data[:,1], label="AR_MC", marker='o')
 plt.plot(data[:,2], label="Prophet", marker='o')
 plt.plot(data[:,3], label="BHT_AR_SC", marker='o')
 plt.plot(data[:,4], label="BHT_AR_MC", marker='o')

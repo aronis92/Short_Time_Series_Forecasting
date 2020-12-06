@@ -21,13 +21,13 @@ datasets = ['book1', #__________0     3 x sum(Ns) # DONE
             'elnino', #_________3     12 x 61     # DONE
             'ozone', #__________4      8 x 203    # DONE
             'nightvisitors', #__5      8 x 56     # DONE
-            'nasdaq', #_________6     82 x 40560  # 
+            'nasdaq', #_________6     82 x 40560  # In Progress
             'yahoo'] #__________7     5 x 2469    # In Progress
 
 # Load the Dataset
-data_name = datasets[7]
+data_name = datasets[6]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [50, 15, 15])
+                                  Ns = [50, 1, 1])
 
 # Set the algorithm's parameters
 parameters = {'R1': 2,
@@ -44,7 +44,7 @@ file = open("results/BHT_AR_" + data_name + ".txt", 'a')
 
 ds = [0, 1, 2, 3]#, 4, 5]
 min_v = 1000
-for p_val in range(1, 6):
+for p_val in range(1, 4):
     parameters['p'] = p_val
     
     for r_val in range(2, 11):

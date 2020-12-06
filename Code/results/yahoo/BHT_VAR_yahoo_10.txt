@@ -1,0 +1,12 @@
+
+R1:2  R2:2  p:1  r:2  d:0  lam:1
+Validation NRMSE_VAR: 0.47774715347025376
+
+R1:2  R2:2  p:1  r:2  d:1  lam:1
+Validation NRMSE_VAR: 0.09972523705274325
+
+R1:3  R2:2  p:1  r:2  d:1  lam:1
+Validation NRMSE_VAR: 0.098652012624939
+
+R1:4  R2:2  p:1  r:2  d:1  lam:1
+Validation NRMSE_VAR: 0.09787454790441147

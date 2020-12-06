@@ -27,7 +27,7 @@ datasets = ['book1', #__________0     3 x sum(Ns) # DONE
 # Load the Dataset
 data_name = datasets[6]
 X_train, X_val, X_test = get_data(dataset = data_name,
-                                  Ns = [50, 15, 15])
+                                  Ns = [50, 5, 5])
 
 # Set the algorithm's parameters
 parameters = {'R1': 2,
@@ -47,7 +47,7 @@ min_v = 1000
 for p_val in range(1, 4):
     parameters['p'] = p_val
     
-    for r_val in range(2, 11):
+    for r_val in range(2, 9):
         parameters['r'] = r_val
         
         for d_val in ds:

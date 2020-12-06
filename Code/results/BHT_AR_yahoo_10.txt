@@ -1,0 +1,6 @@
+
+R1:2  R2:2  p:1  r:2  d:0
+Validation NRMSE_AR: 0.09582161143410099
+
+R1:2  R2:2  p:3  r:2  d:0
+Validation NRMSE_AR: 0.09500853019458874

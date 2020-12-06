@@ -176,12 +176,12 @@ datasets = ['book1', #__________0     3 x sum(Ns) # DONE
             'macro', #__________2     12 x 203    # DONE
             'elnino', #_________3     12 x 61     # DONE
             'ozone', #__________4      8 x 203    # DONE
-            'nightvisitors', #__5      8 x 56     # 
+            'nightvisitors', #__5      8 x 56     # DONE
             'nasdaq', #_________6     82 x 40560  # 
             'yahoo'] #__________7     5 x 2469    #    
 
 '''Create/Load Dataset'''
-X_train, X_val, X_test = get_data(dataset = datasets[5], Ns = [54, 1, 1])
+X_train, X_val, X_test = get_data(dataset = datasets[7], Ns = [50, 15, 15])
 # data_train = X_train
 # data_val = X_val
 # data_test = X_test
@@ -203,7 +203,7 @@ X_train, X_val, X_test = get_data(dataset = datasets[5], Ns = [54, 1, 1])
 print("Autoregression with Scalar Coefficients")
 min_v = 1000
 for p_val in range(1, 5):
-    for d_val in range(0, 3):
+    for d_val in range(0, 4):
         
         ar_results_val, ar_results_test, ar_duration = AR_results(data_train = X_train, 
                                                                   data_val = X_val,
@@ -223,7 +223,7 @@ for p_val in range(1, 5):
 print("\nAutoregression with Matrix Coefficients")
 min_v = 1000
 for p_val in range(1, 5):
-    for d_val in range(0, 3):
+    for d_val in range(0, 4):
         
         var_results_val, var_results_test, var_duration = VAR_results(data_train = X_train, 
                                                                       data_val = X_val, 
@@ -233,7 +233,7 @@ for p_val in range(1, 5):
         if var_results_val[1] < min_v:
             min_v = var_results_val[1]
             print("\np:"+str(p_val)+" d:"+str(d_val))
-            print("Duration: "+str(var_duration))
+            #print("Duration: "+str(var_duration))
             print("Validation RMSE:  ", var_results_val[0])
             print("Validation NRMSE: ", var_results_val[1])
             print("Test RMSE:  ", var_results_test[0])

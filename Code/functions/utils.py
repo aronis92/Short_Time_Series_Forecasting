@@ -76,37 +76,17 @@ def get_data(dataset, Ns):
         X = X.to_numpy()
         X = X.T
     
-    elif dataset == "inflation":
-        """
-        Variables : 8
-        Timepoints: 123
-        """
-        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/Raotbl6.csv'
-        df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns))
-        X = df.to_numpy()
-        X = X.T
-    
     elif dataset == "yahoo":
         """
         Variables : 5
         Timepoints: 2469
         """
         filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/yahoo.csv'
-        df = pd.read_csv(filepath, parse_dates=['date'], index_col='date', skiprows=range(1, 1400), nrows = sum(Ns)+100)
+        df = pd.read_csv(filepath, parse_dates=['date'], index_col='date', skiprows=range(1, 250), nrows = sum(Ns)) #
         df = df[['VIX.Open', 'VIX.High', 'VIX.Low', 'VIX.Close']]
         X = df.to_numpy()
         X = X.T
     
-    elif dataset == "noise":
-        X = np.random.normal(0, 1, (3, sum(Ns)))
-    
-    # elif dataset == "traffic":
-    #     """
-    #     Variables : 40
-    #     Timepoints: 228
-    #     """
-    #     X = np.load('data/traffic_40.npy').T
-        
     elif dataset == "macro":
         """
         Variables : 12
@@ -126,25 +106,17 @@ def get_data(dataset, Ns):
         X = data.to_numpy()
         X = X[..., 1:].T
         
-    # elif dataset == "copper":
-    #     """
-    #     Variables : 5
-    #     Timepoints: 25
-    #     """
-    #     data = sm.datasets.copper.load_pandas().data
-    #     X = data.to_numpy()
-    #     X = X[..., :-1].T
-        
-    # elif dataset == "fertility":
-    #     """
-    #     Variables : 192
-    #     Timepoints: 52
-    #     """
-    #     data = sm.datasets.fertility.load_pandas().data
-    #     data = data.iloc[:, 4:-2]
-    #     data = data.dropna()
-    #     X = data.to_numpy()
-        
+    elif dataset == "ozone":
+        """
+        Variables : 8
+        Timepoints: 203
+        """
+        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/ozone.csv'
+        df = pd.read_csv(filepath, nrows = sum(Ns))
+        df = df.iloc[:, [3, 5, 6, 7, 8, 10, 11, 12]]
+        X = df.to_numpy()
+        X = X.T 
+    
     elif dataset == "stackloss":
         """
         Variables : 4
@@ -164,6 +136,46 @@ def get_data(dataset, Ns):
         X = df.to_numpy()
         X = X.T
         
+    '''   
+    elif dataset == "noise":
+        X = np.random.normal(0, 1, (3, sum(Ns)))
+    
+    elif dataset == "traffic":
+        """
+        Variables : 40
+        Timepoints: 228
+        """
+        X = np.load('data/traffic_40.npy').T
+       
+    elif dataset == "inflation":
+        """
+        Variables : 8
+        Timepoints: 123
+        """
+        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/Raotbl6.csv'
+        df = pd.read_csv(filepath, parse_dates=['date'], index_col='date',  nrows = sum(Ns))
+        X = df.to_numpy()
+        X = X.T
+        
+    elif dataset == "copper":
+        """
+        Variables : 5
+        Timepoints: 25
+        """
+        data = sm.datasets.copper.load_pandas().data
+        X = data.to_numpy()
+        X = X[..., :-1].T
+        
+    elif dataset == "fertility":
+        """
+        Variables : 192
+        Timepoints: 52
+        """
+        data = sm.datasets.fertility.load_pandas().data
+        data = data.iloc[:, 4:-2]
+        data = data.dropna()
+        X = data.to_numpy()
+        
     elif dataset == "mortality":
         """
         Variables : 2
@@ -173,19 +185,8 @@ def get_data(dataset, Ns):
         df = pd.read_csv(filepath, nrows = sum(Ns))
         X = df.to_numpy()
         X = X[..., 1:].T  
-        
-    elif dataset == "ozone":
-        """
-        Variables : 8
-        Timepoints: 203
-        """
-        filepath = 'https://raw.githubusercontent.com/selva86/datasets/master/ozone.csv'
-        df = pd.read_csv(filepath, nrows = sum(Ns))
-        df = df.iloc[:, [3, 5, 6, 7, 8, 10, 11, 12]]
-        X = df.to_numpy()
-        X = X.T 
-        
-        
+    '''   
+    
     X_train = X[..., :Ns[0]]
     X_val = X[..., Ns[0]:(Ns[1] + Ns[0])]
     X_test = X[..., -Ns[2]:]

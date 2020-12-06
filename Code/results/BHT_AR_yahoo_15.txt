@@ -1,0 +1,33 @@
+
+R1:2  R2:2  p:1  r:2  d:0
+Validation NRMSE_AR: 0.12054583758767325
+
+R1:3  R2:2  p:1  r:2  d:0
+Validation NRMSE_AR: 0.12018392311369042
+
+R1:3  R2:3  p:1  r:3  d:0
+Validation NRMSE_AR: 0.1200128997364538
+
+R1:2  R2:2  p:1  r:4  d:0
+Validation NRMSE_AR: 0.10503404441849137
+
+R1:2  R2:3  p:1  r:4  d:0
+Validation NRMSE_AR: 0.0981817542288283
+
+R1:2  R2:4  p:1  r:4  d:0
+Validation NRMSE_AR: 0.0967813305000634
+
+R1:3  R2:4  p:1  r:4  d:0
+Validation NRMSE_AR: 0.09616612475100028
+
+R1:2  R2:3  p:1  r:5  d:0
+Validation NRMSE_AR: 0.09566238919914376
+
+R1:2  R2:4  p:1  r:5  d:0
+Validation NRMSE_AR: 0.0918519826623547
+
+R1:2  R2:5  p:1  r:5  d:0
+Validation NRMSE_AR: 0.09063266403828993
+
+R1:3  R2:5  p:1  r:5  d:0
+Validation NRMSE_AR: 0.090299241961173

@@ -83,17 +83,17 @@ def stationarity_tests(dataset_name, ds, rs, Ns):
             print("r:", r, "~", counter, "/", X_hat_vec.shape[0], "Series are Stationary")
 
 #                             Index  Var x Time
-datasets = ['macro', #__________0     12 x 203     #
-            'elnino', #_________1     12 x 61      #
-            'stackloss', #______2      4 x 21      #
-            'nightvisitors', #__3      8 x 56      #
-            'ozone', #__________4      8 x 203     #
-            'nasdaq', #_________5     82 x 40560   # Pending
-            'yahoo', #__________6      5 x 2469    #
-            'book1'] #__________7      3 x sum(Ns) #
+datasets = ['book1', #__________0     3 x sum(Ns) # DONE
+            'stackloss', #______1     4 x 21      # DONE
+            'macro', #__________2     12 x 203    # DONE
+            'elnino', #_________3     12 x 61     # DONE
+            'ozone', #__________4      8 x 203    # DONE
+            'nightvisitors', #__5      8 x 56     # DONE
+            'nasdaq', #_________6     82 x 40560  # 
+            'yahoo'] #__________7     5 x 2469    #    
 
-Ns = [20, 1, 1]
-data_name = datasets[7]
+Ns = [80, 5, 5]
+data_name = datasets[6]
 
 X_train, _, _ = get_data(data_name, Ns)
 

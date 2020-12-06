@@ -178,10 +178,10 @@ datasets = ['book1', #__________0     3 x sum(Ns) # DONE
             'ozone', #__________4      8 x 203    # DONE
             'nightvisitors', #__5      8 x 56     # DONE
             'nasdaq', #_________6     82 x 40560  # 
-            'yahoo'] #__________7     5 x 2469    #    
+            'yahoo'] #__________7     5 x 2469    # DONE
 
 '''Create/Load Dataset'''
-X_train, X_val, X_test = get_data(dataset = datasets[7], Ns = [50, 15, 15])
+X_train, X_val, X_test = get_data(dataset = datasets[6], Ns = [50, 1, 1])
 # data_train = X_train
 # data_val = X_val
 # data_test = X_test
@@ -221,7 +221,7 @@ for p_val in range(1, 5):
   
         
 print("\nAutoregression with Matrix Coefficients")
-min_v = 1000
+min_v = 1000000
 for p_val in range(1, 5):
     for d_val in range(0, 4):
         

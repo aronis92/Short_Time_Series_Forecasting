@@ -1,4 +1,4 @@
-
+ζ	
 R1:2  R2:2  p:1  r:2  d:0  lam:1
 Validation NRMSE_VAR: 0.4457919487438665
 

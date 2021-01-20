@@ -25,7 +25,7 @@ datasets = ['book1', #__________0     3 x sum(Ns) # DONE
             'yahoo'] #__________7      5 x 2469   # DONE
 
 # Load the Dataset
-data_name = datasets[6]
+data_name = datasets[0]
 X_train, X_val, X_test = get_data(dataset = data_name,
                                   Ns = [50, 10, 10])
 

@@ -50,7 +50,7 @@ def MDT(X, r):
     T = X.shape[-1]
     tensor_shape = get_MDT_tensor_shape(X.shape, r, T)
     S = get_duplication_matrix(r, T)
-    mode_T_product = tl.tenalg.mode_dot(X, S, 1)
+    mode_T_product = tl.tenalg.mode_dot(X, S, -1)
     mdt_data = tl.fold(mode_T_product, 1, tensor_shape)
     mdt_data = np.transpose(mdt_data, (1, 2, 0))
     S_pinv = np.dot( np.linalg.inv( np.dot(S.T, S) ), S.T )

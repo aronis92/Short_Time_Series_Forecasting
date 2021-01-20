@@ -249,7 +249,7 @@ def book_data_1(sample_size):
     
     a = np.array([73.23, 67.59, 67.46])
     
-    a = np.array([0, 0, 0])
+    #a = np.array([0, 0, 0])
     
     A = np.array([[ .46, -.36,  .10],
                   [-.24,  .49, -.13],
